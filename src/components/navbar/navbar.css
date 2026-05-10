@@ -1,0 +1,127 @@
+.navbar {
+  width: 100%;
+  background: radial-gradient(circle at center, #162a62 0%, #0c1741 55%, #071235 100%);
+  padding: 38px 30px;
+}
+
+.navbar__inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo {
+  display: none;
+  color: #ffffff;
+  font-size: 44px;
+  font-weight: 700;
+  font-style: italic;
+  text-decoration: none;
+  letter-spacing: -1px;
+}
+
+.navbar__menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__link {
+  min-width: 108px;
+  padding: 12px 22px;
+  border: 2px solid #f04a2a;
+  border-radius: 999px;
+  background-color: #f7f7f7;
+  color: #f04a2a;
+  font-size: 15px;
+  font-weight: 500;
+  font-style: italic;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.navbar__link:hover,
+.navbar__link--active {
+  background-color: #f04a2a;
+  color: #ffffff;
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 46px;
+}
+
+.navbar__language {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  border: 2px solid #f04a2a;
+  border-radius: 999px;
+  background-color: #f7f7f7;
+}
+
+.navbar__language-option {
+  border: none;
+  background: transparent;
+  color: #f04a2a;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.navbar__language-option--active {
+  background-color: #f04a2a;
+  color: #ffffff;
+}
+
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 9px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.navbar__toggle span {
+  display: block;
+  width: 54px;
+  height: 7px;
+  border-radius: 999px;
+  background-color: #ffffff;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 80px 40px 70px;
+  }
+
+  .navbar__logo {
+    display: block;
+  }
+
+  .navbar__menu {
+    display: none;
+  }
+
+  .navbar__right {
+    gap: 46px;
+  }
+
+  .navbar__language-option {
+    padding: 10px 16px;
+    font-size: 22px;
+  }
+
+  .navbar__toggle {
+    display: flex;
+  }
+}
