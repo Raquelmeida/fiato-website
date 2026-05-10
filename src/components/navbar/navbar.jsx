@@ -1,8 +1,35 @@
+import { useEffect, useState } from 'react';
 import './navbar.css';
 
 function Navbar() {
+  const [navbarTheme, setNavbarTheme] = useState('transparent');
+
+  useEffect(() => {
+    function handleScroll() {
+      const sections = document.querySelectorAll('[data-navbar-theme]');
+      const navbarHeight = 120;
+
+      let currentTheme = 'transparent';
+
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+
+        if (rect.top <= navbarHeight && rect.bottom >= navbarHeight) {
+          currentTheme = section.getAttribute('data-navbar-theme');
+        }
+      });
+
+      setNavbarTheme(currentTheme);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="navbar">
+    <header className={`navbar navbar--${navbarTheme}`}>
       <div className="navbar__inner">
         <a href="/" className="navbar__logo">
           FIATO

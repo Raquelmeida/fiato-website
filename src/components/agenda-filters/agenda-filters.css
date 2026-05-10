@@ -1,0 +1,31 @@
+.agenda-filters {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.agenda-filters__button {
+  min-width: 150px;
+  padding: 12px 28px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  color: inherit;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .agenda-filters {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .agenda-filters__button {
+    width: 100%;
+  }
+}

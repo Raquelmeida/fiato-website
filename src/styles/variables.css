@@ -1,0 +1,45 @@
+:root {
+  /* Navy */
+  --color-navy-base: #1E388F;
+  --color-navy-20: #182D72;
+  --color-navy-40: #122256;
+  --color-navy-60: #0C1639;
+  --color-navy-80: #060B1D;
+
+  /* Navy Light */
+  --color-navy-light-20: #4B60A5;
+  --color-navy-light-40: #7888BC;
+  --color-navy-light-60: #A5AFD2;
+  --color-navy-light-80: #D2D7E9;
+
+  /* Accent */
+  --color-accent: #E54825;
+
+  /* Neutral */
+  --color-white: #FFFFFF;
+  --color-off-white: #FBFBF9;
+  --color-neutral-100: #F2F2F0;
+  --color-neutral-200: #D9D9D6;
+  --color-neutral-300: #BFBFBC;
+  --color-neutral-900: #1A1A18;
+  
+/* Typography */
+--font-primary: 'Plus Jakarta Sans', sans-serif;
+--font-display: 'Fraunces', serif;
+
+  /* Layout */
+  --container-padding: 32px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --transition-default: 0.25s ease;
+
+  --navbar-height: 155px;
+
+  @media (max-width: 768px) {
+  :root {
+    --navbar-height: 220px;
+  }
+}
+
+}

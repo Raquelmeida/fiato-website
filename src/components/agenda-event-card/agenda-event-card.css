@@ -1,0 +1,128 @@
+.agenda-event-card {
+  display: grid;
+  grid-template-columns: 1fr 230px 220px;
+  align-items: center;
+  min-height: 130px;
+  padding: 20px 32px;
+  border-bottom: 1px solid currentColor;
+  color: inherit;
+  transition: background-color var(--transition-default), color var(--transition-default);
+}
+
+.agenda-event-card__main {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.agenda-event-card__date {
+  min-width: 78px;
+  font-family: var(--font-display);
+  font-style: italic;
+  line-height: 0.75;
+}
+
+.agenda-event-card__date span {
+  display: block;
+  font-size: 70px;
+  letter-spacing: -0.08em;
+}
+
+.agenda-event-card__date small {
+  display: block;
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+.agenda-event-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 86px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+}
+
+.agenda-event-card__info {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.agenda-event-card__info p {
+  margin: 0 0 7px;
+}
+
+.agenda-event-card__actions {
+  display: none;
+  justify-self: end;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agenda-event-card__button {
+  min-width: 140px;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.agenda-event-card__button--outline {
+  border: 1.5px solid var(--color-white);
+  color: var(--color-white);
+}
+
+.agenda-event-card__button--filled {
+  background-color: var(--color-white);
+  color: var(--color-navy-base);
+}
+
+.agenda-event-card:hover {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.agenda-event-card:hover .agenda-event-card__info {
+  display: none;
+}
+
+.agenda-event-card:hover .agenda-event-card__actions {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  .agenda-event-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .agenda-event-card__actions {
+    display: flex;
+    justify-self: start;
+  }
+
+  .agenda-event-card:hover .agenda-event-card__info {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .agenda-event-card {
+    padding: 28px 20px;
+  }
+
+  .agenda-event-card__main {
+    gap: 20px;
+  }
+
+  .agenda-event-card__date span {
+    font-size: 48px;
+  }
+
+  .agenda-event-card__title {
+    font-size: 42px;
+  }
+}
