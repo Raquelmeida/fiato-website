@@ -1,0 +1,106 @@
+.proximos-eventos {
+  padding: 100px 48px 120px;
+  background-color: var(--color-navy-base);
+  color: var(--color-white);
+}
+
+.proximos-eventos > p {
+  margin: 0 0 28px;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.proximos-eventos h2 {
+  margin: 0 0 70px;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5vw, 86px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+
+.proximos-eventos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.proximos-eventos__card {
+  padding: 42px 38px;
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.proximos-eventos__card:last-child {
+  border-right: none;
+}
+
+.proximos-eventos__card small {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.proximos-eventos__card strong {
+  display: block;
+  margin-bottom: 24px;
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 400;
+}
+
+.proximos-eventos__card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  margin-bottom: 28px;
+}
+
+.proximos-eventos__card h3 {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.proximos-eventos__card span {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.proximos-eventos__card a {
+  display: inline-block;
+  margin-top: 40px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .proximos-eventos {
+    padding: 72px 24px 90px;
+  }
+
+  .proximos-eventos__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proximos-eventos__card {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  }
+}
