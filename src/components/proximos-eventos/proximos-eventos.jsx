@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './proximos-eventos.css';
 
 const proximos = [
@@ -35,7 +36,7 @@ function ProximosEventos({ image }) {
             <img src={image} alt={evento.title} />
             <h3>{evento.title}</h3>
             <span>{evento.place}</span>
-            <a href="#">Comprar bilhetes</a>
+            <Link to="/bilhetes">Comprar bilhetes</Link>
           </article>
         ))}
       </div>

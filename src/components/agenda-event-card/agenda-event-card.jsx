@@ -27,12 +27,12 @@ function AgendaEventCard({ event }) {
           Saber mais
         </Link>
 
-        <a
-          href="#comprar"
+        <Link
+          to="/bilhetes"
           className="agenda-event-card__button agenda-event-card__button--filled"
         >
           Comprar
-        </a>
+        </Link>
       </div>
     </article>
   );

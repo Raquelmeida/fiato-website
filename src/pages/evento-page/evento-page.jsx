@@ -12,7 +12,7 @@ import eventoImage from '../../assets/images/img-contactos.png';
 function EventoPage() {
   return (
     <main className="evento-page">
-      <EventoHero image={eventoImage} edition={event.edition} />
+      <EventoHero image={eventoImage} edition="2026" />
 
       <EventoMarquee />
 
@@ -24,7 +24,7 @@ function EventoPage() {
 
       <EventoAccordion />
 
-      <ProximosEventos />
+      <ProximosEventos image={eventoImage} />
     </main>
   );
 }

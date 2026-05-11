@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './evento-sessoes.css';
 
 const sessions = [
@@ -49,12 +50,15 @@ function EventoSessoes() {
 
             <strong>{session.time}</strong>
 
-            <button
-              type="button"
-              className={session.status === 'Esgotado' ? 'is-disabled' : ''}
-            >
-              {session.status}
-            </button>
+            {session.status === 'Esgotado' ? (
+              <button type="button" className="is-disabled" disabled>
+                Esgotado
+              </button>
+            ) : (
+              <Link to="/bilhetes" className="evento-sessoes__button">
+                Reservar
+              </Link>
+            )}
           </article>
         ))}
       </div>
