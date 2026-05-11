@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import './navbar.css';
 
 function Navbar() {
@@ -31,26 +32,65 @@ function Navbar() {
   return (
     <header className={`navbar navbar--${navbarTheme}`}>
       <div className="navbar__inner">
-        <a href="/" className="navbar__logo">
+        <NavLink to="/" className="navbar__logo">
           FIATO
-        </a>
+        </NavLink>
 
         <nav className="navbar__menu">
-          <a href="/" className="navbar__link navbar__link--active">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
             FIATO
-          </a>
-          <a href="/agenda" className="navbar__link">
+          </NavLink>
+
+          <NavLink
+            to="/agenda"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
             AGENDA
-          </a>
-          <a href="/edicoes" className="navbar__link">
+          </NavLink>
+
+          <NavLink
+            to="/edicoes"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
             EDIÇÕES
-          </a>
-          <a href="/sobre-nos" className="navbar__link">
+          </NavLink>
+
+          <NavLink
+            to="/sobre-nos"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
             SOBRE NÓS
-          </a>
-          <a href="/contactos" className="navbar__link">
+          </NavLink>
+
+          <NavLink
+            to="/apoios"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
+            APOIOS
+          </NavLink>
+
+          <NavLink
+            to="/contactos"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
             CONTACTOS
-          </a>
+          </NavLink>
         </nav>
 
         <div className="navbar__right">
