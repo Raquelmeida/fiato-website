@@ -1,0 +1,197 @@
+.instagram {
+  background: var(--color-neutral-200);
+  padding: 88px 0 96px;
+  color: var(--color-neutral-900);
+}
+
+.instagram__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.instagram__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.instagram__label {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 12px;
+}
+
+.instagram__handle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: -0.01em;
+}
+
+/* Stage with nav buttons + phones --------------------------------------- */
+.instagram__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.instagram__phones {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: -40px;
+  min-height: 480px;
+  flex: 1;
+}
+
+.instagram__phone {
+  position: relative;
+  width: 220px;
+  border-radius: 22px;
+  padding: 16px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 18px 40px rgba(6, 11, 29, 0.18);
+}
+
+.instagram__phone--coral {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.instagram__phone--navy {
+  background: var(--color-navy-40);
+  color: var(--color-off-white);
+}
+
+.instagram__phone--side {
+  transform: scale(0.92);
+  opacity: 0.96;
+}
+
+.instagram__phone--center {
+  z-index: 2;
+  transform: scale(1.06);
+  width: 240px;
+  margin: 0 -32px; /* overlap a bit with side phones */
+}
+
+.instagram__phone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.instagram__phone-icon {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.instagram__phone-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  background-color: #22264a;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+  overflow: hidden;
+}
+
+.instagram__phone-media.ph {
+  background:
+    radial-gradient(120% 80% at 30% 30%, rgba(229, 72, 37, 0.55), transparent 60%),
+    radial-gradient(120% 80% at 80% 80%, rgba(229, 72, 37, 0.35), transparent 65%),
+    #22264a;
+}
+
+.instagram__visit {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-off-white);
+  color: var(--color-neutral-900);
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.instagram__phone-caption {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  line-height: 1.45;
+  opacity: 0.92;
+}
+
+.instagram__hashtag {
+  font-weight: 700;
+}
+
+/* Nav buttons ---------------------------------------------------------- */
+.instagram__nav {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-neutral-900);
+  background: transparent;
+  color: var(--color-neutral-900);
+  font-family: var(--font-primary);
+  font-size: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-default),
+    color var(--transition-default);
+  flex-shrink: 0;
+}
+
+.instagram__nav:hover {
+  background: var(--color-neutral-900);
+  color: var(--color-off-white);
+}
+
+@media (max-width: 820px) {
+  .instagram__phone {
+    width: 180px;
+  }
+  .instagram__phone--center {
+    width: 200px;
+    margin: 0 -22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .instagram__phones {
+    gap: 0;
+  }
+  .instagram__phone--side {
+    display: none;
+  }
+  .instagram__phone--center {
+    transform: none;
+    width: 240px;
+    margin: 0;
+  }
+}

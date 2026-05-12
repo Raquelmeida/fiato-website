@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import Navbar from './components/navbar/navbar';
+import Footer from './components/footer/footer';
 
 import HomePage from './pages/home-page/home-page';
 import AgendaPage from './pages/agenda-page/agenda-page';
@@ -13,7 +14,7 @@ import BilhetesPage from './pages/bilhetes-page/bilhetes-page';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Navbar />
 
       <Routes>
@@ -26,7 +27,9 @@ function App() {
         <Route path="/apoios" element={<ApoiosPage />} />
         <Route path="/bilhetes" element={<BilhetesPage />} />
       </Routes>
-    </BrowserRouter>
+
+      <Footer />
+    </HashRouter>
   );
 }
 
