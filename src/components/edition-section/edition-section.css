@@ -1,0 +1,102 @@
+.edition-section {
+  position: relative;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 160px 32px 120px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.edition-section--navy {
+  background-color: var(--color-navy-40);
+  color: var(--color-white);
+}
+
+.edition-section--orange {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.edition-section__content {
+  text-align: center;
+}
+
+.edition-section__year {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(110px, 18vw, 260px);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 0.75;
+  letter-spacing: -0.08em;
+}
+
+.edition-section--navy .edition-section__year {
+  color: var(--color-accent);
+}
+
+.edition-section--orange .edition-section__year {
+  color: var(--color-white);
+}
+
+.edition-section__subtitle {
+  margin: 32px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 58px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1;
+}
+
+.edition-section__button {
+  position: absolute;
+  right: 52px;
+  top: 135px;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  color: inherit;
+  font-family: var(--font-primary);
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition:
+    transform var(--transition-default),
+    background-color var(--transition-default),
+    color var(--transition-default);
+}
+
+.edition-section__button:hover {
+  background-color: var(--color-off-white);
+  color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .edition-section {
+    min-height: 460px;
+    padding: 180px 24px 96px;
+  }
+
+  .edition-section__button {
+    right: 24px;
+    top: 150px;
+  }
+
+  .edition-section__year {
+    font-size: 110px;
+  }
+
+  .edition-section__subtitle {
+    font-size: 30px;
+  }
+}
+
+.edition-section__button--open {
+  transform: rotate(180deg);
+}
