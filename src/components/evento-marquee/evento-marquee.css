@@ -1,0 +1,37 @@
+.evento-marquee {
+  overflow: hidden;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  padding: 14px 0;
+}
+
+.evento-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 32px;
+  animation: marquee 22s linear infinite;
+}
+
+.evento-marquee__track span {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.evento-marquee__track span::before {
+  content: '✦';
+  margin-right: 32px;
+  font-size: 12px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}

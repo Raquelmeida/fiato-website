@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './agenda-event-card.css';
 
 function AgendaEventCard({ event }) {
@@ -19,13 +20,19 @@ function AgendaEventCard({ event }) {
       </div>
 
       <div className="agenda-event-card__actions">
-        <a href="#" className="agenda-event-card__button agenda-event-card__button--outline">
+        <Link
+          to="/evento"
+          className="agenda-event-card__button agenda-event-card__button--outline"
+        >
           Saber mais
-        </a>
+        </Link>
 
-        <a href="#" className="agenda-event-card__button agenda-event-card__button--filled">
+        <Link
+          to="/bilhetes"
+          className="agenda-event-card__button agenda-event-card__button--filled"
+        >
           Comprar
-        </a>
+        </Link>
       </div>
     </article>
   );

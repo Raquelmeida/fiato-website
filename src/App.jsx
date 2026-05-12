@@ -8,6 +8,9 @@ import AgendaPage from './pages/agenda-page/agenda-page';
 import EdicoesPage from './pages/edicoes-page/edicoes-page';
 import SobreNosPage from './pages/sobre-nos-page/sobre-nos-page';
 import ContactosPage from './pages/contactos-page/contactos-page';
+import EventoPage from './pages/evento-page/evento-page';
+import ApoiosPage from './pages/apoios-page/apoios-page';
+import BilhetesPage from './pages/bilhetes-page/bilhetes-page';
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
         <Route path="/edicoes" element={<EdicoesPage />} />
         <Route path="/sobre-nos" element={<SobreNosPage />} />
         <Route path="/contactos" element={<ContactosPage />} />
+        <Route path="/evento" element={<EventoPage />} />
+        <Route path="/apoios" element={<ApoiosPage />} />
+        <Route path="/bilhetes" element={<BilhetesPage />} />
       </Routes>
 
       <Footer />

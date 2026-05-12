@@ -1,0 +1,5 @@
+.evento-page {
+  min-height: 100vh;
+  background-color: var(--color-off-white);
+  color: var(--color-navy-40);
+}
