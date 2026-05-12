@@ -1,47 +1,68 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import './edicoes-page.css';
 
 import EditionSection from '../../components/edition-section/edition-section';
-import AgendaFilters from '../../components/agenda-filters/agenda-filters';
-import AgendaList from '../../components/agenda-list/agenda-list';
 import Footer from '../../components/footer/footer';
 
 import editions from '../../data/editions';
-import events from '../../data/events';
-import heroEdicoes from '../../assets/images/hero-agenda.png';
+import heroImage from '../../assets/images/hero-agenda.png';
+import pressImage from '../../assets/images/img-contactos.png';
 
 function EdicoesPage() {
-  const [openEdition, setOpenEdition] = useState(null);
+  const sectionRefs = useRef({});
+  const [activeYear, setActiveYear] = useState('2025');
 
-  function handleToggleEdition(year) {
-    setOpenEdition((currentEdition) =>
-      currentEdition === year ? null : year
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visibleEntries.length > 0) {
+          const year = visibleEntries[0].target.getAttribute('data-edition-year');
+
+          if (year && year !== '2026') {
+            setActiveYear(year);
+          }
+        }
+      },
+      {
+        root: null,
+        threshold: [0.35, 0.5, 0.65],
+      }
     );
+
+    Object.values(sectionRefs.current).forEach((section) => {
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  function handleToggle(year) {
+    if (year === '2026') return;
+
+    setActiveYear((currentYear) => (currentYear === year ? null : year));
   }
 
   return (
     <main className="edicoes-page">
       {editions.map((edition) => (
-        <div key={edition.id}>
-          <EditionSection
-            edition={edition}
-            image={edition.hasImage ? heroEdicoes : null}
-            isOpen={openEdition === edition.year}
-            onToggle={() => handleToggleEdition(edition.year)}
-          />
-
-          {openEdition === edition.year && (
-            <section className="edicoes-page__archive" data-navbar-theme="light">
-              <div className="edicoes-page__archive-header">
-                <h2>Junho</h2>
-                <AgendaFilters />
-              </div>
-
-              <AgendaList events={events} />
-            </section>
-          )}
-        </div>
+        <EditionSection
+          key={edition.year}
+          ref={(element) => {
+            sectionRefs.current[edition.year] = element;
+          }}
+          edition={edition}
+          heroImage={heroImage}
+          pressImage={pressImage}
+          isOpen={activeYear === edition.year}
+          onToggle={() => handleToggle(edition.year)}
+        />
       ))}
 
       <Footer />
