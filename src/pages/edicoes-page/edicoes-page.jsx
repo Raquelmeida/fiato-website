@@ -50,7 +50,7 @@ function EdicoesPage() {
   }
 
   return (
-    <main className="edicoes-page">
+    <main className="edicoes-page navbar_height">
       {editions.map((edition) => (
         <EditionSection
           key={edition.year}
@@ -65,7 +65,6 @@ function EdicoesPage() {
         />
       ))}
 
-      <Footer />
     </main>
   );
 }

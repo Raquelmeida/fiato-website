@@ -25,7 +25,7 @@ const marqueeItems = [
 
 function HomePage() {
   return (
-    <main className="home page">
+    <main className="home page navbar_height ">
       {/* 1. HERO ------------------------------------------------------- */}
       <section className="home-hero" data-navbar-theme="navy">
         <div className="home-hero__left">

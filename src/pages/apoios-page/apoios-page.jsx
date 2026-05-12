@@ -11,7 +11,7 @@ import logoDark from '../../assets/images/logo-republica-dark.png';
 
 function ApoiosPage() {
   return (
-    <main className="apoios-page">
+    <main className="apoios-page navbar_height">
       <section
         className="apoios-hero"
         data-navbar-theme="navy"
@@ -68,7 +68,7 @@ function ApoiosPage() {
 
       <SupportContact image={backgroundImage} />
 
-      <Footer />
+
     </main>
   );
 }

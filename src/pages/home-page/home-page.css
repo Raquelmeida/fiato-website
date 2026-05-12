@@ -8,6 +8,10 @@
 /* =================================================================
    HERO — 2-column split, photo + 3 stacked bands
    ================================================================= */
+
+.navbar_height {
+  margin-top: 90.5px;
+}
 .home-hero {
   display: grid;
   grid-template-columns: 47% 53%;

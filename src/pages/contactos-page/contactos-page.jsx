@@ -5,7 +5,7 @@ import contactosImage from '../../assets/images/img-contactos.png';
 
 function ContactosPage() {
   return (
-    <main className="contactos-page">
+    <main className="contactos-page navbar_height">
       <section
         className="contactos-hero"
         data-navbar-theme="navy"
@@ -69,7 +69,6 @@ function ContactosPage() {
         </div>
       </section>
 
-      <Footer />
     </main>
   );
 }
