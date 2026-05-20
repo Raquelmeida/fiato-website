@@ -1,5 +1,6 @@
 const navbar = document.querySelector('.navbar');
 const menuToggle = document.querySelector('.navbar__toggle');
+const navbarLinks = document.querySelectorAll('.navbar__link, .navbar__logo');
 const countdownDays = document.querySelector('[data-countdown-days]');
 const countdownHours = document.querySelector('[data-countdown-hours]');
 const countdownMinutes = document.querySelector('[data-countdown-minutes]');
@@ -120,6 +121,16 @@ if (menuToggle && navbar) {
   });
 }
 
+navbarLinks.forEach((link) => {
+  link.addEventListener('click', () => {
+    if (!navbar || !menuToggle) return;
+
+    navbar.classList.remove('is-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Abrir menu');
+  });
+});
+
 agendaFilterButtons.forEach((button) => {
   button.addEventListener('click', () => {
     agendaFilterButtons.forEach((filterButton) => {
@@ -234,8 +245,19 @@ if (ticketForm) {
 }
 
 window.addEventListener('scroll', updateNavbarTheme);
-window.addEventListener('resize', updateNavbarTheme);
+window.addEventListener('resize', () => {
+  updateNavbarTheme();
+
+  if (window.innerWidth > 768 && navbar && menuToggle) {
+    navbar.classList.remove('is-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Abrir menu');
+  }
+});
 
 updateNavbarTheme();
-updateCountdown();
-setInterval(updateCountdown, 1000);
+
+if (countdownDays && countdownHours && countdownMinutes) {
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
