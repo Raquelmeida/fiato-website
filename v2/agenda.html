@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda | FIATO</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="navbar navbar--transparent">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">FIATO</a>
+
+        <nav class="navbar__menu" aria-label="Navegação principal">
+          <a href="index.html" class="navbar__link">FIATO</a>
+          <a href="agenda.html" class="navbar__link navbar__link--active">AGENDA</a>
+          <a href="edicoes.html" class="navbar__link">EDIÇÕES</a>
+          <a href="sobre-nos.html" class="navbar__link">SOBRE NÓS</a>
+          <a href="apoios.html" class="navbar__link">APOIOS</a>
+          <a href="contactos.html" class="navbar__link">CONTACTOS</a>
+        </nav>
+
+        <div class="navbar__right">
+          <div class="navbar__language" aria-label="Idioma">
+            <button type="button" class="navbar__language-option">EN</button>
+            <button type="button" class="navbar__language-option navbar__language-option--active">PT</button>
+          </div>
+
+          <button type="button" class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="agenda-page navbar_height">
+      <section class="hero hero--agenda" data-navbar-theme="navy">
+        <div class="hero__content">
+          <h1 class="hero__title">
+            AGENDA
+            <span>2026</span>
+          </h1>
+
+          <p class="hero__description">
+            Uma experiência auditiva imersiva onde o ambiente se torna o fosso
+            da orquestra. Sem cordões de veludo. Sem tetos dourados.
+          </p>
+        </div>
+
+        <a href="#novidades" class="hero__button">
+          Novidades <span aria-hidden="true">↗</span>
+        </a>
+      </section>
+
+      <section class="agenda-list" id="novidades">
+        <section class="agenda-list__month agenda-list__month--blue" data-navbar-theme="blue">
+          <div class="agenda-list__month-header">
+            <h2>maio</h2>
+
+            <div class="agenda-filters" aria-label="Filtros da agenda">
+              <button type="button" class="agenda-filters__button" data-agenda-sort="title">
+                <span class="agenda-filters__label">Filtrar por</span>
+                <span class="agenda-filters__value">Título</span>
+              </button>
+
+              <button type="button" class="agenda-filters__button" data-agenda-sort="place">
+                <span class="agenda-filters__label">Filtrar por</span>
+                <span class="agenda-filters__value">Local</span>
+              </button>
+
+              <button type="button" class="agenda-filters__button is-active" data-agenda-sort="date">
+                <span class="agenda-filters__label">Filtrar por</span>
+                <span class="agenda-filters__value">Data</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="agenda-list__events" data-agenda-events>
+            <article class="agenda-event-card" data-title="ópera sobre (corpos) refugiados" data-place="Teatro Nacional de São João" data-month="maio" data-day="09" data-order="1">
+              <div class="agenda-event-card__main">
+                <div class="agenda-event-card__date">
+                  <span>09</span>
+                  <small>maio</small>
+                </div>
+
+                <h3 class="agenda-event-card__title">ópera sobre (corpos) refugiados</h3>
+              </div>
+
+              <div class="agenda-event-card__info">
+                <p>21H00</p>
+                <p>Teatro Nacional de São João</p>
+                <p>15,00€</p>
+              </div>
+
+              <div class="agenda-event-card__actions">
+                <a href="evento.html" class="agenda-event-card__button agenda-event-card__button--outline">Saber mais</a>
+                <a href="bilhetes.html" class="agenda-event-card__button agenda-event-card__button--filled">Comprar</a>
+              </div>
+            </article>
+
+            <article class="agenda-event-card" data-title="ópera e o porto" data-place="Teatro Nacional de São João" data-month="maio" data-day="12" data-order="2">
+              <div class="agenda-event-card__main">
+                <div class="agenda-event-card__date">
+                  <span>12</span>
+                  <small>maio</small>
+                </div>
+
+                <h3 class="agenda-event-card__title">ópera e o porto</h3>
+              </div>
+
+              <div class="agenda-event-card__info">
+                <p>21H00</p>
+                <p>Teatro Nacional de São João</p>
+                <p>15,00€</p>
+              </div>
+
+              <div class="agenda-event-card__actions">
+                <a href="evento.html" class="agenda-event-card__button agenda-event-card__button--outline">Saber mais</a>
+                <a href="bilhetes.html" class="agenda-event-card__button agenda-event-card__button--filled">Comprar</a>
+              </div>
+            </article>
+
+            <article class="agenda-event-card" data-title="ópera e o porto" data-place="Teatro Nacional de São João" data-month="maio" data-day="12" data-order="3">
+              <div class="agenda-event-card__main">
+                <div class="agenda-event-card__date">
+                  <span>12</span>
+                  <small>maio</small>
+                </div>
+
+                <h3 class="agenda-event-card__title">ópera e o porto</h3>
+              </div>
+
+              <div class="agenda-event-card__info">
+                <p>21H00</p>
+                <p>Teatro Nacional de São João</p>
+                <p>15,00€</p>
+              </div>
+
+              <div class="agenda-event-card__actions">
+                <a href="evento.html" class="agenda-event-card__button agenda-event-card__button--outline">Saber mais</a>
+                <a href="bilhetes.html" class="agenda-event-card__button agenda-event-card__button--filled">Comprar</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="agenda-list__month agenda-list__month--light" data-navbar-theme="light">
+          <div class="agenda-list__month-header">
+            <h2>junho</h2>
+          </div>
+
+          <div class="agenda-list__events" data-agenda-events>
+            <article class="agenda-event-card" data-title="ópera sobre (corpos) refugiados" data-place="Teatro Nacional de São João" data-month="junho" data-day="09" data-order="4">
+              <div class="agenda-event-card__main">
+                <div class="agenda-event-card__date">
+                  <span>09</span>
+                  <small>junho</small>
+                </div>
+
+                <h3 class="agenda-event-card__title">ópera sobre (corpos) refugiados</h3>
+              </div>
+
+              <div class="agenda-event-card__info">
+                <p>21H00</p>
+                <p>Teatro Nacional de São João</p>
+                <p>15,00€</p>
+              </div>
+
+              <div class="agenda-event-card__actions">
+                <a href="evento.html" class="agenda-event-card__button agenda-event-card__button--outline">Saber mais</a>
+                <a href="bilhetes.html" class="agenda-event-card__button agenda-event-card__button--filled">Comprar</a>
+              </div>
+            </article>
+
+            <article class="agenda-event-card" data-title="ópera e o porto" data-place="Teatro Nacional de São João" data-month="junho" data-day="12" data-order="5">
+              <div class="agenda-event-card__main">
+                <div class="agenda-event-card__date">
+                  <span>12</span>
+                  <small>junho</small>
+                </div>
+
+                <h3 class="agenda-event-card__title">ópera e o porto</h3>
+              </div>
+
+              <div class="agenda-event-card__info">
+                <p>21H00</p>
+                <p>Teatro Nacional de São João</p>
+                <p>15,00€</p>
+              </div>
+
+              <div class="agenda-event-card__actions">
+                <a href="evento.html" class="agenda-event-card__button agenda-event-card__button--outline">Saber mais</a>
+                <a href="bilhetes.html" class="agenda-event-card__button agenda-event-card__button--filled">Comprar</a>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer" data-navbar-theme="orange">
+      <div class="footer__brand">FIATO</div>
+
+      <div class="footer__links">
+        <nav aria-label="Rodapé principal">
+          <a href="index.html">Página inicial</a>
+          <a href="agenda.html">Agenda</a>
+          <a href="edicoes.html">Edições</a>
+          <a href="sobre-nos.html">Sobre nós</a>
+        </nav>
+
+        <nav aria-label="Rodapé secundário">
+          <a href="contactos.html">Contactos / Apoios</a>
+          <a href="#">Informações</a>
+          <a href="mailto:info@fiato.pt">E-mail</a>
+          <a href="#">Imprensa & Institucional</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

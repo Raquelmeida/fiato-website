@@ -3,6 +3,7 @@ const menuToggle = document.querySelector('.navbar__toggle');
 const countdownDays = document.querySelector('[data-countdown-days]');
 const countdownHours = document.querySelector('[data-countdown-hours]');
 const countdownMinutes = document.querySelector('[data-countdown-minutes]');
+const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
 
 const countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -48,6 +49,34 @@ function updateNavbarTheme() {
   navbar.classList.add(`navbar--${currentTheme}`);
 }
 
+function compareAgendaCards(sortKey) {
+  return (first, second) => {
+    if (sortKey === 'date') {
+      return Number(first.dataset.order) - Number(second.dataset.order);
+    }
+
+    const firstValue = first.dataset[sortKey] || '';
+    const secondValue = second.dataset[sortKey] || '';
+    const compared = firstValue.localeCompare(secondValue, 'pt', {
+      sensitivity: 'base',
+    });
+
+    if (compared !== 0) return compared;
+
+    return Number(first.dataset.order) - Number(second.dataset.order);
+  };
+}
+
+function sortAgenda(sortKey) {
+  document.querySelectorAll('[data-agenda-events]').forEach((list) => {
+    const cards = Array.from(list.querySelectorAll('.agenda-event-card'));
+    cards.sort(compareAgendaCards(sortKey));
+    cards.forEach((card) => list.appendChild(card));
+  });
+
+  updateNavbarTheme();
+}
+
 if (menuToggle && navbar) {
   menuToggle.addEventListener('click', () => {
     const isOpen = navbar.classList.toggle('is-open');
@@ -55,6 +84,17 @@ if (menuToggle && navbar) {
     menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
   });
 }
+
+agendaFilterButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    agendaFilterButtons.forEach((filterButton) => {
+      filterButton.classList.remove('is-active');
+    });
+
+    button.classList.add('is-active');
+    sortAgenda(button.dataset.agendaSort);
+  });
+});
 
 window.addEventListener('scroll', updateNavbarTheme);
 window.addEventListener('resize', updateNavbarTheme);
