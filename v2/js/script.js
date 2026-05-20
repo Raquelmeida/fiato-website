@@ -5,6 +5,7 @@ const countdownHours = document.querySelector('[data-countdown-hours]');
 const countdownMinutes = document.querySelector('[data-countdown-minutes]');
 const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
 const editionToggleButtons = document.querySelectorAll('[data-edition-toggle]');
+const faqTriggers = document.querySelectorAll('[data-faq-trigger]');
 
 const countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -111,6 +112,36 @@ editionToggleButtons.forEach((button) => {
 
     if (!isOpen) {
       button.classList.add('edition-section__button--open');
+    }
+  });
+});
+
+faqTriggers.forEach((trigger) => {
+  trigger.addEventListener('click', () => {
+    const item = trigger.closest('.faq-list__item');
+    const answer = item?.querySelector('.faq-list__answer-wrap');
+    const icon = item?.querySelector('.faq-list__icon');
+    const isOpen = item?.classList.contains('faq-list__item--open');
+
+    if (!item || !answer || !icon) return;
+
+    faqTriggers.forEach((otherTrigger) => {
+      const otherItem = otherTrigger.closest('.faq-list__item');
+      const otherAnswer = otherItem?.querySelector('.faq-list__answer-wrap');
+      const otherIcon = otherItem?.querySelector('.faq-list__icon');
+
+      otherItem?.classList.remove('faq-list__item--open');
+      otherTrigger.setAttribute('aria-expanded', 'false');
+
+      if (otherAnswer) otherAnswer.hidden = true;
+      if (otherIcon) otherIcon.textContent = '+';
+    });
+
+    if (!isOpen) {
+      item.classList.add('faq-list__item--open');
+      trigger.setAttribute('aria-expanded', 'true');
+      answer.hidden = false;
+      icon.textContent = '–';
     }
   });
 });
