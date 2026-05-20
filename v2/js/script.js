@@ -4,6 +4,7 @@ const countdownDays = document.querySelector('[data-countdown-days]');
 const countdownHours = document.querySelector('[data-countdown-hours]');
 const countdownMinutes = document.querySelector('[data-countdown-minutes]');
 const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
+const editionToggleButtons = document.querySelectorAll('[data-edition-toggle]');
 
 const countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -93,6 +94,24 @@ agendaFilterButtons.forEach((button) => {
 
     button.classList.add('is-active');
     sortAgenda(button.dataset.agendaSort);
+  });
+});
+
+editionToggleButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const year = button.dataset.editionToggle;
+
+    if (year === '2026') return;
+
+    const isOpen = button.classList.contains('edition-section__button--open');
+
+    editionToggleButtons.forEach((toggleButton) => {
+      toggleButton.classList.remove('edition-section__button--open');
+    });
+
+    if (!isOpen) {
+      button.classList.add('edition-section__button--open');
+    }
   });
 });
 
