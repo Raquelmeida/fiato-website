@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bilhetes | FIATO</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="navbar navbar--transparent">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">FIATO</a>
+
+        <nav class="navbar__menu" aria-label="Navegação principal">
+          <a href="index.html" class="navbar__link">FIATO</a>
+          <a href="agenda.html" class="navbar__link">AGENDA</a>
+          <a href="edicoes.html" class="navbar__link">EDIÇÕES</a>
+          <a href="sobre-nos.html" class="navbar__link">SOBRE NÓS</a>
+          <a href="apoios.html" class="navbar__link">APOIOS</a>
+          <a href="contactos.html" class="navbar__link">CONTACTOS</a>
+        </nav>
+
+        <div class="navbar__right">
+          <div class="navbar__language" aria-label="Idioma">
+            <button type="button" class="navbar__language-option">EN</button>
+            <button type="button" class="navbar__language-option navbar__language-option--active">PT</button>
+          </div>
+
+          <button type="button" class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="bilhetes-page">
+      <section class="ticket-reservation" data-navbar-theme="navy">
+        <a href="agenda.html" class="ticket-reservation__back">← Voltar à agenda</a>
+
+        <div class="ticket-reservation__intro">
+          <p class="ticket-reservation__eyebrow">Reserva de bilhete</p>
+
+          <h1>
+            Garante
+            <span>o teu lugar.</span>
+          </h1>
+
+          <p class="ticket-reservation__description">
+            Preenche os dados da reserva e escolhe a sessão pretendida. A equipa
+            FIATO entrará em contacto para confirmar a disponibilidade e os próximos
+            passos.
+          </p>
+        </div>
+
+        <div class="ticket-reservation__content">
+          <form class="ticket-form" data-ticket-form novalidate>
+            <div class="ticket-form__row">
+              <label>
+                Nome
+                <input type="text" name="nome" placeholder="Nome" required />
+              </label>
+
+              <label>
+                Apelido
+                <input type="text" name="apelido" placeholder="Apelido" required />
+              </label>
+            </div>
+
+            <div class="ticket-form__row">
+              <label>
+                E-mail
+                <input type="email" name="email" placeholder="email@exemplo.pt" required />
+              </label>
+
+              <label>
+                Telefone
+                <input type="tel" name="telefone" placeholder="+351 000 000 000" required />
+              </label>
+            </div>
+
+            <label>
+              Espetáculo
+              <select name="espetaculo" data-ticket-show>
+                <option value="Ópera à Moda do Porto">Ópera à Moda do Porto</option>
+                <option value="Ópera sobre (corpos) refugiados">Ópera sobre (corpos) refugiados</option>
+                <option value="Ópera e o Porto">Ópera e o Porto</option>
+              </select>
+            </label>
+
+            <div class="ticket-form__row">
+              <label>
+                Sessão
+                <select name="sessao" data-ticket-session>
+                  <option value="20-marco-19h" data-date="20 Março 2026" data-time="19:00" data-place="Avenida dos Aliados, Porto" data-price="15">20 Março 2026 — 19:00</option>
+                  <option value="21-marco-17h" data-date="21 Março 2026" data-time="17:00" data-place="Praça do Município, Porto" data-price="15">21 Março 2026 — 17:00</option>
+                  <option value="21-marco-21h30" data-date="21 Março 2026" data-time="21:30" data-place="Praça do Município, Porto" data-price="15">21 Março 2026 — 21:30</option>
+                  <option value="22-marco-16h" data-date="22 Março 2026" data-time="16:00" data-place="Jardins do Palácio de Cristal, Porto" data-price="15">22 Março 2026 — 16:00</option>
+                </select>
+              </label>
+
+              <label>
+                Nº de bilhetes
+                <input type="number" name="quantidade" min="1" max="10" value="1" data-ticket-quantity />
+              </label>
+            </div>
+
+            <label>
+              Observações
+              <textarea name="observacoes" placeholder="Indica aqui alguma informação adicional sobre a tua reserva."></textarea>
+            </label>
+
+            <p class="ticket-form__message" data-ticket-message aria-live="polite"></p>
+
+            <button type="submit">Reservar bilhete</button>
+          </form>
+
+          <aside class="ticket-summary">
+            <p>Resumo</p>
+
+            <h2 data-summary-show>Ópera à Moda do Porto</h2>
+
+            <ul>
+              <li>
+                <span>Data</span>
+                <strong data-summary-date>20 Março 2026</strong>
+              </li>
+
+              <li>
+                <span>Hora</span>
+                <strong data-summary-time>19:00</strong>
+              </li>
+
+              <li>
+                <span>Local</span>
+                <strong data-summary-place>Avenida dos Aliados, Porto</strong>
+              </li>
+
+              <li>
+                <span>Preço</span>
+                <strong data-summary-price>15,00€</strong>
+              </li>
+
+              <li>
+                <span>Bilhetes</span>
+                <strong data-summary-quantity>1</strong>
+              </li>
+
+              <li>
+                <span>Total</span>
+                <strong data-summary-total>15,00€</strong>
+              </li>
+            </ul>
+
+            <div class="ticket-summary__note">
+              A reserva só fica confirmada após validação da equipa FIATO.
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" data-navbar-theme="orange">
+      <div class="footer__brand">FIATO</div>
+
+      <div class="footer__links">
+        <nav aria-label="Rodapé principal">
+          <a href="index.html">Página inicial</a>
+          <a href="agenda.html">Agenda</a>
+          <a href="edicoes.html">Edições</a>
+          <a href="sobre-nos.html">Sobre nós</a>
+        </nav>
+
+        <nav aria-label="Rodapé secundário">
+          <a href="contactos.html">Contactos / Apoios</a>
+          <a href="#">Informações</a>
+          <a href="mailto:info@fiato.pt">E-mail</a>
+          <a href="#">Imprensa & Institucional</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

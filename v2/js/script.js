@@ -7,6 +7,11 @@ const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
 const editionToggleButtons = document.querySelectorAll('[data-edition-toggle]');
 const faqTriggers = document.querySelectorAll('[data-faq-trigger]');
 const eventoAccordionTriggers = document.querySelectorAll('[data-evento-accordion-trigger]');
+const ticketForm = document.querySelector('[data-ticket-form]');
+const ticketShow = document.querySelector('[data-ticket-show]');
+const ticketSession = document.querySelector('[data-ticket-session]');
+const ticketQuantity = document.querySelector('[data-ticket-quantity]');
+const ticketMessage = document.querySelector('[data-ticket-message]');
 
 const countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -78,6 +83,33 @@ function sortAgenda(sortKey) {
   });
 
   updateNavbarTheme();
+}
+
+function formatEuro(value) {
+  return `${value.toFixed(2).replace('.', ',')}€`;
+}
+
+function setText(selector, text) {
+  const element = document.querySelector(selector);
+  if (element) element.textContent = text;
+}
+
+function updateTicketSummary() {
+  if (!ticketShow || !ticketSession || !ticketQuantity) return;
+
+  const selectedSession = ticketSession.selectedOptions[0];
+  const price = Number(selectedSession.dataset.price || 0);
+  const quantity = Math.min(10, Math.max(1, Number(ticketQuantity.value || 1)));
+
+  ticketQuantity.value = String(quantity);
+
+  setText('[data-summary-show]', ticketShow.value);
+  setText('[data-summary-date]', selectedSession.dataset.date || '');
+  setText('[data-summary-time]', selectedSession.dataset.time || '');
+  setText('[data-summary-place]', selectedSession.dataset.place || '');
+  setText('[data-summary-price]', formatEuro(price));
+  setText('[data-summary-quantity]', String(quantity));
+  setText('[data-summary-total]', formatEuro(price * quantity));
 }
 
 if (menuToggle && navbar) {
@@ -171,6 +203,35 @@ eventoAccordionTriggers.forEach((trigger) => {
     }
   });
 });
+
+if (ticketForm) {
+  updateTicketSummary();
+
+  [ticketShow, ticketSession, ticketQuantity].forEach((field) => {
+    field?.addEventListener('input', updateTicketSummary);
+    field?.addEventListener('change', updateTicketSummary);
+  });
+
+  ticketForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const requiredFields = ticketForm.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach((field) => {
+      const fieldIsValid = field.checkValidity();
+      field.classList.toggle('is-invalid', !fieldIsValid);
+      if (!fieldIsValid) isValid = false;
+    });
+
+    if (!ticketMessage) return;
+
+    ticketMessage.classList.toggle('is-success', isValid);
+    ticketMessage.textContent = isValid
+      ? 'Pedido de reserva registado. A equipa FIATO entrará em contacto.'
+      : 'Preenche todos os campos obrigatórios antes de submeter.';
+  });
+}
 
 window.addEventListener('scroll', updateNavbarTheme);
 window.addEventListener('resize', updateNavbarTheme);

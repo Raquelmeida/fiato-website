@@ -252,6 +252,11 @@ img {
   background-color: var(--color-off-white);
 }
 
+.bilhetes-page {
+  min-height: 100vh;
+  background-color: var(--color-navy-40);
+}
+
 .edicoes-page__archive {
   background-color: var(--color-neutral-200);
   color: var(--color-navy-base);
@@ -2566,6 +2571,268 @@ img {
   cursor: pointer;
 }
 
+.ticket-reservation {
+  min-height: 100vh;
+  padding: 180px 48px 110px;
+  padding-top: 92.5px;
+  background:
+    radial-gradient(circle at top right, rgba(30, 56, 143, 0.7), transparent 38%),
+    var(--color-navy-40);
+  color: var(--color-white);
+}
+
+.ticket-reservation__back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 90px;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  transition:
+    opacity var(--transition-default),
+    color var(--transition-default);
+}
+
+.ticket-reservation__back:hover {
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+.ticket-reservation__intro {
+  max-width: 1400px;
+  margin-bottom: 100px;
+}
+
+.ticket-reservation__eyebrow {
+  margin: 0 0 42px;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ticket-reservation__intro h1 {
+  max-width: 1360px;
+  margin: 0;
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: clamp(88px, 9vw, 168px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+  white-space: nowrap;
+}
+
+.ticket-reservation__intro h1 span {
+  color: var(--color-accent);
+}
+
+.ticket-reservation__description {
+  max-width: 900px;
+  margin: 64px 0 0;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ticket-reservation__content {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 42px;
+  align-items: start;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 32px;
+  background-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.ticket-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.ticket-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ticket-form input,
+.ticket-form select,
+.ticket-form textarea {
+  width: 100%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 15px;
+  outline: none;
+}
+
+.ticket-form input,
+.ticket-form select {
+  height: 58px;
+  padding: 0 22px;
+}
+
+.ticket-form textarea {
+  min-height: 130px;
+  padding: 22px;
+  resize: vertical;
+}
+
+.ticket-form input::placeholder,
+.ticket-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ticket-form select option {
+  color: var(--color-navy-80);
+}
+
+.ticket-form input.is-invalid,
+.ticket-form select.is-invalid,
+.ticket-form textarea.is-invalid {
+  border-color: var(--color-accent);
+}
+
+.ticket-form__message {
+  min-height: 18px;
+  margin: -4px 0 0;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ticket-form__message.is-success {
+  color: var(--color-navy-light-80);
+}
+
+.ticket-form button {
+  height: 60px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform var(--transition-default),
+    background-color var(--transition-default),
+    color var(--transition-default);
+}
+
+.ticket-form button:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-white);
+  color: var(--color-accent);
+}
+
+.ticket-summary {
+  position: sticky;
+  top: 150px;
+  padding: 38px;
+  border-radius: 32px;
+  background-color: var(--color-off-white);
+  color: var(--color-navy-40);
+}
+
+.ticket-summary > p {
+  margin: 0 0 28px;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ticket-summary h2 {
+  margin: 0 0 36px;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 4vw, 64px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.ticket-summary ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-navy-light-60);
+}
+
+.ticket-summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--color-navy-light-60);
+}
+
+.ticket-summary span {
+  color: var(--color-navy-light-20);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ticket-summary strong {
+  max-width: 220px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  text-align: right;
+}
+
+.ticket-summary__note {
+  margin-top: 32px;
+  padding: 18px 20px;
+  border-radius: 4px;
+  background-color: var(--color-navy-base);
+  color: var(--color-navy-light-80);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 @keyframes evento-marquee-scroll {
   from {
     transform: translateX(0);
@@ -3010,6 +3277,19 @@ img {
   }
 }
 
+@media (max-width: 1280px) {
+  .ticket-reservation__intro h1 {
+    font-size: clamp(80px, 8.4vw, 138px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .ticket-reservation__intro h1 {
+    max-width: 760px;
+    white-space: normal;
+  }
+}
+
 @media (max-width: 1000px) {
   .agenda-event-card {
     height: auto;
@@ -3234,6 +3514,41 @@ img {
 
   .member-form {
     grid-template-columns: 1fr;
+  }
+
+  .ticket-reservation {
+    padding: 180px 24px 80px;
+  }
+
+  .ticket-reservation__back {
+    margin-bottom: 64px;
+  }
+
+  .ticket-reservation__intro {
+    margin-bottom: 72px;
+  }
+
+  .ticket-reservation__intro h1 {
+    max-width: 620px;
+    font-size: clamp(76px, 15vw, 124px);
+    white-space: normal;
+  }
+
+  .ticket-reservation__description {
+    max-width: 620px;
+    margin-top: 46px;
+  }
+
+  .ticket-reservation__content {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-summary {
+    position: static;
   }
 }
 
@@ -3523,6 +3838,51 @@ img {
   .agenda-event-card__actions {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .ticket-reservation {
+    padding: 160px 20px 72px;
+  }
+
+  .ticket-reservation__back {
+    margin-bottom: 54px;
+    font-size: 11px;
+  }
+
+  .ticket-reservation__eyebrow {
+    margin-bottom: 28px;
+  }
+
+  .ticket-reservation__intro h1 {
+    font-size: 76px;
+    line-height: 0.95;
+  }
+
+  .ticket-reservation__description {
+    margin-top: 36px;
+    font-size: 11px;
+    line-height: 1.55;
+    letter-spacing: 0.12em;
+  }
+
+  .ticket-form,
+  .ticket-summary {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .ticket-summary li {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ticket-summary strong {
+    max-width: none;
+    text-align: left;
+  }
+
+  .ticket-summary__note {
+    border-radius: 4px;
   }
 }
 
