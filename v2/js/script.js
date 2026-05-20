@@ -6,6 +6,7 @@ const countdownMinutes = document.querySelector('[data-countdown-minutes]');
 const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
 const editionToggleButtons = document.querySelectorAll('[data-edition-toggle]');
 const faqTriggers = document.querySelectorAll('[data-faq-trigger]');
+const eventoAccordionTriggers = document.querySelectorAll('[data-evento-accordion-trigger]');
 
 const countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -142,6 +143,31 @@ faqTriggers.forEach((trigger) => {
       trigger.setAttribute('aria-expanded', 'true');
       answer.hidden = false;
       icon.textContent = '–';
+    }
+  });
+});
+
+eventoAccordionTriggers.forEach((trigger) => {
+  trigger.addEventListener('click', () => {
+    const item = trigger.closest('.evento-accordion__item');
+    const icon = item?.querySelector('.evento-accordion__icon');
+    const isOpen = item?.classList.contains('evento-accordion__item--open');
+
+    if (!item || !icon) return;
+
+    eventoAccordionTriggers.forEach((otherTrigger) => {
+      const otherItem = otherTrigger.closest('.evento-accordion__item');
+      const otherIcon = otherItem?.querySelector('.evento-accordion__icon');
+
+      otherItem?.classList.remove('evento-accordion__item--open');
+      otherTrigger.setAttribute('aria-expanded', 'false');
+      if (otherIcon) otherIcon.textContent = '+';
+    });
+
+    if (!isOpen) {
+      item.classList.add('evento-accordion__item--open');
+      trigger.setAttribute('aria-expanded', 'true');
+      icon.textContent = '−';
     }
   });
 });

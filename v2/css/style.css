@@ -235,6 +235,12 @@ img {
   background: var(--color-off-white);
 }
 
+.evento-page {
+  min-height: 100vh;
+  background-color: var(--color-off-white);
+  color: var(--color-navy-40);
+}
+
 .edicoes-page__archive {
   background-color: var(--color-neutral-200);
   color: var(--color-navy-base);
@@ -463,6 +469,96 @@ img {
 .editorial-hero__action:hover {
   background: var(--color-accent);
   color: var(--color-white);
+}
+
+.evento-hero {
+  position: relative;
+  min-height: 680px;
+  padding: 190px 48px 80px;
+  background-image:
+    linear-gradient(rgba(18, 34, 86, 0.72), rgba(18, 34, 86, 0.78)),
+    url('../assets/img-contactos.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: var(--color-white);
+  overflow: hidden;
+}
+
+.evento-hero__tags {
+  position: absolute;
+  left: 48px;
+  top: 300px;
+  display: flex;
+  gap: 14px;
+  z-index: 2;
+}
+
+.evento-hero__tags span {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.evento-hero__content {
+  max-width: 760px;
+  margin-top: 160px;
+  position: relative;
+  z-index: 2;
+}
+
+.evento-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(64px, 8vw, 130px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+}
+
+.evento-hero h1 span {
+  display: block;
+}
+
+.evento-hero__counter {
+  position: absolute;
+  right: 90px;
+  top: 170px;
+  width: 118px;
+  height: 118px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-style: italic;
+  text-align: center;
+  line-height: 0.9;
+  z-index: 2;
+}
+
+.evento-hero__counter span {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.evento-hero__counter strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .home-hero {
@@ -1685,6 +1781,400 @@ img {
   max-width: 640px;
 }
 
+.evento-marquee {
+  overflow: hidden;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  padding: 14px 0;
+}
+
+.evento-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 32px;
+  animation: evento-marquee-scroll 22s linear infinite;
+}
+
+.evento-marquee__track span {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.evento-marquee__track span::before {
+  content: '✦';
+  margin-right: 32px;
+  font-size: 12px;
+}
+
+.evento-info {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  background-color: var(--color-off-white);
+  color: var(--color-navy-40);
+  border-bottom: 1px solid var(--color-navy-light-60);
+}
+
+.evento-info__quote {
+  padding: 80px 70px;
+  border-right: 1px solid var(--color-navy-light-60);
+}
+
+.evento-info__quote h2 {
+  margin: 0;
+  max-width: 720px;
+  font-family: var(--font-display);
+  font-size: clamp(42px, 5vw, 78px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+
+.evento-info__quote span {
+  color: var(--color-accent);
+  font-style: italic;
+}
+
+.evento-info__details {
+  padding: 80px 70px 0;
+}
+
+.evento-info__details dl {
+  margin: 0 0 42px;
+}
+
+.evento-info__details div {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-navy-light-60);
+}
+
+.evento-info__details dt {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-navy-light-20);
+}
+
+.evento-info__details dd {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.evento-info__details img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  filter: saturate(0.7);
+}
+
+.evento-info__text {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  padding: 90px 70px;
+  border-top: 1px solid var(--color-navy-light-60);
+}
+
+.evento-info__text p {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.evento-info__text strong {
+  color: var(--color-accent);
+}
+
+.evento-sessoes {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 90px;
+  padding: 100px 70px;
+  background-color: var(--color-navy-40);
+  color: var(--color-white);
+}
+
+.evento-sessoes__intro p {
+  margin: 0 0 40px;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.evento-sessoes__intro h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 5vw, 80px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.evento-sessoes__intro span {
+  display: block;
+  max-width: 380px;
+  margin-top: 40px;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.evento-sessoes__list {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.evento-sessoes__item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 36px;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.evento-sessoes__item h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.evento-sessoes__item p {
+  margin: 8px 0 0;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.evento-sessoes__item strong {
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 12px;
+}
+
+.evento-sessoes__item button,
+.evento-sessoes__button {
+  padding: 10px 20px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+}
+
+.evento-sessoes__item button.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.evento-accordion {
+  padding: 110px 70px;
+  background-color: var(--color-off-white);
+  color: var(--color-navy-40);
+}
+
+.evento-accordion h2 {
+  margin: 0 0 72px;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 5vw, 78px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+
+.evento-accordion__list {
+  border-top: 1px solid var(--color-navy-light-60);
+}
+
+.evento-accordion__item {
+  border-bottom: 1px solid var(--color-navy-light-60);
+}
+
+.evento-accordion__trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 48px 1fr 32px;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 0;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.evento-accordion__number {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+
+.evento-accordion__title {
+  font-family: var(--font-primary);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.evento-accordion__icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-primary);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.evento-accordion__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-default);
+}
+
+.evento-accordion__content p {
+  max-width: 780px;
+  margin: 0 0 34px 72px;
+  font-family: var(--font-primary);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--color-navy-40);
+}
+
+.evento-accordion__item--open .evento-accordion__content {
+  max-height: 220px;
+}
+
+.proximos-eventos {
+  padding: 100px 48px 120px;
+  background-color: var(--color-navy-base);
+  color: var(--color-white);
+}
+
+.proximos-eventos > p {
+  margin: 0 0 28px;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.proximos-eventos h2 {
+  margin: 0 0 70px;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5vw, 86px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+
+.proximos-eventos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.proximos-eventos__card {
+  padding: 42px 38px;
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.proximos-eventos__card:last-child {
+  border-right: none;
+}
+
+.proximos-eventos__card small {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.proximos-eventos__card strong {
+  display: block;
+  margin-bottom: 24px;
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 400;
+}
+
+.proximos-eventos__card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  margin-bottom: 28px;
+}
+
+.proximos-eventos__card h3 {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.proximos-eventos__card span {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.proximos-eventos__card a {
+  display: inline-block;
+  margin-top: 40px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@keyframes evento-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .press {
   background: var(--color-navy-base);
   color: var(--color-off-white);
@@ -2055,6 +2545,10 @@ img {
   .marquee__track {
     animation: none;
   }
+
+  .evento-marquee__track {
+    animation: none;
+  }
 }
 
 @media (hover: none) {
@@ -2240,6 +2734,45 @@ img {
   .faq__aside {
     position: static;
   }
+
+  .evento-info,
+  .evento-info__text {
+    grid-template-columns: 1fr;
+  }
+
+  .evento-info__quote,
+  .evento-info__details,
+  .evento-info__text {
+    padding: 56px 24px;
+  }
+
+  .evento-info__quote {
+    border-right: none;
+    border-bottom: 1px solid var(--color-navy-light-60);
+  }
+
+  .evento-sessoes {
+    grid-template-columns: 1fr;
+    padding: 72px 24px;
+  }
+
+  .evento-sessoes__item {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .proximos-eventos {
+    padding: 72px 24px 90px;
+  }
+
+  .proximos-eventos__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proximos-eventos__card {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  }
 }
 
 @media (max-width: 820px) {
@@ -2332,6 +2865,65 @@ img {
 
   .edition-section__subtitle {
     font-size: 30px;
+  }
+
+  .evento-hero {
+    min-height: 620px;
+    padding: 180px 24px 64px;
+  }
+
+  .evento-hero__tags {
+    position: static;
+    flex-wrap: wrap;
+    margin-bottom: 120px;
+  }
+
+  .evento-hero__content {
+    margin-top: 0;
+  }
+
+  .evento-hero__counter {
+    right: 24px;
+    top: 150px;
+    width: 88px;
+    height: 88px;
+  }
+
+  .evento-hero__counter span {
+    font-size: 20px;
+  }
+
+  .evento-hero__counter strong {
+    font-size: 14px;
+  }
+
+  .evento-accordion {
+    padding: 72px 24px;
+  }
+
+  .evento-accordion h2 {
+    margin-bottom: 48px;
+  }
+
+  .evento-accordion__trigger {
+    grid-template-columns: 36px 1fr 28px;
+    gap: 18px;
+    padding: 26px 0;
+  }
+
+  .evento-accordion__title {
+    font-size: 20px;
+  }
+
+  .evento-accordion__icon {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .evento-accordion__content p {
+    margin-left: 54px;
+    font-size: 15px;
   }
 }
 
