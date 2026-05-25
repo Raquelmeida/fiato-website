@@ -272,28 +272,6 @@ img {
   background-color: var(--color-navy-40);
 }
 
-.edicoes-page__archive {
-  background-color: var(--color-neutral-200);
-  color: var(--color-navy-base);
-}
-
-.edicoes-page__archive-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 72px 32px 56px;
-}
-
-.edicoes-page__archive-header h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(72px, 11vw, 145px);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 0.8;
-  letter-spacing: -0.06em;
-}
-
 .navbar_height {
   margin-top: 90.5px;
 }
@@ -989,11 +967,6 @@ img {
 .marquee--accent {
   background: var(--color-accent);
   color: var(--color-white);
-}
-
-.marquee--navy {
-  background: var(--color-navy-40);
-  color: var(--color-off-white);
 }
 
 .marquee__track {
@@ -2473,7 +2446,7 @@ img {
 }
 
 .support-contact__button--filled {
-  border-color: var(--color-accent) !important;
+  border-color: var(--color-accent);
   background-color: var(--color-accent);
 }
 
@@ -3015,7 +2988,6 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: -40px;
   min-height: 480px;
   flex: 1;
 }
@@ -3642,13 +3614,6 @@ img {
 
   .footer__links {
     grid-template-columns: 1fr;
-  }
-
-  .edicoes-page__archive-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 32px;
-    padding: 56px 24px 40px;
   }
 
   .edition-section {
