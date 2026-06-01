@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIATO — Industrial Content Studio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/dashboard.css">
+    
+</head>
+<body>
+
+    <header class="studio-navbar is-flex is-justify-content-between is-align-items-center">
+        <div class="is-flex is-align-items-center">
+            <i class="fas fa-cubes mr-3 fa-lg" style="color: var(--fiato-coral);"></i>
+            <h1 class="studio-title">FIATO FESTIVAL — <span>STUDIO FACTORY</span></h1>
+        </div>
+        <a href="/backoffice/logout" class="button is-small is-dark is-outlined" style="border-radius: 8px; color: #94a3b8; border-color: #334155;">
+            <span class="icon is-small"><i class="fas fa-power-off"></i></span>
+            <span>Encerrar Sessão</span>
+        </a>
+    </header>
+
+    <main class="container py-6 px-4">
+        
+        <div class="tabs-container mb-6">
+            <div class="tabs modern-pills">
+                <ul style="border-bottom: none;">
+                    <li class="tab-link is-active" data-tab="events">
+                        <a><i class="fas fa-calendar-alt mr-2"></i>Eventos</a>
+                    </li>
+                    <li class="tab-link" data-tab="news">
+                        <a><i class="fas fa-newspaper mr-2"></i>Notícias</a>
+                    </li>
+                    <li class="tab-link" data-tab="contacts">
+                        <a><i class="fas fa-envelope mr-2"></i>Mensagens</a>
+                    </li>
+                    <li class="tab-link" data-tab="tickets">
+                        <a><i class="fas fa-ticket-alt mr-2"></i>Reservas</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <section id="events" class="tab-content is-active">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper" style="width: 320px;">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-events" placeholder="Pesquisar por título ou local..." oninput="filterData('events')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('events')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Criar Novo Evento</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Espetáculo</th>
+                            <th>Mapeamento / Local</th>
+                            <th>Direção</th>
+                            <th>Duração</th>
+                            <th class="has-text-centered">Banner</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-events"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="news" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper" style="width: 320px;">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-news" placeholder="Filtrar artigos de imprensa..." oninput="filterData('news')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('news')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Publicar Notícia</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Headline / Artigo</th>
+                            <th>Data de Lançamento</th>
+                            <th>Hiperligação de Redirecionamento</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-news"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="contacts" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper" style="width: 320px;">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-contacts" placeholder="Pesquisar remetente ou e-mail..." oninput="filterData('contacts')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Remetente</th>
+                            <th>E-mail</th>
+                            <th>Tipo de Entrada</th>
+                            <th>Estado Atual</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-contacts"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tickets" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper" style="width: 320px;">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-tickets" placeholder="Procurar titular de bilhete..." oninput="filterData('tickets')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Titular da Reserva</th>
+                            <th>E-mail de Contacto</th>
+                            <th>Telemóvel</th>
+                            <th class="has-text-centered">Lugares</th>
+                            <th>Notas Adicionais</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-tickets"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+  <div class="modal" id="modal-events">
+    <div class="modal-background" onclick="closeModal('modal-events')"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title" id="modal-events-title">Ficha do Evento</p>
+            <button class="delete" aria-label="close" onclick="closeModal('modal-events')"></button>
+        </header>
+        
+        <section class="modal-card-body">
+            <form id="form-events">
+                <div class="field mb-4">
+                    <label class="form-label-custom">Título do Espetáculo</label>
+                    <div class="control"><input class="input" type="text" id="event-title" required></div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="form-label-custom">Direção Artística</label>
+                            <div class="control"><input class="input" type="text" id="event-direction" required></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="form-label-custom">Duração</label>
+                            <div class="control"><input class="input" type="text" id="event-duration" placeholder="Ex: 1h20 m" required></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Mapeamento Geográfico / Zona</label>
+                    <div class="control"><input class="input" type="text" id="event-locationSummary" placeholder="Ex: Teatro Rivoli / Porto" required></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Caminho da Imagem (Asset Path)</label>
+                    <div class="control"><input class="input" type="text" id="event-imageUrl" placeholder="/assets/images/..." required></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Frase de Destaque / Citação</label>
+                    <div class="control"><input class="input" type="text" id="event-quote"></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Sinopse / Descrição Narrativa</label>
+                    <div class="control"><textarea class="textarea" id="event-description" rows="3" required></textarea></div>
+                </div>
+
+                <hr style="background-color: var(--fiato-border); height: 1px; margin: 1.5rem 0;">
+                <div class="is-flex is-justify-content-between is-align-items-center mb-3">
+                    <label class="form-label-custom" style="margin-bottom: 0; font-size: 1rem; color: var(--fiato-dark);">
+                        <i class="fas fa-clock mr-2" style="color: var(--fiato-coral);"></i>Sessões e Lotação
+                    </label>
+                    <button type="button" class="button is-small is-dark" onclick="addSessionRow()" style="border-radius: 8px; font-weight: 600;">
+                        <span class="icon is-small"><i class="fas fa-plus"></i></span>
+                        <span>Adicionar Sessão</span>
+                    </button>
+                </div>
+                
+                <div id="dynamic-sessions-wrapper" class="mb-5">
+                    </div>
+
+                <div class="field">
+                    <label class="checkbox" style="font-weight: 500;">
+                        <input type="checkbox" id="event-isFeatured" class="mr-2"> Destacar como Banner Principal da Agenda
+                    </label>
+                </div>
+            </form> </section> <footer class="modal-card-foot is-justify-content-end">
+            <button class="button is-ghost" onclick="closeModal('modal-events')" style="color: #64748b;">Cancelar</button>
+            <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveEvent()">Gravar Dados</button>
+        </footer>
+    </div>
+</div>
+
+    <div class="modal" id="modal-news">
+        <div class="modal-background" onclick="closeModal('modal-news')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-news-title">Artigo de Imprensa</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-news')"></button>
+            </header>
+            <section class="modal-card-body">
+                <form id="form-news">
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Título / Headline da Notícia</label>
+                        <div class="control"><input class="input" type="text" id="news-title" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Data de Publicação</label>
+                        <div class="control"><input class="input" type="date" id="news-publishDate" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Caminho da Imagem de Miniatura</label>
+                        <div class="control"><input class="input" type="text" id="news-imageUrl" placeholder="/assets/images/press/..." required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">URL do Artigo Externo</label>
+                        <div class="control"><input class="input" type="url" id="news-articleUrl" placeholder="https://..." required></div>
+                    </div>
+                    <div class="field mb-4">
+  <label class="form-label-custom">Corpo da Notícia</label>
+  <div class="control">
+    <textarea id="news-body" class="textarea" placeholder="Escreve o conteúdo da notícia..." required></textarea>
+  </div>
+</div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-news')" style="color: #64748b;">Cancelar</button>
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveNews()">Publicar Artigo</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-contacts">
+        <div class="modal-background" onclick="closeModal('modal-contacts')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Ficha de Mensagem Externa</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-contacts')"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <div class="is-flex is-justify-content-between is-align-items-center mb-4">
+                        <div>
+                            <h4 class="title is-5 mb-1" id="view-contact-name" style="color: var(--fiato-dark);"></h4>
+                            <p class="subtitle is-6 has-text-grey-dark" id="view-contact-email"></p>
+                        </div>
+                        <span class="tag is-medium" id="view-contact-type" style="border-radius: 8px; font-weight: 600; background-color: #f1f5f9; color: var(--fiato-dark);"></span>
+                    </div>
+                    <hr style="background-color: var(--fiato-bg); height: 1px;">
+                    
+                    <div id="wrapper-view-message" class="is-hidden mb-4">
+                        <label class="form-label-custom d-block">Corpo do Contacto</label>
+                        <div class="notification" id="view-contact-message" style="background-color: #f8fafc; border-radius: 12px; border: 1px solid var(--fiato-border); color: #334155;"></div>
+                    </div>
+                    
+                    <div id="wrapper-view-document" class="is-hidden mb-4">
+                        <label class="form-label-custom d-block">Portefólio / Documentação Relacionada</label>
+                        <a id="view-contact-docUrl" class="button is-light is-fullwidth" target="_blank" style="border-radius: 10px; font-weight: 600; border: 1px dashed #cbd5e1;">
+                            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Inspecionar Ficheiro Anexo</span>
+                        </a>
+                    </div>
+                    <hr style="background-color: var(--fiato-bg); height: 1px;">
+                    
+                    <div class="field">
+                        <label class="form-label-custom">Alterar Estado de Triagem Interna</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="view-contact-status">
+                                    <option value="unread">Não Lido / Pendente</option>
+                                    <option value="processed">Processado / Arquivado</option>
+                                    <option value="archived">Rejeitado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600; width: 100%;" onclick="updateContactStatus()">Sinalizar e Atualizar Registo</button>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/backoffice/contentManager.js"></script>
+</body>
+</html>

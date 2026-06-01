@@ -1,0 +1,231 @@
+/* ==========================================================================
+   VARIABLES & BASE
+   ========================================================================== */
+:root {
+    --fiato-bg: #f8fafc;
+    --fiato-dark: #0d233a;
+    --fiato-coral: #f05a28;
+    --fiato-card-bg: #ffffff;
+    --fiato-text-main: #1e293b;
+    --fiato-border: #e2e8f0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--fiato-bg);
+    color: var(--fiato-text-main);
+    min-height: 100vh;
+}
+
+/* Utilities / Cleanups para substituir estilos inline */
+.coral-text { color: var(--fiato-coral) !important; }
+.slate-text { color: #64748b !important; }
+.border-divider { background-color: var(--fiato-border); height: 1px; }
+.w-search { width: 320px; }
+
+/* ==========================================================================
+   NAVIGATION & HEADER
+   ========================================================================== */
+.studio-navbar {
+    background-color: var(--fiato-dark);
+    padding: 1.25rem 2rem;
+    box-shadow: 0 4px 20px rgba(13, 35, 58, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.studio-title {
+    color: #ffffff !important;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-size: 1.15rem;
+}
+
+.studio-title span {
+    color: var(--fiato-coral);
+}
+
+.btn-logout {
+    border-radius: 8px; 
+    color: #94a3b8; 
+    border-color: #334155;
+}
+
+/* ==========================================================================
+   TABS (MODERN PILLS)
+   ========================================================================== */
+.tabs-container {
+    background: #ffffff;
+    padding: 0.75rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+    border: 1px solid var(--var-border, #edf2f7);
+}
+
+.modern-pills, .modern-pills ul {
+    border-bottom: none !important;
+    display: flex;
+    gap: 8px;
+}
+
+.modern-pills li {
+    margin-bottom: 0;
+}
+
+.modern-pills li a {
+    border: none !important;
+    border-radius: 12px !important;
+    color: #64748b !important;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.25s ease;
+}
+
+.modern-pills li.is-active a {
+    background-color: var(--fiato-dark) !important;
+    color: #ffffff !important;
+}
+
+.modern-pills li:not(.is-active) a:hover {
+    background-color: #f1f5f9;
+    color: var(--fiato-dark) !important;
+}
+
+/* ==========================================================================
+   CONTROL DECK & SEARCH
+   ========================================================================== */
+.control-deck {
+    background: transparent;
+    margin-bottom: 1.5rem;
+}
+
+.search-wrapper .input {
+    border-radius: 12px;
+    border-color: var(--fiato-border);
+    box-shadow: none;
+    padding-left: 2.75rem;
+    height: 2.75rem;
+    transition: all 0.2s ease;
+}
+
+.search-wrapper .input:focus {
+    border-color: var(--fiato-dark);
+    box-shadow: 0 0 0 3px rgba(13, 35, 58, 0.1);
+}
+
+.search-wrapper .icon {
+    height: 2.75rem;
+    color: #94a3b8;
+}
+
+/* ==========================================================================
+   BUTTONS & CARDS
+   ========================================================================== */
+.btn-factory {
+    background-color: var(--fiato-coral) !important;
+    color: white !important;
+    font-weight: 600;
+    border-radius: 12px;
+    height: 2.75rem;
+    padding: 0 1.5rem;
+    border: none;
+    box-shadow: 0 4px 12px rgba(240, 90, 40, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-factory:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(240, 90, 40, 0.3);
+}
+
+.factory-card {
+    background: var(--fiato-card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--fiato-border);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+.table {
+    background: transparent;
+}
+
+.table th {
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid var(--fiato-bg);
+}
+
+.table td {
+    padding: 1.25rem 1.5rem;
+    vertical-align: middle !important;
+    border-bottom: 1px solid var(--fiato-bg);
+    color: var(--fiato-text-main);
+}
+
+.table tr:hover td {
+    background-color: #fafbfc;
+}
+
+/* ==========================================================================
+   MODALS & DYNAMIC FORMS
+   ========================================================================== */
+.tab-content { display: none; }
+.tab-content.is-active { display: block; }
+
+.modal-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.modal-card-head {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--fiato-border);
+    padding: 1.5rem;
+}
+
+.modal-card-title {
+    font-weight: 700;
+    color: var(--fiato-dark);
+    font-size: 1.25rem;
+}
+
+.modal-card-foot {
+    background-color: #f8fafc;
+    border-top: 1px solid var(--fiato-border);
+    padding: 1.25rem 1.5rem;
+}
+
+.form-label-custom {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.modal input, .modal textarea, .modal select {
+    border-radius: 10px;
+    border-color: var(--fiato-border);
+}
+
+.modal input:focus, .modal textarea:focus {
+    border-color: var(--fiato-dark);
+    box-shadow: 0 0 0 3px rgba(13, 35, 58, 0.08);
+}
+
+/* Linhas das sessões dinâmicas (limpo do JS) */
+.session-item-row {
+    border: 1px solid var(--fiato-border);
+    background-color: #fafbfc;
+    border-radius: 12px;
+    position: relative;
+}
