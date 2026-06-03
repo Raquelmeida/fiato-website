@@ -3,16 +3,28 @@ import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser"; 
+import multer from "multer";
+import fs from "fs";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Configurações Globais e Credenciais http://localhost:3000/backoffice/login
-const ADMIN_PASSWORD = "FiatoFestival9090"; 
-const MONGODB_URI = "mongodb+srv://FiatoUser:C4kxc4HoIqecIs1K@cluster0.mub1lie.mongodb.net/fiatoDB?retryWrites=true&w=majority&appName=Cluster0";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; 
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI || !ADMIN_PASSWORD) {
+  console.warn("⚠️  WARNING: Environment variables MONGODB_URI or ADMIN_PASSWORD are missing. Check your .env file.");
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Ensure the upload directory exists once during startup
+const UPLOAD_DIR = path.join(__dirname, 'public', 'images');
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
 
 // ==========================================
 // MIDDLEWARES GLOBAIS
@@ -20,10 +32,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());
-
-// Servir ficheiros do painel sob a rota /backoffice
-app.use('/backoffice', express.static(path.join(__dirname, 'admin-views')));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 // Servir o site público v2 (permite omitir o .html nos URLs)
 app.use(express.static(path.join(__dirname, "v2"), { extensions: ["html"] }));
 
@@ -48,6 +57,26 @@ const checkAdminAuth = (req, res, next) => {
 };
 
 // ==========================================
+// MULTER CONFIGURATION (IMAGE UPLOADS)
+// ==========================================
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage });
+
+// Protected static serving for admin views
+// Ensures that admin assets/HTML are only accessible to authenticated users
+app.use('/backoffice', (req, res, next) => {
+  // Allow the login page to load its own assets if they are in this folder
+  if (req.path === '/login' || req.path === '/login.html') return next();
+  return checkAdminAuth(req, res, next);
+}, express.static(path.join(__dirname, 'admin-views')));
+
+// ==========================================
 // DATABASE CONNECTION
 // ==========================================
 mongoose
@@ -60,34 +89,34 @@ mongoose
 // ==========================================
 const contactRequestSchema = new mongoose.Schema(
   {
-    type: { type: String, required: [true, "Type required"], enum: ["general", "membership"] },
-    firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true, lowercase: true, match: emailRegex },
-    message: { type: String, trim: true, required: [function () { return this.type === "general"; }, "Required for general"] },
-    documentUrl: { type: String, trim: true, required: [function () { return this.type === "membership"; }, "Required for membership"] },
+    type: { type: String, required: [true, "Selecione o tipo de contacto"], enum: { values: ["general", "membership"], message: "O tipo selecionado não é válido" } },
+    firstName: { type: String, required: [true, "O nome é obrigatório"], trim: true },
+    lastName: { type: String, required: [true, "O apelido é obrigatório"], trim: true },
+    email: { type: String, required: [true, "O e-mail é obrigatório para podermos responder"], trim: true, lowercase: true, match: [emailRegex, "O formato do e-mail não é válido"] },
+    message: { type: String, trim: true, required: [function () { return this.type === "general"; }, "Por favor, escreva a sua mensagem"] },
+    documentUrl: { type: String, trim: true, required: [function () { return this.type === "membership"; }, "É necessário o link para o seu portefólio ou currículo"] },
     status: { type: String, enum: ["unread", "processed", "archived"], default: "unread" }
   },
   { timestamps: true }
 );
 
 const sessionSubSchema = new mongoose.Schema({
-  date: { type: Date, required: true },
-  time: { type: String, required: true, trim: true }, // 👈 HORA ADICIONADA (Formato sugerido: "HH:MM")
-  specificLocation: { type: String, required: true, trim: true },
-  availableTickets: { type: Number, required: true, min: 0 },
+  date: { type: Date, required: [true, "A data da sessão é obrigatória"] },
+  time: { type: String, required: [true, "A hora da sessão é obrigatória"], trim: true }, 
+  specificLocation: { type: String, required: [true, "Indique a sala ou palco"], trim: true },
+  availableTickets: { type: Number, required: [true, "Defina a lotação"], min: [0, "A lotação não pode ser negativa"] },
   status: { type: String, enum: ["available", "unavailable", "sold_out"], default: "available" }
 });
 
 const eventSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, unique: true, trim: true },
-    imageUrl: { type: String, required: true, match: urlRegex },
-    locationSummary: { type: String, required: true, trim: true },
+    title: { type: String, required: [true, "O título do espetáculo é obrigatório"], unique: true, trim: true },
+    imageUrl: { type: String, required: [true, "O cartaz do evento (imagem) é obrigatório"], match: [urlRegex, "O formato do link da imagem é inválido"] },
+    locationSummary: { type: String, required: [true, "A localização geral é obrigatória"], trim: true },
     quote: { type: String, trim: true },
-    direction: { type: String, required: true, trim: true },
-    duration: { type: String, required: true, trim: true },
-    description: { type: String, required: true, minlength: 30 },
+    direction: { type: String, required: [true, "A direção artística é obrigatória"], trim: true },
+    duration: { type: String, required: [true, "A duração é obrigatória"], trim: true },
+    description: { type: String, required: [true, "A sinopse é obrigatória"], minlength: [30, "A sinopse é demasiado curta (mínimo 30 caracteres)"] },
     sessions: [sessionSubSchema],
     faqs: [{ question: { type: String, required: true }, answer: { type: String, required: true } }],
     isFeatured: { type: Boolean, default: false }
@@ -97,24 +126,24 @@ const eventSchema = new mongoose.Schema(
 
 const newsSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    publishDate: { type: Date, required: true },
-    imageUrl: { type: String, required: true, match: urlRegex },
-    articleUrl: { type: String, required: true, match: urlRegex },
-    body: { type: String, required: true, trim: true } // 👈 CORPO DE TEXTO ADICIONADO
+    title: { type: String, required: [true, "O título da notícia é obrigatório"], trim: true },
+    publishDate: { type: Date, required: [true, "A data de publicação é obrigatória"] },
+    imageUrl: { type: String, required: [true, "A imagem de miniatura é obrigatória"], match: [urlRegex, "O formato da imagem é inválido"] },
+    articleUrl: { type: String, required: [true, "O link para o artigo externo é obrigatório"], match: [urlRegex, "O URL do artigo não é válido"] },
+    body: { type: String, required: [true, "O corpo da notícia não pode estar vazio"], trim: true } 
   },
   { timestamps: true }
 );
 
 const ticketSchema = new mongoose.Schema(
   {
-    firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true, lowercase: true, match: emailRegex },
-    phone: { type: String, required: true, match: phoneRegex },
+    firstName: { type: String, required: [true, "Nome do titular obrigatório"], trim: true },
+    lastName: { type: String, required: [true, "Apelido do titular obrigatório"], trim: true },
+    email: { type: String, required: [true, "E-mail para envio de bilhetes obrigatório"], trim: true, lowercase: true, match: [emailRegex, "E-mail inválido"] },
+    phone: { type: String, required: [true, "Contacto telefónico obrigatório"], match: [phoneRegex, "O telefone deve ter entre 9 e 15 dígitos"] },
     eventId: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
     sessionId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    quantity: { type: Number, required: true, min: 1, max: 10 },
+    quantity: { type: Number, required: [true, "Indique a quantidade"], min: [1, "Mínimo de 1 bilhete"], max: [10, "Máximo de 10 bilhetes por reserva"] },
     observations: { type: String, trim: true, maxlength: 500 }
   },
   { timestamps: true }
@@ -295,19 +324,42 @@ app.get("/api/tickets", checkAdminAuth, async (req, res) => {
 });
 
 // --- OPERAÇÕES MASTER EM EVENTOS ---
-app.post("/api/events", checkAdminAuth, async (req, res) => {
+app.post("/api/events", checkAdminAuth, upload.single('image'), async (req, res) => {
   try {
-    const payload = await Event.create(req.body);
+    const eventData = { ...req.body };
+    if (req.file) eventData.imageUrl = `/images/${req.file.filename}`;
+    
+    // Parse sessions if they come as a stringified JSON (from FormData)
+    if (eventData.sessions && typeof eventData.sessions === 'string') {
+      eventData.sessions = JSON.parse(eventData.sessions);
+    }
+
+    const payload = await Event.create(eventData);
     res.status(201).json({ success: true, data: payload });
-  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error("🔴 Erro ao criar evento:", err.message);
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
 });
 
-app.put("/api/events/:id", checkAdminAuth, async (req, res) => {
+app.put("/api/events/:id", checkAdminAuth, upload.single('image'), async (req, res) => {
   try {
-    const modifiedDoc = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const updateData = { ...req.body };
+    if (req.file) updateData.imageUrl = `/images/${req.file.filename}`;
+    
+    if (updateData.sessions && typeof updateData.sessions === 'string') {
+      updateData.sessions = JSON.parse(updateData.sessions);
+    }
+
+    const modifiedDoc = await Event.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     if (!modifiedDoc) return res.status(404).json({ success: false, error: "Missing document." });
     res.json({ success: true, data: modifiedDoc });
-  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error("🔴 Erro ao atualizar evento:", err.message);
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
 });
 
 app.delete("/api/events/:id", checkAdminAuth, async (req, res) => {
@@ -319,16 +371,22 @@ app.delete("/api/events/:id", checkAdminAuth, async (req, res) => {
 });
 
 // --- OPERAÇÕES MASTER EM NOTÍCIAS ---
-app.post("/api/news", checkAdminAuth, async (req, res) => {
+app.post("/api/news", checkAdminAuth, upload.single('image'), async (req, res) => {
   try {
-    const snippet = await News.create(req.body);
+    const newsData = { ...req.body };
+    if (req.file) newsData.imageUrl = `/images/${req.file.filename}`;
+
+    const snippet = await News.create(newsData);
     res.status(201).json({ success: true, data: snippet });
   } catch (err) { res.status(400).json({ success: false, error: err.message }); }
 });
 
-app.put("/api/news/:id", checkAdminAuth, async (req, res) => {
+app.put("/api/news/:id", checkAdminAuth, upload.single('image'), async (req, res) => {
   try {
-    const revisedDoc = await News.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const updateData = { ...req.body };
+    if (req.file) updateData.imageUrl = `/images/${req.file.filename}`;
+
+    const revisedDoc = await News.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     if (!revisedDoc) return res.status(404).json({ success: false, error: "Not found." });
     res.json({ success: true, data: revisedDoc });
   } catch (err) { res.status(400).json({ success: false, error: err.message }); }

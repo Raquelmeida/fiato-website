@@ -160,9 +160,18 @@ function renderTable(schema, dataset) {
 // ==========================================
 // GESTÃO DE JANELAS MODAIS
 // ==========================================
+function clearFormErrors(schema) {
+    const banner = document.getElementById(`${schema === 'events' ? 'event' : 'news'}-error-banner`);
+    if (banner) {
+        banner.innerText = "";
+        banner.classList.add("is-hidden");
+    }
+}
+
 function openCreateModal(schema) {
     currentEditId = null;
     document.getElementById(`form-${schema}`).reset();
+    clearFormErrors(schema);
     
     if (schema === "events") {
         document.getElementById("dynamic-sessions-wrapper").innerHTML = "";
@@ -236,12 +245,13 @@ function openEditEvent(id) {
     currentEditId = id;
     const item = appState.events.find(e => e._id === id);
     if (!item) return;
+    clearFormErrors("events");
 
     document.getElementById("event-title").value = item.title || "";
     document.getElementById("event-direction").value = item.direction || "";
     document.getElementById("event-duration").value = item.duration || "";
     document.getElementById("event-locationSummary").value = item.locationSummary || "";
-    document.getElementById("event-imageUrl").value = item.imageUrl || "";
+    document.getElementById("event-imageFile").value = ""; // Reset file input
     document.getElementById("event-quote").value = item.quote || "";
     document.getElementById("event-description").value = item.description || "";
     document.getElementById("event-isFeatured").checked = !!item.isFeatured;
@@ -261,6 +271,10 @@ function openEditEvent(id) {
 
 async function saveEvent() {
     // Recolha e mapeamento de todas as caixas de sessões geradas no HTML
+    clearFormErrors("events");
+    const banner = document.getElementById("event-error-banner");
+    
+    const imageInput = document.getElementById("event-imageFile");
     const sessionElements = document.querySelectorAll(".session-item-row");
     const sessionsArray = [];
 
@@ -270,9 +284,13 @@ async function saveEvent() {
         const locationStr = sBox.querySelector(".session-location").value;
         const ticketsStr = sBox.querySelector(".session-tickets").value;
         const statusStr = sBox.querySelector(".session-status").value;
+        
+        sBox.style.borderColor = "var(--fiato-border)"; // Reset visual
 
         if (!dateStr || !timeStr || !locationStr || !ticketsStr) {
-            alert("Por favor preencha todos os campos obrigatórios em todas as sessões criadas.");
+            sBox.style.borderColor = "#ef4444";
+            banner.innerText = "⚠️ Por favor, preencha todos os campos obrigatórios em todas as sessões.";
+            banner.classList.remove("is-hidden");
             return;
         }
 
@@ -285,17 +303,20 @@ async function saveEvent() {
         });
     }
 
-    const payload = {
-        title: document.getElementById("event-title").value,
-        direction: document.getElementById("event-direction").value,
-        duration: document.getElementById("event-duration").value,
-        locationSummary: document.getElementById("event-locationSummary").value,
-        imageUrl: document.getElementById("event-imageUrl").value,
-        quote: document.getElementById("event-quote").value,
-        description: document.getElementById("event-description").value,
-        isFeatured: document.getElementById("event-isFeatured").checked,
-        sessions: sessionsArray // 👈 AQUI SEGUE A TUA LISTA DE SESSÕES MULTI-DIA / MULTI-HORA
-    };
+    const formData = new FormData();
+    formData.append("title", document.getElementById("event-title").value);
+    formData.append("direction", document.getElementById("event-direction").value);
+    formData.append("duration", document.getElementById("event-duration").value);
+    formData.append("locationSummary", document.getElementById("event-locationSummary").value);
+    formData.append("quote", document.getElementById("event-quote").value);
+    formData.append("description", document.getElementById("event-description").value);
+    formData.append("isFeatured", document.getElementById("event-isFeatured").checked);
+    formData.append("sessions", JSON.stringify(sessionsArray));
+
+    // Only append image if a new one is selected
+    if (imageInput.files[0]) {
+        formData.append("image", imageInput.files[0]);
+    }
 
     const url = currentEditId ? `/api/events/${currentEditId}` : "/api/events";
     const method = currentEditId ? "PUT" : "POST";
@@ -303,46 +324,16 @@ async function saveEvent() {
     try {
         const response = await fetch(url, {
             method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: formData
         });
         const result = await response.json();
         if (result.success) {
             closeModal("modal-events");
             loadTabContent("events");
         } else {
-            alert("Erro ao guardar evento: " + result.error);
-        }
-    } catch (err) { console.error(err); }
-}
-
-async function saveEvent() {
-    const payload = {
-        title: document.getElementById("event-title").value,
-        direction: document.getElementById("event-direction").value,
-        duration: document.getElementById("event-duration").value,
-        locationSummary: document.getElementById("event-locationSummary").value,
-        imageUrl: document.getElementById("event-imageUrl").value,
-        quote: document.getElementById("event-quote").value,
-        description: document.getElementById("event-description").value,
-        isFeatured: document.getElementById("event-isFeatured").checked
-    };
-
-    const url = currentEditId ? `/api/events/${currentEditId}` : "/api/events";
-    const method = currentEditId ? "PUT" : "POST";
-
-    try {
-        const response = await fetch(url, {
-            method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        if (result.success) {
-            closeModal("modal-events");
-            loadTabContent("events");
-        } else {
-            alert("Erro ao guardar evento: " + result.error);
+            const banner = document.getElementById("event-error-banner");
+            banner.innerText = "⚠️ " + (result.error || "Erro ao validar dados.");
+            banner.classList.remove("is-hidden");
         }
     } catch (err) { console.error(err); }
 }
@@ -354,25 +345,38 @@ function openEditNews(id) {
     currentEditId = id;
     const item = appState.news.find(n => n._id === id);
     if (!item) return;
+    clearFormErrors("news");
 
     document.getElementById("news-title").value = item.title || "";
     document.getElementById("news-publishDate").value = item.publishDate ? item.publishDate.substring(0, 10) : "";
-    document.getElementById("news-imageUrl").value = item.imageUrl || "";
+    document.getElementById("news-imageFile").value = ""; // Reset file input
     document.getElementById("news-articleUrl").value = item.articleUrl || "";
     document.getElementById("news-body").value = item.body || ""; // 👈 CARREGA O CORPO NO FORMULÁRIO
+
+    // Mostrar pré-visualização da imagem atual
+    if (item.imageUrl) {
+        const previewImg = document.getElementById("news-preview-img");
+        previewImg.src = item.imageUrl;
+        document.getElementById("news-preview-wrapper").classList.remove("is-hidden");
+    }
 
     document.getElementById("modal-news-title").innerText = "Editar Artigo de Imprensa";
     document.getElementById("modal-news").classList.add("is-active");
 }
 
 async function saveNews() {
-    const payload = {
-        title: document.getElementById("news-title").value,
-        publishDate: document.getElementById("news-publishDate").value,
-        imageUrl: document.getElementById("news-imageUrl").value,
-        articleUrl: document.getElementById("news-articleUrl").value,
-        body: document.getElementById("news-body").value // 👈 ENVIA O CORPO PARA O BACKEND
-    };
+    const imageInput = document.getElementById("news-imageFile");
+    const formData = new FormData();
+    
+    formData.append("title", document.getElementById("news-title").value);
+    formData.append("publishDate", document.getElementById("news-publishDate").value);
+    formData.append("articleUrl", document.getElementById("news-articleUrl").value);
+    formData.append("body", document.getElementById("news-body").value);
+
+    // Apenas anexa a imagem se um novo ficheiro for selecionado
+    if (imageInput.files[0]) {
+        formData.append("image", imageInput.files[0]);
+    }
 
     const url = currentEditId ? `/api/news/${currentEditId}` : "/api/news";
     const method = currentEditId ? "PUT" : "POST";
@@ -380,15 +384,16 @@ async function saveNews() {
     try {
         const response = await fetch(url, {
             method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: formData
         });
         const result = await response.json();
         if (result.success) {
             closeModal("modal-news");
             loadTabContent("news");
         } else {
-            alert("Erro ao processar notícia: " + result.error);
+            const banner = document.getElementById("news-error-banner");
+            banner.innerText = "⚠️ " + (result.error || "Erro ao publicar notícia.");
+            banner.classList.remove("is-hidden");
         }
     } catch (err) { console.error(err); }
 }

@@ -174,6 +174,7 @@
         </header>
         
         <section class="modal-card-body">
+            <p id="event-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
             <form id="form-events">
                 <div class="field mb-4">
                     <label class="form-label-custom">Título do Espetáculo</label>
@@ -198,8 +199,11 @@
                     <div class="control"><input class="input" type="text" id="event-locationSummary" placeholder="Ex: Teatro Rivoli / Porto" required></div>
                 </div>
                 <div class="field mb-4">
-                    <label class="form-label-custom">Caminho da Imagem (Asset Path)</label>
-                    <div class="control"><input class="input" type="text" id="event-imageUrl" placeholder="/assets/images/..." required></div>
+                    <label class="form-label-custom">Cartaz do Espetáculo (Upload)</label>
+                    <div class="control"><input class="input" type="file" id="event-imageFile" accept="image/*"></div>
+                    <div id="event-preview-wrapper" class="mt-3 is-hidden">
+                        <img id="event-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                    </div>
                 </div>
                 <div class="field mb-4">
                     <label class="form-label-custom">Frase de Destaque / Citação</label>
@@ -244,6 +248,7 @@
                 <button class="delete" aria-label="close" onclick="closeModal('modal-news')"></button>
             </header>
             <section class="modal-card-body">
+                <p id="news-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
                 <form id="form-news">
                     <div class="field mb-4">
                         <label class="form-label-custom">Título / Headline da Notícia</label>
@@ -254,8 +259,11 @@
                         <div class="control"><input class="input" type="date" id="news-publishDate" required></div>
                     </div>
                     <div class="field mb-4">
-                        <label class="form-label-custom">Caminho da Imagem de Miniatura</label>
-                        <div class="control"><input class="input" type="text" id="news-imageUrl" placeholder="/assets/images/press/..." required></div>
+                        <label class="form-label-custom">Imagem de Miniatura (Upload)</label>
+                        <div class="control"><input class="input" type="file" id="news-imageFile" accept="image/*"></div>
+                        <div id="news-preview-wrapper" class="mt-3 is-hidden">
+                            <img id="news-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                        </div>
                     </div>
                     <div class="field mb-4">
                         <label class="form-label-custom">URL do Artigo Externo</label>
