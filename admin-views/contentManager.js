@@ -289,8 +289,13 @@ async function saveEvent() {
 
         if (!dateStr || !timeStr || !locationStr || !ticketsStr) {
             sBox.style.borderColor = "#ef4444";
-            banner.innerText = "⚠️ Por favor, preencha todos os campos obrigatórios em todas as sessões.";
-            banner.classList.remove("is-hidden");
+            
+            // Construção de mensagem específica para o utilizador
+            let msg = "Existem campos incompletos na sessão.";
+            if (!timeStr) msg = "A hora da sessão é obrigatória e não pode estar vazia.";
+            else if (!dateStr) msg = "A data da sessão é obrigatória.";
+            
+            displayFormError("events", msg);
             return;
         }
 
@@ -331,11 +336,12 @@ async function saveEvent() {
             closeModal("modal-events");
             loadTabContent("events");
         } else {
-            const banner = document.getElementById("event-error-banner");
-            banner.innerText = "⚠️ " + (result.error || "Erro ao validar dados.");
-            banner.classList.remove("is-hidden");
+            displayFormError("events", result.error);
         }
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+        console.error(err);
+        displayFormError("events", "Erro de ligação ao servidor.");
+    }
 }
 
 // ==========================================
@@ -391,11 +397,27 @@ async function saveNews() {
             closeModal("modal-news");
             loadTabContent("news");
         } else {
-            const banner = document.getElementById("news-error-banner");
-            banner.innerText = "⚠️ " + (result.error || "Erro ao publicar notícia.");
-            banner.classList.remove("is-hidden");
+            displayFormError("news", result.error);
         }
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+        console.error(err);
+        displayFormError("news", "Erro de ligação ao servidor.");
+    }
+}
+
+// Função auxiliar para exibir erros no banner e no pop-up (alert)
+function displayFormError(schema, message) {
+    const prefix = schema === 'events' ? 'event' : 'news';
+    const banner = document.getElementById(`${prefix}-error-banner`);
+    const cleanMsg = message || "Erro desconhecido ao processar dados.";
+    
+    if (banner) {
+        banner.innerHTML = `<strong>Erro de Validação:</strong><br>${cleanMsg}`;
+        banner.classList.remove("is-hidden");
+        banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Também exibe no pop-up para garantir que o utilizador vê
+    alert("Verifique o formulário:\n" + cleanMsg);
 }
 
 // ==========================================

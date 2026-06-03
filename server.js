@@ -101,8 +101,8 @@ const contactRequestSchema = new mongoose.Schema(
 );
 
 const sessionSubSchema = new mongoose.Schema({
-  date: { type: Date, required: [true, "A data da sessão é obrigatória"] },
-  time: { type: String, required: [true, "A hora da sessão é obrigatória"], trim: true }, 
+  date: { type: Date, required: [true, "A data da sessão é um campo obrigatório"] },
+  time: { type: String, required: [true, "A hora da sessão é obrigatória e não pode estar vazia"], trim: true }, 
   specificLocation: { type: String, required: [true, "Indique a sala ou palco"], trim: true },
   availableTickets: { type: Number, required: [true, "Defina a lotação"], min: [0, "A lotação não pode ser negativa"] },
   status: { type: String, enum: ["available", "unavailable", "sold_out"], default: "available" }
@@ -378,7 +378,11 @@ app.post("/api/news", checkAdminAuth, upload.single('image'), async (req, res) =
 
     const snippet = await News.create(newsData);
     res.status(201).json({ success: true, data: snippet });
-  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error("🔴 Erro ao criar notícia:", err.message);
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
 });
 
 app.put("/api/news/:id", checkAdminAuth, upload.single('image'), async (req, res) => {
@@ -389,7 +393,11 @@ app.put("/api/news/:id", checkAdminAuth, upload.single('image'), async (req, res
     const revisedDoc = await News.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     if (!revisedDoc) return res.status(404).json({ success: false, error: "Not found." });
     res.json({ success: true, data: revisedDoc });
-  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+  } catch (err) {
+    console.error("🔴 Erro ao atualizar notícia:", err.message);
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
 });
 
 app.delete("/api/news/:id", checkAdminAuth, async (req, res) => {
