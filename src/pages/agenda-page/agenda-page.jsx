@@ -9,7 +9,7 @@ import heroAgenda from '../../assets/images/hero-agenda.png';
 
 function AgendaPage() {
   return (
-    <main className="agenda-page">
+    <main className="agenda-page navbar_height ">
       <Hero
         title="AGENDA"
         subtitle="2026"
@@ -21,7 +21,6 @@ function AgendaPage() {
 
       <AgendaList events={events} />
 
-      <Footer />
     </main>
   );
 }

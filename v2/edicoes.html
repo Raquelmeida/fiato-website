@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edições | FIATO</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="navbar navbar--transparent">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">FIATO</a>
+
+        <nav class="navbar__menu" aria-label="Navegação principal">
+          <a href="index.html" class="navbar__link">FIATO</a>
+          <a href="agenda.html" class="navbar__link">AGENDA</a>
+          <a href="edicoes.html" class="navbar__link navbar__link--active">EDIÇÕES</a>
+          <a href="sobre-nos.html" class="navbar__link">SOBRE NÓS</a>
+          <a href="apoios.html" class="navbar__link">APOIOS</a>
+          <a href="contactos.html" class="navbar__link">CONTACTOS</a>
+        </nav>
+
+        <div class="navbar__right">
+          <div class="navbar__language" aria-label="Idioma">
+            <button type="button" class="navbar__language-option">EN</button>
+            <button type="button" class="navbar__language-option navbar__language-option--active">PT</button>
+          </div>
+
+          <button type="button" class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="edicoes-page navbar_height">
+      <section class="edition-section edition-section--navy" data-navbar-theme="navy" data-edition-year="2026">
+        <button type="button" class="edition-section__button" aria-label="Ver edição 2026" data-edition-toggle="2026">
+          ↓
+        </button>
+
+        <div class="edition-section__content">
+          <h2 class="edition-section__year">2026</h2>
+          <p class="edition-section__subtitle">Edição Atual</p>
+        </div>
+      </section>
+
+      <section class="edition-section edition-section--orange" data-navbar-theme="orange" data-edition-year="2025">
+        <button type="button" class="edition-section__button edition-section__button--open" aria-label="Ver edição 2025" data-edition-toggle="2025">
+          ↓
+        </button>
+
+        <div class="edition-section__content">
+          <h2 class="edition-section__year">2025</h2>
+          <p class="edition-section__subtitle">Ópera à Moda do Porto</p>
+        </div>
+      </section>
+
+      <section class="edition-section edition-section--navy" data-navbar-theme="navy" data-edition-year="2024">
+        <button type="button" class="edition-section__button" aria-label="Ver edição 2024" data-edition-toggle="2024">
+          ↓
+        </button>
+
+        <div class="edition-section__content">
+          <h2 class="edition-section__year">2024</h2>
+          <p class="edition-section__subtitle">Primeira edição do FIATO</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" data-navbar-theme="orange">
+      <div class="footer__brand">FIATO</div>
+
+      <div class="footer__links">
+        <nav aria-label="Rodapé principal">
+          <a href="index.html">Página inicial</a>
+          <a href="agenda.html">Agenda</a>
+          <a href="edicoes.html">Edições</a>
+          <a href="sobre-nos.html">Sobre nós</a>
+        </nav>
+
+        <nav aria-label="Rodapé secundário">
+          <a href="contactos.html">Contactos</a>
+          <a href="apoios.html">Apoios</a>
+          <a href="bilhetes.html">Bilhetes</a>
+          <a href="mailto:info@fiato.pt">E-mail</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

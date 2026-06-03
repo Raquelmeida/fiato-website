@@ -1,6 +1,7 @@
 .ticket-reservation {
   min-height: 100vh;
   padding: 180px 48px 110px;
+  padding-top: 92.5px;
   background:
     radial-gradient(circle at top right, rgba(30, 56, 143, 0.7), transparent 38%),
     var(--color-navy-40);
