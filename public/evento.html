@@ -37,14 +37,14 @@
     </header>
 
     <main class="evento-page">
-      <section class="evento-hero" data-navbar-theme="navy">
-        <div class="evento-hero__tags">
+        <section class="evento-hero" data-navbar-theme="navy" data-evento-hero>
+        <div class="evento-hero__tags" data-evento-hero-tags>
           <span>Música clássica</span>
           <span>Vanguarda</span>
         </div>
 
         <div class="evento-hero__content">
-          <h1>
+          <h1 data-evento-hero-title>
             Ópera à moda
             <span>do Porto</span>
           </h1>
@@ -74,7 +74,7 @@
       </div>
 
       <section class="evento-info" data-navbar-theme="light">
-        <div class="evento-info__quote">
+        <div class="evento-info__quote" data-evento-quote>
           <h2>
             “Quebrando as <span>fronteiras</span> tradicionais da música clássica,
             realocamos a grandiosidade acústica para a arquitectura crua da cidade.”
@@ -89,22 +89,22 @@
             </div>
             <div>
               <dt>Direção</dt>
-              <dd>Camilo Castelo Branco</dd>
+              <dd data-evento-direction>Camilo Castelo Branco</dd>
             </div>
             <div>
               <dt>Local</dt>
-              <dd>R. Santa Catarina, 148</dd>
+              <dd data-evento-location>R. Santa Catarina, 148</dd>
             </div>
             <div>
               <dt>Duração</dt>
-              <dd>1H30M</dd>
+              <dd data-evento-duration>1H30M</dd>
             </div>
           </dl>
 
-          <img src="assets/img-contactos.png" alt="Ópera à Moda do Porto" />
+          <img src="assets/img-contactos.png" alt="Ópera à Moda do Porto" data-evento-image />
         </div>
 
-        <div class="evento-info__text">
+        <div class="evento-info__text" data-evento-description>
           <p>
             <strong>Ópera à moda do Porto</strong> é um projeto que surgiu em 2024
             no âmbito do FIATO — Festival Internacional de Artes e Ópera do Porto,
@@ -129,43 +129,7 @@
           </span>
         </div>
 
-        <div class="evento-sessoes__list">
-          <article class="evento-sessoes__item">
-            <div>
-              <h3>20 Março 2026</h3>
-              <p>Avenida dos Aliados, Porto</p>
-            </div>
-            <strong>19:00</strong>
-            <a href="bilhetes.html" class="evento-sessoes__button">Reservar</a>
-          </article>
-
-          <article class="evento-sessoes__item">
-            <div>
-              <h3>21 Março 2026</h3>
-              <p>Praça do Município, Porto</p>
-            </div>
-            <strong>17:00</strong>
-            <button type="button" class="is-disabled" disabled>Esgotado</button>
-          </article>
-
-          <article class="evento-sessoes__item">
-            <div>
-              <h3>21 Março 2026</h3>
-              <p>Praça do Município, Porto</p>
-            </div>
-            <strong>21:30</strong>
-            <a href="bilhetes.html" class="evento-sessoes__button">Reservar</a>
-          </article>
-
-          <article class="evento-sessoes__item">
-            <div>
-              <h3>22 Março 2026</h3>
-              <p>Jardins do Palácio de Cristal, Porto</p>
-            </div>
-            <strong>16:00</strong>
-            <a href="bilhetes.html" class="evento-sessoes__button">Reservar</a>
-          </article>
-        </div>
+        <div class="evento-sessoes__list" data-evento-sessoes-list></div>
       </section>
 
       <div class="evento-marquee" data-navbar-theme="orange">
@@ -188,97 +152,14 @@
       <section class="evento-accordion" data-navbar-theme="light">
         <h2>Sobre o espetáculo</h2>
 
-        <div class="evento-accordion__list">
-          <div class="evento-accordion__item">
-            <button type="button" class="evento-accordion__trigger" aria-expanded="false" data-evento-accordion-trigger>
-              <span class="evento-accordion__number">01</span>
-              <span class="evento-accordion__title">O que é a Ópera à Moda do Porto?</span>
-              <span class="evento-accordion__icon">+</span>
-            </button>
-
-            <div class="evento-accordion__content">
-              <p>
-                A Ópera à Moda do Porto é uma proposta artística do FIATO que aproxima a ópera da cidade, levando a experiência lírica para contextos urbanos, espaços não convencionais e públicos mais diversos.
-              </p>
-            </div>
-          </div>
-
-          <div class="evento-accordion__item">
-            <button type="button" class="evento-accordion__trigger" aria-expanded="false" data-evento-accordion-trigger>
-              <span class="evento-accordion__number">02</span>
-              <span class="evento-accordion__title">Os espetáculos têm custo de entrada?</span>
-              <span class="evento-accordion__icon">+</span>
-            </button>
-
-            <div class="evento-accordion__content">
-              <p>
-                Alguns espetáculos podem ter entrada gratuita e outros podem exigir bilhete ou reserva prévia. A informação específica de cada sessão deve ser consultada na área de bilheteira e sessões.
-              </p>
-            </div>
-          </div>
-
-          <div class="evento-accordion__item">
-            <button type="button" class="evento-accordion__trigger" aria-expanded="false" data-evento-accordion-trigger>
-              <span class="evento-accordion__number">03</span>
-              <span class="evento-accordion__title">Faixa etária, Acessibilidade e Duração</span>
-              <span class="evento-accordion__icon">+</span>
-            </button>
-
-            <div class="evento-accordion__content">
-              <p>
-                A duração prevista é de aproximadamente 1h30. As recomendações de faixa etária e as condições de acessibilidade podem variar consoante o espaço e o formato de cada apresentação.
-              </p>
-            </div>
-          </div>
-
-          <div class="evento-accordion__item">
-            <button type="button" class="evento-accordion__trigger" aria-expanded="false" data-evento-accordion-trigger>
-              <span class="evento-accordion__number">04</span>
-              <span class="evento-accordion__title">Ficha Técnica</span>
-              <span class="evento-accordion__icon">+</span>
-            </button>
-
-            <div class="evento-accordion__content">
-              <p>
-                A ficha técnica reúne a equipa artística, direção, curadoria, produção, intérpretes e restantes elementos envolvidos na criação e apresentação do espetáculo.
-              </p>
-            </div>
-          </div>
-        </div>
+        <div class="evento-accordion__list" data-evento-faqs-list></div>
       </section>
 
       <section class="proximos-eventos" data-navbar-theme="blue">
         <p>Agenda + Fiato</p>
         <h2>Próximos eventos</h2>
 
-        <div class="proximos-eventos__grid">
-          <article class="proximos-eventos__card">
-            <small>Sexta</small>
-            <strong>20 MAR</strong>
-            <img src="assets/img-contactos.png" alt="A queda de um anjo" />
-            <h3>A queda de um anjo</h3>
-            <span>Rivoli, Porto</span>
-            <a href="bilhetes.html">Comprar bilhetes</a>
-          </article>
-
-          <article class="proximos-eventos__card">
-            <small>Sábado</small>
-            <strong>21 MAR</strong>
-            <img src="assets/img-contactos.png" alt="Amor de perdição" />
-            <h3>Amor de perdição</h3>
-            <span>Estação de São Bento</span>
-            <a href="bilhetes.html">Comprar bilhetes</a>
-          </article>
-
-          <article class="proximos-eventos__card">
-            <small>Domingo</small>
-            <strong>22 MAR</strong>
-            <img src="assets/img-contactos.png" alt="Coração, cabeça e estômago" />
-            <h3>Coração, cabeça e estômago</h3>
-            <span>Mercado do Bolhão</span>
-            <a href="bilhetes.html">Comprar bilhetes</a>
-          </article>
-        </div>
+        <div class="proximos-eventos__grid" data-proximos-eventos-grid></div>
       </section>
     </main>
 

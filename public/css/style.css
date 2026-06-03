@@ -2759,7 +2759,10 @@ img {
 
 .ticket-form input.is-invalid,
 .ticket-form select.is-invalid,
-.ticket-form textarea.is-invalid {
+.ticket-form textarea.is-invalid,
+.contactos-form input.is-invalid,
+.contactos-form textarea.is-invalid,
+.member-form input.is-invalid {
   border-color: var(--color-accent);
 }
 
@@ -2774,6 +2777,22 @@ img {
 }
 
 .ticket-form__message.is-success {
+  color: var(--color-navy-light-80);
+}
+
+.contactos-form__message,
+.member-form__message {
+  min-height: 18px;
+  margin: -4px 0 0;
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.contactos-form__message.is-success,
+.member-form__message.is-success {
   color: var(--color-navy-light-80);
 }
 
@@ -3479,6 +3498,49 @@ img {
 .instagram__nav:hover {
   background: var(--color-neutral-900);
   color: var(--color-off-white);
+}
+
+.instagram__phone-media img,
+.instagram__phone-media video {
+  display: block;
+}
+
+.instagram__phones::before,
+.instagram__phones::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 60px;
+  border-radius: 50%/50% 50% 0 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(0, 0, 0, 0.04) 4px,
+    rgba(0, 0, 0, 0.04) 8px
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.instagram__phones::before {
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+}
+
+.instagram__phones::after {
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+  .instagram__phones::before,
+  .instagram__phones::after {
+    width: 80px;
+    height: 40px;
+  }
 }
 
 .sponsors {

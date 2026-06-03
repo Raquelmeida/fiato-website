@@ -42,6 +42,9 @@
                     <li class="tab-link" data-tab="tickets">
                         <a><i class="fas fa-ticket-alt mr-2"></i>Reservas</a>
                     </li>
+                    <li class="tab-link" data-tab="instagram">
+                        <a><i class="fas fa-camera mr-2"></i>Instagram</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -160,6 +163,33 @@
                         </tr>
                     </thead>
                     <tbody id="table-body-tickets"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="instagram" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left"></div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('instagram')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Adicionar Post</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Pré-visualização</th>
+                            <th>Legenda</th>
+                            <th>Tipo</th>
+                            <th>Data</th>
+                            <th>Ordem</th>
+                            <th>Estado</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-instagram"></tbody>
                 </table>
             </div>
         </section>
@@ -331,6 +361,78 @@
             </section>
             <footer class="modal-card-foot is-justify-content-end">
                 <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600; width: 100%;" onclick="updateContactStatus()">Sinalizar e Atualizar Registo</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-instagram">
+        <div class="modal-background" onclick="closeModal('modal-instagram')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-instagram-title">Publicação Instagram</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-instagram')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="instagram-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-instagram">
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Legenda</label>
+                        <div class="control"><textarea class="textarea" id="instagram-caption" rows="2"></textarea></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Tipo de Media</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="instagram-mediaType">
+                                            <option value="image">Imagem</option>
+                                            <option value="video">Vídeo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Ordem de Apresentação</label>
+                                <div class="control"><input class="input" type="number" id="instagram-order" value="0" min="0"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Upload de Media (imagem ou vídeo)</label>
+                        <div class="control"><input class="input" type="file" id="instagram-mediaFile" accept="image/*,video/*"></div>
+                        <div id="instagram-preview-wrapper" class="mt-3 is-hidden">
+                            <img id="instagram-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                        </div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">OU URL do Media (fallback se não fizer upload)</label>
+                        <div class="control"><input class="input" type="url" id="instagram-mediaUrl" placeholder="https://..."></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">URL do Post (Instagram)</label>
+                        <div class="control"><input class="input" type="url" id="instagram-postUrl" placeholder="https://instagram.com/p/..."></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Data</label>
+                                <div class="control"><input class="input" type="date" id="instagram-date"></div>
+                            </div>
+                        </div>
+                        <div class="column is-flex is-align-items-center pt-5">
+                            <label class="checkbox" style="font-weight: 500;">
+                                <input type="checkbox" id="instagram-isPublished" class="mr-2" checked> Publicado
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-instagram')" style="color: #64748b;">Cancelar</button>
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveInstagram()">Gravar</button>
             </footer>
         </div>
     </div>

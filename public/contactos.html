@@ -52,15 +52,17 @@
             </p>
           </div>
 
-          <form class="contactos-form">
+          <form class="contactos-form" data-contact-form novalidate>
             <div class="contactos-form__row">
-              <input type="text" placeholder="Nome" />
-              <input type="text" placeholder="Apelido" />
+              <input type="text" name="nome" placeholder="Nome" required />
+              <input type="text" name="apelido" placeholder="Apelido" required />
             </div>
 
-            <input type="email" placeholder="Email" />
+            <input type="email" name="email" placeholder="Email" required />
 
-            <textarea placeholder="Mensagem"></textarea>
+            <textarea name="mensagem" placeholder="Mensagem" required></textarea>
+
+            <p class="contactos-form__message" data-contact-message aria-live="polite"></p>
 
             <button type="submit">Enviar</button>
           </form>
@@ -82,9 +84,10 @@
             público a descobrir, sentir e partilhar a força da ópera.
           </p>
 
-          <form class="member-form">
-            <input type="email" placeholder="E-mail" />
+          <form class="member-form" data-member-form novalidate>
+            <input type="email" name="email" placeholder="E-mail" required />
             <button type="button" class="member-form__upload">Upload Documentos</button>
+            <p class="member-form__message" data-member-message aria-live="polite"></p>
             <button type="submit" class="member-form__submit">Enviar</button>
           </form>
         </div>

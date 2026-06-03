@@ -147,8 +147,22 @@ const ticketSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const instagramPostSchema = new mongoose.Schema(
+  {
+    caption: { type: String, trim: true, default: '' },
+    mediaUrl: { type: String, required: [true, "O URL do media é obrigatório"] },
+    mediaType: { type: String, enum: ["image", "video"], default: "image" },
+    postUrl: { type: String, trim: true, default: '' },
+    date: { type: Date, default: Date.now },
+    isPublished: { type: Boolean, default: true },
+    order: { type: Number, default: 0 }
+  },
+  { timestamps: true }
+);
+
 const ContactRequest = mongoose.model("ContactRequest", contactRequestSchema);
 const Event = mongoose.model("Event", eventSchema);
+const InstagramPost = mongoose.model("InstagramPost", instagramPostSchema);
 const News = mongoose.model("News", newsSchema);
 const Ticket = mongoose.model("Ticket", ticketSchema);
 
@@ -247,6 +261,15 @@ app.get("/api/news", async (req, res) => {
   } catch (err) { 
     console.error("🔴 Erro Mongoose em GET /api/news:", err.message);
     res.status(500).json({ success: false, error: err.message }); 
+  }
+});
+
+app.get("/api/instagram", async (req, res) => {
+  try {
+    const posts = await InstagramPost.find({ isPublished: true }).sort({ order: 1, date: -1 }).limit(10).lean();
+    res.json({ success: true, data: posts });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -404,6 +427,52 @@ app.delete("/api/news/:id", checkAdminAuth, async (req, res) => {
     if (!status) return res.status(404).json({ success: false, error: "Absent document." });
     res.json({ success: true, message: "Unlinked." });
   } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+});
+
+// --- OPERAÇÕES MASTER EM INSTAGRAM ---
+app.post("/api/instagram", checkAdminAuth, upload.single('media'), async (req, res) => {
+  try {
+    const postData = { ...req.body };
+    if (req.file) postData.mediaUrl = `/images/${req.file.filename}`;
+    if (!postData.mediaUrl) return res.status(400).json({ success: false, error: "O media (imagem ou vídeo) é obrigatório." });
+    if (postData.isPublished === 'true' || postData.isPublished === true) postData.isPublished = true;
+    else if (postData.isPublished === 'false' || postData.isPublished === false) postData.isPublished = false;
+    else postData.isPublished = true;
+    if (postData.order) postData.order = parseInt(postData.order, 10) || 0;
+
+    const created = await InstagramPost.create(postData);
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
+});
+
+app.put("/api/instagram/:id", checkAdminAuth, upload.single('media'), async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    if (req.file) updateData.mediaUrl = `/images/${req.file.filename}`;
+    if (updateData.isPublished === 'true' || updateData.isPublished === true) updateData.isPublished = true;
+    else if (updateData.isPublished === 'false' || updateData.isPublished === false) updateData.isPublished = false;
+    if (updateData.order) updateData.order = parseInt(updateData.order, 10) || 0;
+
+    const modified = await InstagramPost.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    if (!modified) return res.status(404).json({ success: false, error: "Publicação não encontrada." });
+    res.json({ success: true, data: modified });
+  } catch (err) {
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
+});
+
+app.delete("/api/instagram/:id", checkAdminAuth, async (req, res) => {
+  try {
+    const removed = await InstagramPost.findByIdAndDelete(req.params.id);
+    if (!removed) return res.status(404).json({ success: false, error: "Publicação não encontrada." });
+    res.json({ success: true, message: "Eliminado." });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
 });
 
 // ==========================================

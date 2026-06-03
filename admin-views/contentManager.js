@@ -2,7 +2,8 @@ let appState = {
     events: [],
     news: [],
     contacts: [],
-    tickets: []
+    tickets: [],
+    instagram: []
 };
 
 let currentEditId = null;
@@ -37,6 +38,7 @@ async function loadTabContent(schema) {
     if (schema === "news") endpoint = "/api/news";
     if (schema === "contacts") endpoint = "/api/contact-requests";
     if (schema === "tickets") endpoint = "/api/tickets";
+    if (schema === "instagram") endpoint = "/api/instagram";
 
     try {
         const response = await fetch(endpoint);
@@ -75,6 +77,9 @@ function filterData(schema) {
         }
         if (schema === "news") {
             return item.title.toLowerCase().includes(query);
+        }
+        if (schema === "instagram") {
+            return item.caption.toLowerCase().includes(query);
         }
         if (schema === "contacts" || schema === "tickets") {
             const fullName = `${item.firstName} ${item.lastName}`.toLowerCase();
@@ -152,6 +157,27 @@ function renderTable(schema, dataset) {
                 <td><p class="has-text-grey" style="font-size:0.85rem; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.observations || '<span class="has-text-grey-light">Sem observações</span>'}</p></td>
             `;
         }
+        else if (schema === "instagram") {
+            const dateFormatted = item.date ? new Date(item.date).toLocaleDateString('pt-PT') : '';
+            const previewStyle = item.mediaUrl ? `background-image: url('${item.mediaUrl.replace(/'/g, '%27')}'); background-size: cover; background-position: center;` : 'background-color: #e2e8f0;';
+            const typeIcon = item.mediaType === 'video' ? '<i class="fas fa-video mr-1"></i>' : '<i class="fas fa-image mr-1"></i>';
+            const statusTag = item.isPublished
+                ? '<span class="tag is-success" style="background-color: #dcfce7; color: #16a34a; font-weight: 600; border-radius: 6px;">Publicado</span>'
+                : '<span class="tag is-light" style="border-radius: 6px; color: #94a3b8;">Rascunho</span>';
+
+            row.innerHTML = `
+                <td><div style="width: 50px; height: 50px; border-radius: 8px; ${previewStyle}"></div></td>
+                <td><span style="color: var(--fiato-dark); font-weight: 500;">${(item.caption || '').substring(0, 50)}${item.caption && item.caption.length > 50 ? '…' : ''}</span></td>
+                <td><span style="color: #64748b;">${typeIcon}${item.mediaType === 'video' ? 'Vídeo' : 'Imagem'}</span></td>
+                <td><span style="color: #64748b; font-size: 0.9rem;">${dateFormatted}</span></td>
+                <td><span class="tag is-light" style="border-radius: 6px; font-weight: 500;">${item.order || 0}</span></td>
+                <td>${statusTag}</td>
+                <td class="has-text-right">
+                    <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditInstagram('${item._id}')"><i class="fas fa-pen"></i></button>
+                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('instagram', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+        }
 
         tbody.appendChild(row);
     });
@@ -161,7 +187,9 @@ function renderTable(schema, dataset) {
 // GESTÃO DE JANELAS MODAIS
 // ==========================================
 function clearFormErrors(schema) {
-    const banner = document.getElementById(`${schema === 'events' ? 'event' : 'news'}-error-banner`);
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : null;
+    if (!prefix) return;
+    const banner = document.getElementById(`${prefix}-error-banner`);
     if (banner) {
         banner.innerText = "";
         banner.classList.add("is-hidden");
@@ -177,8 +205,19 @@ function openCreateModal(schema) {
         document.getElementById("dynamic-sessions-wrapper").innerHTML = "";
         addSessionRow(); // Começa com uma linha em branco por conveniência
     }
+    if (schema === "instagram") {
+        document.getElementById("instagram-preview-wrapper").classList.add("is-hidden");
+        document.getElementById("instagram-isPublished").checked = true;
+        document.getElementById("instagram-order").value = "0";
+        document.getElementById("instagram-date").value = new Date().toISOString().substring(0, 10);
+    }
     
-    document.getElementById(`modal-${schema}-title`).innerText = schema === "events" ? "Criar Novo Evento" : "Publicar Nova Notícia";
+    const titles = {
+        events: "Criar Novo Evento",
+        news: "Publicar Nova Notícia",
+        instagram: "Adicionar Publicação Instagram"
+    };
+    document.getElementById(`modal-${schema}-title`).innerText = titles[schema] || "Criar Registo";
     document.getElementById(`modal-${schema}`).classList.add("is-active");
 }
 
@@ -407,7 +446,7 @@ async function saveNews() {
 
 // Função auxiliar para exibir erros no banner e no pop-up (alert)
 function displayFormError(schema, message) {
-    const prefix = schema === 'events' ? 'event' : 'news';
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : 'instagram';
     const banner = document.getElementById(`${prefix}-error-banner`);
     const cleanMsg = message || "Erro desconhecido ao processar dados.";
     
@@ -479,4 +518,80 @@ async function deleteResource(schema, id) {
             alert("Não foi possível processar a remoção: " + result.error);
         }
     } catch (err) { console.error(err); }
+}
+
+// ==========================================
+// CONTROLADOR COMPLETO: INSTAGRAM
+// ==========================================
+function openEditInstagram(id) {
+    currentEditId = id;
+    const item = appState.instagram.find(p => p._id === id);
+    if (!item) return;
+    clearFormErrors("instagram");
+
+    document.getElementById("instagram-caption").value = item.caption || "";
+    document.getElementById("instagram-mediaType").value = item.mediaType || "image";
+    document.getElementById("instagram-mediaFile").value = "";
+    document.getElementById("instagram-mediaUrl").value = item.mediaUrl || "";
+    document.getElementById("instagram-postUrl").value = item.postUrl || "";
+    document.getElementById("instagram-date").value = item.date ? item.date.substring(0, 10) : "";
+    document.getElementById("instagram-isPublished").checked = !!item.isPublished;
+    document.getElementById("instagram-order").value = item.order || 0;
+
+    if (item.mediaUrl) {
+        const previewImg = document.getElementById("instagram-preview-img");
+        previewImg.src = item.mediaUrl;
+        document.getElementById("instagram-preview-wrapper").classList.remove("is-hidden");
+    } else {
+        document.getElementById("instagram-preview-wrapper").classList.add("is-hidden");
+    }
+
+    document.getElementById("modal-instagram-title").innerText = "Editar Publicação Instagram";
+    document.getElementById("modal-instagram").classList.add("is-active");
+}
+
+async function saveInstagram() {
+    clearFormErrors("instagram");
+    const banner = document.getElementById("instagram-error-banner");
+
+    const mediaInput = document.getElementById("instagram-mediaFile");
+    const formData = new FormData();
+
+    formData.append("caption", document.getElementById("instagram-caption").value);
+    formData.append("mediaType", document.getElementById("instagram-mediaType").value);
+    formData.append("postUrl", document.getElementById("instagram-postUrl").value);
+    formData.append("isPublished", document.getElementById("instagram-isPublished").checked);
+    formData.append("order", document.getElementById("instagram-order").value);
+    formData.append("date", document.getElementById("instagram-date").value || new Date().toISOString().substring(0, 10));
+
+    const mediaUrlValue = document.getElementById("instagram-mediaUrl").value;
+
+    if (mediaInput.files[0]) {
+        formData.append("media", mediaInput.files[0]);
+    } else if (mediaUrlValue) {
+        formData.append("mediaUrl", mediaUrlValue);
+    } else if (!currentEditId) {
+        displayFormError("instagram", "Faz upload de um ficheiro ou insere um URL de media.");
+        return;
+    }
+
+    const url = currentEditId ? `/api/instagram/${currentEditId}` : "/api/instagram";
+    const method = currentEditId ? "PUT" : "POST";
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            closeModal("modal-instagram");
+            loadTabContent("instagram");
+        } else {
+            displayFormError("instagram", result.error);
+        }
+    } catch (err) {
+        console.error(err);
+        displayFormError("instagram", "Erro de ligação ao servidor.");
+    }
 }
