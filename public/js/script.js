@@ -244,6 +244,144 @@ if (ticketForm) {
   });
 }
 
+// Schedule - dynamic loading for Home page
+const scheduleGrid = document.querySelector('[data-schedule-grid]');
+const scheduleWeekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const scheduleMonthAbbrevs = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+
+function getFirstSessionDate(event) {
+  if (event.sessions && event.sessions.length > 0) {
+    return new Date(event.sessions[0].date);
+  }
+  return null;
+}
+
+function formatSchedulePrice(price) {
+  var num = Number(price);
+  if (Number.isInteger(num)) return num + '€';
+  return num.toFixed(2).replace('.', ',') + '€';
+}
+
+function createScheduleCard(event) {
+  const card = document.createElement('article');
+  card.className = 'schedule__card';
+  const dateObj = getFirstSessionDate(event);
+
+  // Badge
+  const badge = document.createElement('div');
+  badge.className = 'schedule__badge';
+  const icon = document.createElement('span');
+  icon.setAttribute('aria-hidden', 'true');
+
+  var rawPrice = event.price;
+  var numericPrice = Number(rawPrice);
+  var hasPrice = rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && rawPrice !== 'Grátis' && !isNaN(numericPrice) && numericPrice > 0;
+
+  if (hasPrice) {
+    icon.className = 'schedule__badge-icon';
+    icon.textContent = '€';
+    badge.appendChild(icon);
+    badge.appendChild(document.createTextNode(' ' + formatSchedulePrice(numericPrice)));
+  } else {
+    icon.className = 'schedule__badge-dot';
+    badge.appendChild(icon);
+    badge.appendChild(document.createTextNode(' Grátis'));
+  }
+  card.appendChild(badge);
+
+  // Weekday
+  const weekday = document.createElement('span');
+  weekday.className = 'schedule__weekday';
+  if (dateObj) weekday.textContent = scheduleWeekdayNames[dateObj.getDay()].toUpperCase();
+  card.appendChild(weekday);
+
+  // Date (day + month)
+  const dateEl = document.createElement('strong');
+  dateEl.className = 'schedule__date';
+  if (dateObj) {
+    dateEl.appendChild(document.createTextNode(String(dateObj.getDate())));
+    dateEl.appendChild(document.createElement('br'));
+    const small = document.createElement('small');
+    small.textContent = scheduleMonthAbbrevs[dateObj.getMonth()];
+    dateEl.appendChild(small);
+  }
+  card.appendChild(dateEl);
+
+  // Image
+  const imageEl = document.createElement('div');
+  imageEl.className = 'schedule__image' + (event.imageUrl ? '' : ' ph');
+  if (event.imageUrl) {
+    imageEl.style.backgroundImage = 'url(' + event.imageUrl.replace(/'/g, '%27') + ')';
+  }
+  imageEl.setAttribute('role', 'img');
+  imageEl.setAttribute('aria-label', event.title || '');
+  card.appendChild(imageEl);
+
+  // Title
+  const title = document.createElement('h3');
+  title.className = 'schedule__card-title';
+  title.textContent = event.title || '';
+  card.appendChild(title);
+
+  // Location
+  const location = document.createElement('span');
+  location.className = 'schedule__location';
+  location.textContent = event.locationSummary || '';
+  card.appendChild(location);
+
+  // Description
+  const desc = document.createElement('p');
+  desc.className = 'schedule__description';
+  desc.textContent = event.description || '';
+  card.appendChild(desc);
+
+  // Tickets link
+  const link = document.createElement('a');
+  link.className = 'schedule__tickets';
+  link.href = 'bilhetes.html';
+  link.textContent = 'Comprar Bilhetes';
+  card.appendChild(link);
+
+  return card;
+}
+
+function loadHomeEvents() {
+  if (!scheduleGrid) return;
+
+  fetch('/api/events?featured=true&limit=3')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Erro na rede');
+      return response.json();
+    })
+    .then(function (result) {
+      if (!result.success) throw new Error(result.error || 'Erro da API');
+
+      scheduleGrid.innerHTML = '';
+      const events = result.data || [];
+
+      if (events.length === 0) {
+        const msg = document.createElement('p');
+        msg.className = 'schedule__loading';
+        msg.textContent = 'Não existem eventos de momento.';
+        scheduleGrid.appendChild(msg);
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      events.forEach(function (event) {
+        fragment.appendChild(createScheduleCard(event));
+      });
+      scheduleGrid.appendChild(fragment);
+    })
+    .catch(function () {
+      scheduleGrid.innerHTML = '';
+      const msg = document.createElement('p');
+      msg.className = 'schedule__loading';
+      msg.textContent = 'Não foi possível carregar os eventos.';
+      scheduleGrid.appendChild(msg);
+    });
+}
+
 window.addEventListener('scroll', updateNavbarTheme);
 window.addEventListener('resize', () => {
   updateNavbarTheme();
@@ -261,3 +399,5 @@ if (countdownDays && countdownHours && countdownMinutes) {
   updateCountdown();
   setInterval(updateCountdown, 1000);
 }
+
+loadHomeEvents();

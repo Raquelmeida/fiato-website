@@ -2889,7 +2889,7 @@ img {
   justify-content: space-between;
   align-items: flex-end;
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 
@@ -2913,10 +2913,10 @@ img {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(48px, 6vw, 80px);
+  font-size: clamp(40px, 5vw, 68px);
   letter-spacing: -0.02em;
-  color: var(--color-neutral-900);
-  line-height: 0.9;
+  color: var(--color-navy-base);
+  line-height: 1.0;
 }
 
 .schedule__cta {
@@ -2949,13 +2949,26 @@ img {
 .schedule__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--color-navy-base);
+  border-top: 1px solid var(--color-navy-base);
+  border-bottom: 1px solid var(--color-navy-base);
+  margin-left: calc(-1 * var(--container-padding));
+  margin-right: calc(-1 * var(--container-padding));
+}
+
+.schedule__loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 32px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: var(--color-navy-light-20);
+  margin: 0;
 }
 
 .schedule__card {
   display: flex;
   flex-direction: column;
-  padding: 32px 28px;
+  padding: 20px 20px 16px;
   border-right: 1px solid var(--color-navy-base);
 }
 
@@ -2966,17 +2979,17 @@ img {
 .schedule__badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 10px;
+  gap: 6px;
+  padding: 5px 12px 5px 8px;
   border-radius: var(--radius-pill);
-  background: var(--color-white);
+  background: var(--color-off-white);
   border: 1px solid var(--color-neutral-200);
   font-family: var(--font-primary);
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.06em;
-  color: var(--color-neutral-900);
-  margin-bottom: 20px;
+  color: var(--color-navy-base);
+  margin-bottom: 12px;
   align-self: flex-start;
 }
 
@@ -2989,6 +3002,21 @@ img {
   flex-shrink: 0;
 }
 
+.schedule__badge-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-navy-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1;
+}
+
 .schedule__weekday {
   font-family: var(--font-primary);
   font-weight: 700;
@@ -2996,71 +3024,79 @@ img {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-navy-light-20);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .schedule__date {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 42px;
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  color: var(--color-neutral-900);
-  margin: 0 0 24px;
-  display: block;
+  font-family: var(--font-primary);
+  font-style: normal;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-navy-base);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.schedule__date br {
+  display: none;
 }
 
 .schedule__date small {
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: -0.01em;
   font-style: normal;
-  display: block;
-  margin-top: 2px;
-  color: var(--color-navy-light-20);
+  display: inline;
+  margin-top: 0;
+  color: var(--color-navy-base);
 }
 
 .schedule__image {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 5 / 3;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   background-size: cover;
   background-position: center;
 }
 
 .schedule__card-title {
   font-family: var(--font-primary);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.15;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
   text-transform: uppercase;
-  margin: 0 0 8px;
-  letter-spacing: 0.04em;
-  color: var(--color-neutral-900);
+  margin: 0 0 6px;
+  letter-spacing: 0.05em;
+  color: var(--color-navy-base);
 }
 
 .schedule__location {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--color-navy-light-20);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   display: block;
 }
 
 .schedule__description {
   font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 0 0 20px;
-  color: var(--color-neutral-900);
-  opacity: 0.88;
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+  color: var(--color-navy-light-40);
+  opacity: 1;
   flex-grow: 1;
+  max-width: 30ch;
 }
 
 .schedule__tickets {
@@ -3069,12 +3105,12 @@ img {
   gap: 8px;
   font-family: var(--font-primary);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-navy-base);
-  padding-top: 16px;
-  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 12px;
+  border-top: 1px solid var(--color-navy-light-80);
   width: 100%;
   transition: color var(--transition-default);
 }
