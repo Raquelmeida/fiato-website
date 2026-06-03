@@ -33,8 +33,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// Servir o site público v2 (permite omitir o .html nos URLs)
-app.use(express.static(path.join(__dirname, "v2"), { extensions: ["html"] }));
 
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const phoneRegex = /^\+?[0-9\s\-]{9,15}$/; 
