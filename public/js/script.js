@@ -14,7 +14,7 @@ const ticketSession = document.querySelector('[data-ticket-session]');
 const ticketQuantity = document.querySelector('[data-ticket-quantity]');
 const ticketMessage = document.querySelector('[data-ticket-message]');
 
-const countdownTarget = Date.now()
+let countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
   + (8 * 60 * 60 * 1000)
   + (32 * 60 * 1000);
@@ -345,6 +345,24 @@ function createScheduleCard(event) {
   return card;
 }
 
+function renderScheduleCards(events) {
+  scheduleGrid.innerHTML = '';
+
+  if (events.length === 0) {
+    var msg = document.createElement('p');
+    msg.className = 'schedule__loading';
+    msg.textContent = 'Não existem eventos de momento.';
+    scheduleGrid.appendChild(msg);
+    return;
+  }
+
+  var fragment = document.createDocumentFragment();
+  events.forEach(function (event) {
+    fragment.appendChild(createScheduleCard(event));
+  });
+  scheduleGrid.appendChild(fragment);
+}
+
 function loadHomeEvents() {
   if (!scheduleGrid) return;
 
@@ -353,32 +371,246 @@ function loadHomeEvents() {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
     })
-    .then(function (result) {
-      if (!result.success) throw new Error(result.error || 'Erro da API');
+    .then(function (featuredResult) {
+      if (!featuredResult.success) throw new Error(featuredResult.error || 'Erro da API');
 
-      scheduleGrid.innerHTML = '';
-      const events = result.data || [];
+      var featured = featuredResult.data || [];
 
-      if (events.length === 0) {
-        const msg = document.createElement('p');
-        msg.className = 'schedule__loading';
-        msg.textContent = 'Não existem eventos de momento.';
-        scheduleGrid.appendChild(msg);
+      if (featured.length >= 3) {
+        renderScheduleCards(featured.slice(0, 3));
         return;
       }
 
-      const fragment = document.createDocumentFragment();
-      events.forEach(function (event) {
-        fragment.appendChild(createScheduleCard(event));
-      });
-      scheduleGrid.appendChild(fragment);
+      return fetch('/api/events?limit=6')
+        .then(function (res) { return res.json(); })
+        .then(function (allResult) {
+          if (!allResult.success) throw new Error(allResult.error || 'Erro da API');
+
+          var allEvents = allResult.data || [];
+          var featuredIds = featured.map(function (e) { return e._id; });
+          var additional = allEvents.filter(function (e) {
+            return featuredIds.indexOf(e._id) === -1;
+          });
+
+          renderScheduleCards(featured.concat(additional).slice(0, 3));
+        })
+        .catch(function () {
+          renderScheduleCards(featured);
+        });
     })
     .catch(function () {
       scheduleGrid.innerHTML = '';
-      const msg = document.createElement('p');
+      var msg = document.createElement('p');
       msg.className = 'schedule__loading';
       msg.textContent = 'Não foi possível carregar os eventos.';
       scheduleGrid.appendChild(msg);
+    });
+}
+
+// Hero - dynamic loading for Home page
+function splitHeroTitle(title) {
+  var idx = title.indexOf(' — ');
+  if (idx > 0) return [title.substring(0, idx), title.substring(idx + 3)];
+  idx = title.indexOf(' - ');
+  if (idx > 0) return [title.substring(0, idx), title.substring(idx + 3)];
+  var connectors = [' do ', ' da ', ' de ', ' dos ', ' das '];
+  var bestIdx = -1;
+  var bestLen = 0;
+  connectors.forEach(function (conn) {
+    var pos = title.lastIndexOf(conn);
+    if (pos > bestIdx) {
+      bestIdx = pos;
+      bestLen = conn.length;
+    }
+  });
+  if (bestIdx > 0) return [title.substring(0, bestIdx + bestLen), title.substring(bestIdx + bestLen)];
+  var words = title.split(' ');
+  if (words.length <= 2) return [words[0] || '', words.slice(1).join(' ') || ''];
+  var mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')];
+}
+
+function loadHomeHeroEvent() {
+  var heroTitleLight = document.querySelector('[data-hero-title-light]');
+  var heroTitleBold = document.querySelector('[data-hero-title-bold]');
+  var heroImage = document.querySelector('[data-hero-image]');
+  var heroBadge = document.querySelector('[data-hero-badge]');
+  var heroTime = document.querySelector('[data-hero-time]');
+  var heroDate = document.querySelector('[data-hero-date]');
+  var heroLocation = document.querySelector('[data-hero-location]');
+  var heroDescription = document.querySelector('[data-hero-description]');
+  var heroLink = document.querySelector('[data-hero-link]');
+
+  if (!heroTitleLight) return;
+
+  fetch('/api/events?featured=true&limit=1')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Erro na rede');
+      return response.json();
+    })
+    .then(function (result) {
+      if (!result.success) throw new Error(result.error || 'Erro da API');
+      var events = result.data || [];
+      if (events.length === 0) return;
+
+      var event = events[0];
+
+      // Title
+      if (event.title) {
+        var parts = splitHeroTitle(event.title);
+        heroTitleLight.textContent = parts[0];
+        if (heroTitleBold) heroTitleBold.textContent = parts[1];
+      }
+
+      // Image
+      if (event.imageUrl && heroImage) {
+        heroImage.style.backgroundImage = 'url(' + event.imageUrl.replace(/'/g, '%27') + ')';
+        heroImage.setAttribute('aria-label', event.title || '');
+      }
+
+      // Badge
+      if (heroBadge && event.quote) heroBadge.textContent = event.quote;
+
+      // Sessions
+      if (event.sessions && event.sessions.length > 0) {
+        var session = event.sessions[0];
+
+        if (heroTime && session.time) heroTime.textContent = session.time;
+
+        if (heroDate && session.date) {
+          var d = new Date(session.date);
+          var day = String(d.getDate()).padStart(2, '0');
+          var month = String(d.getMonth() + 1).padStart(2, '0');
+          var year = String(d.getFullYear()).slice(-2);
+          heroDate.textContent = day + '/' + month + '/' + year;
+        }
+
+        if (heroLocation) {
+          heroLocation.textContent = session.specificLocation || event.locationSummary || '';
+        }
+
+        // Countdown target from first session date
+        if (session.date) {
+          countdownTarget = new Date(session.date).getTime();
+        }
+      }
+
+      // Description
+      if (heroDescription && event.description) heroDescription.textContent = event.description;
+
+      // Event link
+      if (heroLink && event._id) heroLink.href = 'evento.html?id=' + event._id;
+    })
+    .catch(function () {
+      // Keep fallback content
+    });
+}
+
+// Press - dynamic loading for Home page
+function extractData(result) {
+  if (Array.isArray(result)) return result;
+  if (result.data && Array.isArray(result.data)) return result.data;
+  if (result.items && Array.isArray(result.items)) return result.items;
+  if (result.news && Array.isArray(result.news)) return result.news;
+  if (result.events && Array.isArray(result.events)) return result.events;
+  return null;
+}
+
+function showPressFallback(container) {
+  container.innerHTML = '';
+  var msg = document.createElement('p');
+  msg.className = 'press__loading';
+  msg.textContent = 'Não existem notícias de momento.';
+  container.appendChild(msg);
+}
+
+function createPressRow(item) {
+  var li = document.createElement('li');
+  li.className = 'press__row';
+
+  var link = document.createElement('div');
+  link.className = 'press__link';
+
+  var dateDiv = document.createElement('div');
+  dateDiv.className = 'press__date';
+
+  var daySpan = document.createElement('span');
+  daySpan.className = 'press__day';
+
+  var monthSpan = document.createElement('span');
+  monthSpan.className = 'press__month';
+
+  if (item.publishDate) {
+    var d = new Date(item.publishDate);
+    daySpan.textContent = String(d.getDate());
+    var monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    monthSpan.textContent = monthNames[d.getMonth()] + ', ' + d.getFullYear();
+  } else {
+    daySpan.textContent = '--';
+    monthSpan.textContent = '---';
+  }
+
+  dateDiv.appendChild(daySpan);
+  dateDiv.appendChild(monthSpan);
+  link.appendChild(dateDiv);
+
+  var thumb = document.createElement('div');
+  thumb.className = 'press__thumb' + (item.imageUrl ? '' : ' ph');
+  if (item.imageUrl) {
+    thumb.style.backgroundImage = 'url(' + item.imageUrl.replace(/'/g, '%27') + ')';
+    thumb.style.backgroundSize = 'cover';
+    thumb.style.backgroundPosition = 'center';
+  }
+  thumb.setAttribute('aria-hidden', 'true');
+  link.appendChild(thumb);
+
+  var title = document.createElement('h3');
+  title.className = 'press__title';
+  title.textContent = item.title || '';
+  link.appendChild(title);
+
+  var arrowLink = document.createElement('a');
+  arrowLink.className = 'press__arrow-btn';
+  arrowLink.href = item.articleUrl || '#';
+  arrowLink.setAttribute('aria-label', 'Ler notícia');
+  arrowLink.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>';
+  if (item.articleUrl) {
+    arrowLink.target = '_blank';
+    arrowLink.rel = 'noopener';
+  }
+  link.appendChild(arrowLink);
+
+  li.appendChild(link);
+  return li;
+}
+
+function loadHomePress() {
+  var pressList = document.querySelector('[data-press-list]');
+  if (!pressList) return;
+
+  fetch('/api/news?limit=4')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Erro na rede');
+      return response.json();
+    })
+    .then(function (result) {
+      var news = extractData(result);
+      if (!news || news.length === 0) {
+        showPressFallback(pressList);
+        return;
+      }
+
+      pressList.innerHTML = '';
+      var fragment = document.createDocumentFragment();
+
+      news.slice(0, 4).forEach(function (item) {
+        fragment.appendChild(createPressRow(item));
+      });
+
+      pressList.appendChild(fragment);
+    })
+    .catch(function () {
+      showPressFallback(pressList);
     });
 }
 
@@ -401,3 +633,5 @@ if (countdownDays && countdownHours && countdownMinutes) {
 }
 
 loadHomeEvents();
+loadHomeHeroEvent();
+loadHomePress();

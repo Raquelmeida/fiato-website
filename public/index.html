@@ -44,20 +44,20 @@
 
         <div class="home-hero__top-right">
           <h1 class="home-hero__title">
-            <span class="home-hero__title-light">A Vida do</span>
-            <span class="home-hero__title-bold">Grande Camilo</span>
+            <span class="home-hero__title-light" data-hero-title-light>A Vida do</span>
+            <span class="home-hero__title-bold" data-hero-title-bold>Grande Camilo</span>
           </h1>
         </div>
 
         <div class="home-hero__bottom-left">
-          <div class="home-hero__photo" role="img" aria-label="A Vida do Grande Camilo - Performance"></div>
+          <div class="home-hero__photo" data-hero-image role="img" aria-label="A Vida do Grande Camilo - Performance"></div>
         </div>
 
         <div class="home-hero__bottom-right">
           <div class="home-hero__card">
             <div class="home-hero__card-header">
               <span class="home-hero__eyebrow">Próximo Espetáculo</span>
-              <span class="home-hero__badge">Estreia</span>
+              <span class="home-hero__badge" data-hero-badge>Estreia</span>
             </div>
 
             <h2 class="home-hero__subtitle">Contagem Decrescente</h2>
@@ -80,19 +80,19 @@
             </div>
 
             <div class="home-hero__meta">
-              <span class="home-hero__meta-item">21H00</span>
-              <span class="home-hero__meta-item">15,00€</span>
-              <span class="home-hero__meta-item">14/05/26</span>
+              <span class="home-hero__meta-item" data-hero-time>21H00</span>
+              <span class="home-hero__meta-item" data-hero-price>15,00€</span>
+              <span class="home-hero__meta-item" data-hero-date>14/05/26</span>
             </div>
 
-            <div class="home-hero__location">Teatro Nacional de São João</div>
+            <div class="home-hero__location" data-hero-location>Teatro Nacional de São João</div>
 
-            <p class="home-hero__description">
+            <p class="home-hero__description" data-hero-description>
               A Ópera à Moda do Porto regressa às ruas. Uma adaptação imersiva que funde a música clássica com o tecido urbano contemporâneo...
             </p>
 
             <div class="home-hero__actions">
-              <a href="evento.html" class="home-hero__cta">
+              <a href="evento.html" class="home-hero__cta" data-hero-link>
                 <span class="home-hero__cta-text">Ver Evento</span>
                 <span class="home-hero__cta-icon">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
@@ -142,43 +142,18 @@
       <section class="press" data-navbar-theme="blue">
         <div class="press__inner">
           <header class="press__header">
-            <h2 class="press__heading">Na Imprensa</h2>
-            <a href="sobre-nos.html" class="press__more">MAIS NOTÍCIAS <span aria-hidden="true">↗</span></a>
+            <div class="press__heading-group">
+              <span class="press__label">Imprensa • FIATO</span>
+              <h2 class="press__heading">Na<br>Imprensa</h2>
+            </div>
+            <div class="press__header-right">
+              <a href="sobre-nos.html" class="press__more">Ver Notícias</a>
+              <span class="press__header-line" aria-hidden="true"></span>
+            </div>
           </header>
 
-          <ul class="press__list">
-            <li class="press__row">
-              <a href="sobre-nos.html" class="press__link">
-                <div class="press__date"><span class="press__day">09</span><span class="press__month">maio, 2026</span></div>
-                <div class="press__thumb ph" aria-hidden="true"></div>
-                <h3 class="press__title">A ópera desce à rua e toma conta do Porto</h3>
-                <span class="press__arrow" aria-hidden="true">↗</span>
-              </a>
-            </li>
-            <li class="press__row">
-              <a href="sobre-nos.html" class="press__link">
-                <div class="press__date"><span class="press__day">12</span><span class="press__month">maio, 2026</span></div>
-                <div class="press__thumb ph" aria-hidden="true"></div>
-                <h3 class="press__title">Quando a cidade se torna um teatro de ópera imersivo</h3>
-                <span class="press__arrow" aria-hidden="true">↗</span>
-              </a>
-            </li>
-            <li class="press__row">
-              <a href="sobre-nos.html" class="press__link">
-                <div class="press__date"><span class="press__day">14</span><span class="press__month">maio, 2026</span></div>
-                <div class="press__thumb ph" aria-hidden="true"></div>
-                <h3 class="press__title">FIATO transforma o mercado do Bolhão num palco lírico</h3>
-                <span class="press__arrow" aria-hidden="true">↗</span>
-              </a>
-            </li>
-            <li class="press__row">
-              <a href="sobre-nos.html" class="press__link">
-                <div class="press__date"><span class="press__day">15</span><span class="press__month">maio, 2026</span></div>
-                <div class="press__thumb ph" aria-hidden="true"></div>
-                <h3 class="press__title">O projeto que está a democratizar a música clássica</h3>
-                <span class="press__arrow" aria-hidden="true">↗</span>
-              </a>
-            </li>
+          <ul class="press__list" data-press-list>
+            <p class="press__loading" data-press-loading>A carregar notícias...</p>
           </ul>
         </div>
       </section>
