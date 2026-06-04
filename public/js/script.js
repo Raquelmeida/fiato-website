@@ -1221,8 +1221,11 @@ function loadEventoPage() {
   var eventId = params.get('id');
   if (!eventId) return;
 
+  var heroBg = document.querySelector('[data-evento-hero-bg] img');
   var heroTitle = document.querySelector('[data-evento-hero-title]');
   var heroTags = document.querySelector('[data-evento-hero-tags]');
+  var heroBadgeText = document.querySelector('[data-evento-hero-badge-text]');
+  var heroMarquee = document.querySelector('[data-evento-hero-marquee]');
   var quoteEl = document.querySelector('[data-evento-quote] h2');
   var directionEl = document.querySelector('[data-evento-direction]');
   var locationEl = document.querySelector('[data-evento-location]');
@@ -1249,10 +1252,50 @@ function loadEventoPage() {
       if (event.title) {
         var parts = splitHeroTitle(event.title);
         heroTitle.innerHTML = parts[0] + ' <span>' + parts[1] + '</span>';
+        document.title = event.title + ' | FIATO';
       }
 
       if (heroTags && event.direction) {
-        heroTags.innerHTML = '<span>' + event.direction + '</span>';
+        heroTags.innerHTML = '';
+        var tag1 = document.createElement('span');
+        tag1.textContent = 'Música Clássica';
+        heroTags.appendChild(tag1);
+        var tag2 = document.createElement('span');
+        tag2.textContent = event.direction;
+        heroTags.appendChild(tag2);
+      }
+
+      if (heroBg && event.imageUrl) {
+        heroBg.src = event.imageUrl;
+        heroBg.alt = event.title || '';
+      }
+
+      if (heroBadgeText && event.sessions && event.sessions.length > 0) {
+        var firstDate = event.sessions[0].date;
+        if (firstDate) {
+          var now = new Date();
+          var eventDate = new Date(firstDate);
+          var diffMs = eventDate - now;
+          var diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          if (diffDays > 1) {
+            heroBadgeText.textContent = diffDays + ' dias';
+          } else if (diffDays === 1) {
+            heroBadgeText.textContent = '1 dia';
+          } else if (diffDays === 0) {
+            heroBadgeText.textContent = 'Hoje';
+          } else {
+            heroBadgeText.textContent = 'A decorrer';
+          }
+        }
+      }
+
+      if (heroMarquee && event.title) {
+        heroMarquee.innerHTML = '';
+        for (var m = 0; m < 6; m++) {
+          var mSpan = document.createElement('span');
+          mSpan.textContent = event.title;
+          heroMarquee.appendChild(mSpan);
+        }
       }
 
       if (quoteEl && event.quote) {
@@ -1492,26 +1535,33 @@ if (instagramNext) {
   var footerEl = document.querySelector('.footer');
   if (!footerEl) return;
 
-  // Generate decorative bars with three different shapes
+  // Generate decorative bars with h-start (blue state) and h-end (orange state)
   (function generateFooterBars() {
     var groups = document.querySelectorAll('.footer__bars-group');
     if (!groups.length) return;
-    var barCount = window.innerWidth < 560 ? 16 : 28;
+    var barCount = window.innerWidth < 560 ? 16 : 36;
     groups.forEach(function (group, groupIndex) {
       var shape = group.getAttribute('data-shape') || 'center';
       for (var i = 0; i < barCount; i++) {
         var t = i / (barCount - 1);
-        var h;
+        var hStart, hEnd;
         if (shape === 'left') {
-          h = Math.cos(t * Math.PI * 0.45);
+          hStart = Math.cos(t * Math.PI * 0.5);
+          if (hStart < 0.04) hStart = 0.04;
+          hEnd = Math.sin(t * Math.PI);
         } else if (shape === 'right') {
-          h = Math.sin(t * Math.PI * 0.45);
+          hStart = Math.sin(t * Math.PI * 0.5);
+          if (hStart < 0.04) hStart = 0.04;
+          hEnd = Math.sin(t * Math.PI);
         } else {
-          h = Math.sin(t * Math.PI * 0.9);
-          if (h < 0.05) h = 0.05;
+          hStart = 0.5 + 0.5 * Math.sin(t * Math.PI);
+          if (hStart < 0.04) hStart = 0.04;
+          hEnd = Math.sin(t * Math.PI);
         }
+        if (hEnd < 0.04) hEnd = 0.04;
         var span = document.createElement('span');
-        span.style.setProperty('--h', h);
+        span.style.setProperty('--h-start', hStart);
+        span.style.setProperty('--h-end', hEnd);
         span.style.setProperty('--delay', ((groupIndex * 0.12) + (i * 0.022)) + 's');
         group.appendChild(span);
       }
@@ -1525,7 +1575,7 @@ if (instagramNext) {
         footerIo.unobserve(footerEl);
       }
     });
-  }, { threshold: 0 });
+  }, { threshold: 0.7 });
   footerIo.observe(footerEl);
 }());
 
