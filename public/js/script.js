@@ -1491,6 +1491,33 @@ if (instagramNext) {
 (function initFooterAnimation() {
   var footerEl = document.querySelector('.footer');
   if (!footerEl) return;
+
+  // Generate decorative bars with three different shapes
+  (function generateFooterBars() {
+    var groups = document.querySelectorAll('.footer__bars-group');
+    if (!groups.length) return;
+    var barCount = window.innerWidth < 560 ? 16 : 28;
+    groups.forEach(function (group, groupIndex) {
+      var shape = group.getAttribute('data-shape') || 'center';
+      for (var i = 0; i < barCount; i++) {
+        var t = i / (barCount - 1);
+        var h;
+        if (shape === 'left') {
+          h = Math.cos(t * Math.PI * 0.45);
+        } else if (shape === 'right') {
+          h = Math.sin(t * Math.PI * 0.45);
+        } else {
+          h = Math.sin(t * Math.PI * 0.9);
+          if (h < 0.05) h = 0.05;
+        }
+        var span = document.createElement('span');
+        span.style.setProperty('--h', h);
+        span.style.setProperty('--delay', ((groupIndex * 0.12) + (i * 0.022)) + 's');
+        group.appendChild(span);
+      }
+    });
+  }());
+
   var footerIo = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
