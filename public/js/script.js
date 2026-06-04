@@ -1487,6 +1487,21 @@ if (instagramNext) {
   });
 }
 
+// Footer animation
+(function initFooterAnimation() {
+  var footerEl = document.querySelector('.footer');
+  if (!footerEl) return;
+  var footerIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        footerEl.classList.add('is-visible');
+        footerIo.unobserve(footerEl);
+      }
+    });
+  }, { threshold: 0 });
+  footerIo.observe(footerEl);
+}());
+
 window.addEventListener('scroll', updateNavbarTheme);
 window.addEventListener('resize', () => {
   updateNavbarTheme();
