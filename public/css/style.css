@@ -2134,6 +2134,17 @@ img {
   text-transform: uppercase;
 }
 
+.evento-info__label {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 28px;
+}
+
 .evento-info__details img {
   width: 100%;
   height: 180px;
@@ -2190,6 +2201,10 @@ img {
   letter-spacing: -0.06em;
 }
 
+.evento-sessoes__intro h2 span {
+  display: block;
+}
+
 .evento-sessoes__intro span {
   display: block;
   max-width: 380px;
@@ -2236,6 +2251,9 @@ img {
 
 .evento-sessoes__item button,
 .evento-sessoes__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 10px 20px;
   border: 1px solid currentColor;
   border-radius: var(--radius-pill);
@@ -2248,6 +2266,32 @@ img {
   text-transform: uppercase;
   cursor: pointer;
   text-align: center;
+  transition: background-color var(--transition-default), color var(--transition-default);
+}
+
+.evento-sessoes__item button:not(.is-disabled):hover,
+.evento-sessoes__button:not(.is-disabled):hover {
+  background-color: var(--color-white);
+  color: var(--color-navy-40);
+}
+
+.evento-sessoes__button-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 12px;
+  line-height: 1;
+  transition: background-color var(--transition-default), color var(--transition-default);
+}
+
+.evento-sessoes__item button:not(.is-disabled):hover .evento-sessoes__button-arrow,
+.evento-sessoes__button:not(.is-disabled):hover .evento-sessoes__button-arrow {
+  background-color: var(--color-navy-40);
+  color: var(--color-white);
 }
 
 .evento-sessoes__item button.is-disabled {
@@ -2268,6 +2312,11 @@ img {
   font-weight: 400;
   font-style: italic;
   letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.evento-accordion h2 span {
+  display: block;
 }
 
 .evento-accordion__list {

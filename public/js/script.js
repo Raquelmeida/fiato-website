@@ -1103,7 +1103,13 @@ function createEventSessionEl(session) {
     var a = document.createElement('a');
     a.href = 'bilhetes.html';
     a.className = 'evento-sessoes__button';
-    a.textContent = 'Reservar';
+    a.textContent = 'Reservar ';
+
+    var arrow = document.createElement('span');
+    arrow.className = 'evento-sessoes__button-arrow';
+    arrow.textContent = '→';
+    a.appendChild(arrow);
+
     article.appendChild(a);
   }
 
