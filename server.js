@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
@@ -135,6 +133,15 @@ const newsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const arquivoSchema = new mongoose.Schema(
+  {
+    year: { type: Number, required: [true, "O ano é obrigatório"] },
+    description: { type: String, required: [true, "A descrição da edição é obrigatória"], trim: true },
+    imageUrl: { type: String, required: [true, "A imagem de capa é obrigatória"], match: [urlRegex, "URL de imagem inválido"] }
+  },
+  { timestamps: true }
+);
+
 const ticketSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: [true, "Nome do titular obrigatório"], trim: true },
@@ -162,9 +169,49 @@ const instagramPostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const Arquivo = mongoose.model("Arquivo", arquivoSchema);
 const ContactRequest = mongoose.model("ContactRequest", contactRequestSchema);
 const Event = mongoose.model("Event", eventSchema);
 const InstagramPost = mongoose.model("InstagramPost", instagramPostSchema);
+app.get("/api/arquivos", async (req, res) => {
+  try {
+    const list = await Arquivo.find().sort({ year: -1 }).lean();
+    res.json({ success: true, data: list });
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
+
+app.post("/api/arquivos", checkAdminAuth, upload.single('image'), async (req, res) => {
+  try {
+    const data = { ...req.body };
+    if (req.file) data.imageUrl = `/images/${req.file.filename}`;
+    const created = await Arquivo.create(data);
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
+});
+
+app.put("/api/arquivos/:id", checkAdminAuth, upload.single('image'), async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    if (req.file) updateData.imageUrl = `/images/${req.file.filename}`;
+    const updated = await Arquivo.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ success: false, error: "Registo não encontrado." });
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
+  }
+});
+
+app.delete("/api/arquivos/:id", checkAdminAuth, async (req, res) => {
+  try {
+    const deleted = await Arquivo.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ success: false, error: "Registo não encontrado." });
+    res.json({ success: true, message: "Eliminado com sucesso." });
+  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+});
 const News = mongoose.model("News", newsSchema);
 const Ticket = mongoose.model("Ticket", ticketSchema);
 

@@ -3,7 +3,8 @@ let appState = {
     news: [],
     contacts: [],
     tickets: [],
-    instagram: []
+    instagram: [],
+    arquivo: []
 };
 
 let currentEditId = null;
@@ -39,6 +40,7 @@ async function loadTabContent(schema) {
     if (schema === "contacts") endpoint = "/api/contact-requests";
     if (schema === "tickets") endpoint = "/api/tickets";
     if (schema === "instagram") endpoint = "/api/instagram";
+    if (schema === "arquivo") endpoint = "/api/arquivos";
 
     try {
         const response = await fetch(endpoint);
@@ -77,6 +79,20 @@ function filterData(schema) {
         }
         if (schema === "news") {
             return item.title.toLowerCase().includes(query);
+        }
+        if (schema === "arquivo") {
+            return item.year.toString().includes(query) || item.description.toLowerCase().includes(query);
+        }
+        else if (schema === "arquivo") {
+            row.innerHTML = `
+                <td><strong style="color: var(--fiato-dark);">${item.year}</strong></td>
+                <td><span class="has-text-grey" style="font-size:0.9rem;">${item.description}</span></td>
+                <td class="has-text-centered"><div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 6px; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;"></div></td>
+                <td class="has-text-right">
+                    <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditArquivo('${item._id}')"><i class="fas fa-pen"></i></button>
+                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('arquivos', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
         }
         if (schema === "instagram") {
             return item.caption.toLowerCase().includes(query);
@@ -187,7 +203,11 @@ function renderTable(schema, dataset) {
 // GESTÃO DE JANELAS MODAIS
 // ==========================================
 function clearFormErrors(schema) {
-    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : null;
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : schema === 'arquivo' ? 'arquivo' : null;
+    if (schema === "arquivo") {
+        document.getElementById("arquivo-preview-wrapper").classList.add("is-hidden");
+        document.getElementById("arquivo-year").value = new Date().getFullYear();
+    }
     if (!prefix) return;
     const banner = document.getElementById(`${prefix}-error-banner`);
     if (banner) {
@@ -215,7 +235,8 @@ function openCreateModal(schema) {
     const titles = {
         events: "Criar Novo Evento",
         news: "Publicar Nova Notícia",
-        instagram: "Adicionar Publicação Instagram"
+        instagram: "Adicionar Publicação Instagram",
+        arquivo: "Novo Registo de Arquivo"
     };
     document.getElementById(`modal-${schema}-title`).innerText = titles[schema] || "Criar Registo";
     document.getElementById(`modal-${schema}`).classList.add("is-active");
@@ -445,8 +466,63 @@ async function saveNews() {
 }
 
 // Função auxiliar para exibir erros no banner e no pop-up (alert)
+function openEditArquivo(id) {
+    currentEditId = id;
+    const item = appState.arquivo.find(a => a._id === id);
+    if (!item) return;
+    clearFormErrors("arquivo");
+
+    document.getElementById("arquivo-year").value = item.year || "";
+    document.getElementById("arquivo-description").value = item.description || "";
+    document.getElementById("arquivo-imageFile").value = "";
+
+    if (item.imageUrl) {
+        const previewImg = document.getElementById("arquivo-preview-img");
+        previewImg.src = item.imageUrl;
+        document.getElementById("arquivo-preview-wrapper").classList.remove("is-hidden");
+    }
+
+    document.getElementById("modal-arquivo-title").innerText = "Editar Registo de Arquivo";
+    document.getElementById("modal-arquivo").classList.add("is-active");
+}
+
+async function saveArquivo() {
+    const imageInput = document.getElementById("arquivo-imageFile");
+    const formData = new FormData();
+    
+    formData.append("year", document.getElementById("arquivo-year").value);
+    formData.append("description", document.getElementById("arquivo-description").value);
+
+    if (imageInput.files[0]) {
+        formData.append("image", imageInput.files[0]);
+    } else if (!currentEditId) {
+        displayFormError("arquivo", "É obrigatório fazer upload de uma imagem de capa.");
+        return;
+    }
+
+    const url = currentEditId ? `/api/arquivos/${currentEditId}` : "/api/arquivos";
+    const method = currentEditId ? "PUT" : "POST";
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            closeModal("modal-arquivo");
+            loadTabContent("arquivo");
+        } else {
+            displayFormError("arquivo", result.error);
+        }
+    } catch (err) { 
+        console.error(err);
+        displayFormError("arquivo", "Erro de ligação ao servidor.");
+    }
+}
+
 function displayFormError(schema, message) {
-    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : 'instagram';
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'arquivo' ? 'arquivo' : 'instagram';
     const banner = document.getElementById(`${prefix}-error-banner`);
     const cleanMsg = message || "Erro desconhecido ao processar dados.";
     
