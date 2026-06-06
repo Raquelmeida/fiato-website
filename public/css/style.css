@@ -250,7 +250,7 @@ img {
 
 .navbar--light .navbar__language {
   border-color: rgba(18, 34, 86, 0.2);
-  background: rgba(18, 34, 86, 0.05);
+  /*background: rgba(18, 34, 86, 0.05);*/
 }
 
 .navbar--light .navbar__language-option {
@@ -258,7 +258,7 @@ img {
 }
 
 .navbar--light .navbar__language-option--active {
-  background: rgba(18, 34, 86, 0.1);
+  /*background: rgba(18, 34, 86, 0.1);*/
   color: var(--color-navy-base);
 }
 
