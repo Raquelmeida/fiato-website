@@ -43,7 +43,7 @@ function updateNavbarTheme() {
   if (!navbar) return;
 
   const sections = document.querySelectorAll('[data-navbar-theme]');
-  const navbarHeight = 120;
+  const navbarHeight = navbar.getBoundingClientRect().height;
   let currentTheme = 'transparent';
 
   sections.forEach((section) => {
