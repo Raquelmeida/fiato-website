@@ -96,7 +96,8 @@ img {
   padding: 38px 30px;
   transition:
     padding var(--transition-default),
-    box-shadow var(--transition-default);
+    box-shadow var(--transition-default),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar--transparent {
@@ -104,19 +105,33 @@ img {
 }
 
 .navbar--navy {
-  background: transparent;
+  background-color: var(--color-navy-base);
+  background-image: none;
+  backdrop-filter: none;
 }
 
 .navbar--blue {
-  background: transparent;
+  background-color: var(--color-navy-base);
+  background-image: none;
+  backdrop-filter: none;
 }
 
 .navbar--light {
-  background: transparent;
+  background-color: var(--color-off-white);
+  background-image: none;
+  backdrop-filter: none;
 }
 
 .navbar--orange {
-  background: transparent;
+  background-color: var(--color-accent);
+  background-image: none;
+  backdrop-filter: none;
+}
+
+.navbar--dark {
+  background-color: var(--color-neutral-900);
+  background-image: none;
+  backdrop-filter: none;
 }
 
 .navbar__inner {
@@ -135,6 +150,7 @@ img {
   font-style: italic;
   text-decoration: none;
   letter-spacing: -1px;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar__menu {
@@ -157,7 +173,9 @@ img {
   border-radius: 0;
   min-width: 0;
   text-align: left;
-  transition: opacity var(--transition-default);
+  transition: 
+    opacity var(--transition-default),
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar__link:hover {
@@ -181,6 +199,9 @@ img {
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.06);
+  transition: 
+    border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar__language-option {
@@ -194,7 +215,9 @@ img {
   font-weight: 500;
   font-style: italic;
   cursor: pointer;
-  transition: background var(--transition-default), color var(--transition-default);
+  transition: 
+    background var(--transition-default), 
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar__language-option--active {
@@ -218,6 +241,7 @@ img {
   height: 7px;
   border-radius: var(--radius-pill);
   background-color: var(--color-white);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar--light .navbar__link {
@@ -286,7 +310,7 @@ img {
 }
 
 .navbar_height {
-  margin-top: 0;
+  margin-top: var(--navbar-height);
 }
 
 .hero {
