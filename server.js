@@ -115,6 +115,7 @@ const eventSchema = new mongoose.Schema(
     direction: { type: String, required: [true, "A direção artística é obrigatória"], trim: true },
     duration: { type: String, required: [true, "A duração é obrigatória"], trim: true },
     description: { type: String, required: [true, "A sinopse é obrigatória"], minlength: [30, "A sinopse é demasiado curta (mínimo 30 caracteres)"] },
+    price: { type: String, trim: true },
     sessions: [sessionSubSchema],
     faqs: [{ question: { type: String, required: true }, answer: { type: String, required: true } }],
     isFeatured: { type: Boolean, default: false }
@@ -252,10 +253,17 @@ app.get("/api/events/gallery", async (req, res) => {
 
 app.get("/api/events", async (req, res) => {
   try {
-    const { featured, search, page, limit } = req.query;
+    const { featured, search, page, limit, year } = req.query;
     let buildQuery = {};
     if (featured) buildQuery.isFeatured = featured === "true";
     if (search) buildQuery.title = new RegExp(search, "i");
+    if (year) {
+      const yearNum = parseInt(year);
+      buildQuery["sessions.date"] = {
+        $gte: new Date(yearNum, 0, 1),
+        $lt: new Date(yearNum + 1, 0, 1)
+      };
+    }
 
     // Inteligência Admin: Se não houver paginação explícita, entrega tudo ao Dashboard
     if (!page && !limit) {
@@ -263,13 +271,15 @@ app.get("/api/events", async (req, res) => {
       return res.json({ success: true, data: allEvents });
     }
 
-    const skipIndex = (parseInt(page) - 1) * parseInt(limit);
-    const eventsList = await Event.find(buildQuery).sort({ "sessions.date": 1 }).skip(skipIndex).limit(parseInt(limit)).lean();
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 10;
+    const skipIndex = (pageNum - 1) * limitNum;
+    const eventsList = await Event.find(buildQuery).sort({ "sessions.date": 1 }).skip(skipIndex).limit(limitNum).lean();
     const aggregateTotal = await Event.countDocuments(buildQuery);
 
     res.json({
       success: true,
-      meta: { totalItems: aggregateTotal, currentPage: parseInt(page), totalPages: Math.ceil(aggregateTotal / limit) },
+      meta: { totalItems: aggregateTotal, currentPage: pageNum, totalPages: Math.ceil(aggregateTotal / limitNum) },
       data: eventsList
     });
   } catch (err) { 
@@ -288,10 +298,18 @@ app.get("/api/events/:id", async (req, res) => {
 
 app.get("/api/news", async (req, res) => {
   try {
-    const { page, limit } = req.query;
+    const { page, limit, year } = req.query;
+    let buildQuery = {};
+    if (year) {
+      const yearNum = parseInt(year);
+      buildQuery.publishDate = {
+        $gte: new Date(yearNum, 0, 1),
+        $lt: new Date(yearNum + 1, 0, 1)
+      };
+    }
 
     if (!page && !limit) {
-      const allNews = await News.find({}).sort({ publishDate: -1 }).lean();
+      const allNews = await News.find(buildQuery).sort({ publishDate: -1 }).lean();
       return res.json({ success: true, data: allNews });
     }
 
@@ -299,8 +317,8 @@ app.get("/api/news", async (req, res) => {
     const limitNum = parseInt(limit) || 4;
     const skipIndex = (pageNum - 1) * limitNum;
 
-    const newsFeed = await News.find({}).sort({ publishDate: -1 }).skip(skipIndex).limit(limitNum).lean();
-    const totalNewsDocs = await News.countDocuments({});
+    const newsFeed = await News.find(buildQuery).sort({ publishDate: -1 }).skip(skipIndex).limit(limitNum).lean();
+    const totalNewsDocs = await News.countDocuments(buildQuery);
 
     res.json({
       success: true,

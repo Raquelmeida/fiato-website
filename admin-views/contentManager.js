@@ -83,17 +83,6 @@ function filterData(schema) {
         if (schema === "arquivo") {
             return item.year.toString().includes(query) || item.description.toLowerCase().includes(query);
         }
-        else if (schema === "arquivo") {
-            row.innerHTML = `
-                <td><strong style="color: var(--fiato-dark);">${item.year}</strong></td>
-                <td><span class="has-text-grey" style="font-size:0.9rem;">${item.description}</span></td>
-                <td class="has-text-centered"><div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 6px; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;"></div></td>
-                <td class="has-text-right">
-                    <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditArquivo('${item._id}')"><i class="fas fa-pen"></i></button>
-                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('arquivos', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
-                </td>
-            `;
-        }
         if (schema === "instagram") {
             return item.caption.toLowerCase().includes(query);
         }
@@ -136,6 +125,17 @@ function renderTable(schema, dataset) {
                 </td>
             `;
         } 
+        else if (schema === "arquivo") {
+            row.innerHTML = `
+                <td><strong style="color: var(--fiato-dark);">${item.year}</strong></td>
+                <td><span class="has-text-grey" style="font-size:0.9rem;">${item.description}</span></td>
+                <td class="has-text-centered"><div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 6px; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;"></div></td>
+                <td class="has-text-right">
+                    <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditArquivo('${item._id}')"><i class="fas fa-pen"></i></button>
+                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('arquivos', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+        }
         else if (schema === "news") {
             const dateFormatted = new Date(item.publishDate).toLocaleDateString('pt-PT');
             row.innerHTML = `
@@ -204,10 +204,6 @@ function renderTable(schema, dataset) {
 // ==========================================
 function clearFormErrors(schema) {
     const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : schema === 'arquivo' ? 'arquivo' : null;
-    if (schema === "arquivo") {
-        document.getElementById("arquivo-preview-wrapper").classList.add("is-hidden");
-        document.getElementById("arquivo-year").value = new Date().getFullYear();
-    }
     if (!prefix) return;
     const banner = document.getElementById(`${prefix}-error-banner`);
     if (banner) {
@@ -230,6 +226,10 @@ function openCreateModal(schema) {
         document.getElementById("instagram-isPublished").checked = true;
         document.getElementById("instagram-order").value = "0";
         document.getElementById("instagram-date").value = new Date().toISOString().substring(0, 10);
+    }
+    if (schema === "arquivo") {
+        document.getElementById("arquivo-preview-wrapper").classList.add("is-hidden");
+        document.getElementById("arquivo-year").value = new Date().getFullYear();
     }
     
     const titles = {

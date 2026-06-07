@@ -134,6 +134,16 @@ img {
   backdrop-filter: none;
 }
 
+.navbar--dark-blue {
+  background-color: #122256; /* Your dark blue color */
+  color: #ffffff;
+}
+
+.navbar--dark-blue .navbar__link {
+  color: #ffffff;
+}
+
+
 .navbar__inner {
   width: 100%;
   display: flex;
@@ -279,7 +289,7 @@ img {
 
 .edicoes-page {
   min-height: 100vh;
-  background-color: var(--color-navy-40);
+  background-color: #122256;
 }
 
 .sobre-nos {
@@ -1609,6 +1619,7 @@ img {
 
 .agenda-event-card__button--outline {
   border: 1px solid var(--color-white);
+  background-color: transparent;
   color: var(--color-white);
 }
 
@@ -1637,6 +1648,57 @@ img {
   background-size: cover;
   background-repeat: no-repeat;
   overflow: hidden;
+  transition: 
+    min-height 0.8s cubic-bezier(0.77, 0, 0.175, 1),
+    padding 0.8s cubic-bezier(0.77, 0, 0.175, 1),
+    opacity 0.5s ease,
+    transform 0.6s ease;
+  will-change: min-height, opacity;
+}
+
+.archive-filters {
+  display: none;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 56px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.archive-filters__search {
+  width: 100%;
+  height: 54px;
+  padding: 0 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition-default);
+}
+
+.archive-filters__search:focus {
+  border-color: var(--color-white);
+}
+
+.edition-section.is-active {
+  align-items: flex-start;
+}
+
+.edition-section__agenda {
+  width: 100%;
+  margin-top: 64px;
+  text-align: left;
+}
+
+.edition-section__news {
+  width: 100%;
+  margin-top: 80px;
+  text-align: left;
 }
 
 .edition-section--navy {
@@ -1651,6 +1713,9 @@ img {
 
 .edition-section__content {
   text-align: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .edition-section__year {
@@ -1669,6 +1734,17 @@ img {
 
 .edition-section--orange .edition-section__year {
   color: var(--color-white);
+}
+
+/* Active Arquivo State Logic */
+.edicoes-page--item-active .edition-section:not(.is-active) {
+  min-height: 0 !important;
+  height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
 }
 
 .edition-section__subtitle {

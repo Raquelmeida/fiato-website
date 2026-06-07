@@ -25,6 +25,18 @@ function pad(value) {
   return String(value).padStart(2, '0');
 }
 
+function debounce(func, wait) {
+  let timeout;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      func.apply(context, args);
+    }, wait);
+  };
+}
+
 function updateCountdown() {
   if (!countdownDays || !countdownHours || !countdownMinutes) return;
 
@@ -44,13 +56,15 @@ function updateNavbarTheme() {
 
   const sections = document.querySelectorAll('[data-navbar-theme]');
   const navbarHeight = navbar.getBoundingClientRect().height;
-  let currentTheme = 'transparent';
+  // Set default theme: dark-blue for archive page to ensure contrast on load, transparent for others
+  let currentTheme = document.querySelector('[data-arquivo-list]') ? 'dark-blue' : 'transparent';
 
   sections.forEach((section) => {
     const rect = section.getBoundingClientRect();
 
     if (rect.top <= navbarHeight && rect.bottom >= navbarHeight) {
-      currentTheme = section.getAttribute('data-navbar-theme');
+      const theme = section.getAttribute('data-navbar-theme');
+      if (theme) currentTheme = theme;
     }
   });
 
@@ -142,24 +156,6 @@ document.getElementById('novidades')?.addEventListener('click', function (event)
   });
   button.classList.add('is-active');
   sortAgenda(button.dataset.agendaSort);
-});
-
-editionToggleButtons.forEach((button) => {
-  button.addEventListener('click', () => {
-    const year = button.dataset.editionToggle;
-
-    if (year === '2026') return;
-
-    const isOpen = button.classList.contains('edition-section__button--open');
-
-    editionToggleButtons.forEach((toggleButton) => {
-      toggleButton.classList.remove('edition-section__button--open');
-    });
-
-    if (!isOpen) {
-      button.classList.add('edition-section__button--open');
-    }
-  });
 });
 
 faqTriggers.forEach((trigger) => {
@@ -324,10 +320,11 @@ if (contactForm) {
     var formData = new FormData(contactForm);
 
     var body = {
-      name: (formData.get('nome') || '') + ' ' + (formData.get('apelido') || ''),
+      firstName: formData.get('nome') || '',
+      lastName: formData.get('apelido') || '',
       email: formData.get('email') || '',
       message: formData.get('mensagem') || '',
-      type: 'contact'
+      type: 'general'
     };
 
     fetch('/api/contact-requests', {
@@ -379,9 +376,11 @@ if (memberForm) {
     var formData = new FormData(memberForm);
 
     var body = {
-      name: '',
+      firstName: formData.get('nome') || '',
+      lastName: formData.get('apelido') || '',
       email: formData.get('email') || '',
-      message: 'Pedido de adesão como membro.',
+      message: formData.get('mensagem') || 'Pedido de adesão como membro.',
+      documentUrl: formData.get('link') || formData.get('portfolio') || '',
       type: 'membership'
     };
 
@@ -528,6 +527,8 @@ function renderScheduleCards(events) {
 
 function loadHomeEvents() {
   if (!scheduleGrid) return;
+
+  scheduleGrid.innerHTML = '<p class="schedule__loading">A carregar eventos...</p>';
 
   fetch('/api/events?featured=true&limit=3')
     .then(function (response) {
@@ -751,6 +752,8 @@ function loadHomePress() {
   var pressList = document.querySelector('[data-press-list]');
   if (!pressList) return;
 
+  pressList.innerHTML = '<p class="press__loading">A carregar notícias...</p>';
+
   fetch('/api/news?limit=4')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
@@ -862,6 +865,8 @@ function createAgendaCard(event, index) {
 
 function loadAgendaEvents() {
   if (!agendaList) return;
+
+  agendaList.innerHTML = '<p class="agenda-list__empty">A carregar agenda...</p>';
 
   fetch('/api/events?limit=50')
     .then(function (response) {
@@ -978,6 +983,467 @@ function loadAgendaEvents() {
     })
     .catch(function () {
       agendaList.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
+    });
+}
+// ==========================================
+// ARQUIVO INTERACTION & COMBINED FILTERING LOGIC
+// ==========================================
+
+const arquivoList = document.querySelector('[data-arquivo-list]');
+
+if (arquivoList) {
+  // 1. Unified Event Delegation for Toggling Sections
+  arquivoList.addEventListener('click', function (event) {
+    const section = event.target.closest('.edition-section');
+    if (!section) return;
+
+    const clearBtn = event.target.closest('[data-archive-clear]');
+    if (clearBtn) {
+      const agendaContainer = section.querySelector('[data-archive-agenda]');
+      const newsContainer = section.querySelector('[data-archive-news]');
+      const containers = [agendaContainer, newsContainer].filter(Boolean);
+
+      // Initiate fade out for smooth transition
+      containers.forEach(c => {
+        c.style.opacity = '0';
+        c.style.transition = 'opacity 0.3s ease';
+      });
+
+      setTimeout(() => {
+        const spinner = '<div style="display:flex;justify-content:center;padding:40px;width:100%;"><div style="width:24px;height:24px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:archive-spin 0.8s linear infinite;"></div><style>@keyframes archive-spin{to{transform:rotate(360deg)}}</style></div>';
+        if (agendaContainer) agendaContainer.innerHTML = spinner;
+        if (newsContainer) newsContainer.innerHTML = '';
+        containers.forEach(c => c.style.opacity = '1');
+
+        setTimeout(() => {
+          const inputs = section.querySelectorAll('[data-archive-filters] input');
+          inputs.forEach(input => input.value = '');
+          section._agendaVisibleCount = 4;
+          section._newsVisibleCount = 3;
+          updateArchiveDisplay(section);
+          containers.forEach(c => c.style.opacity = '1');
+        }, 300);
+      }, 300);
+      return;
+    }
+
+    const toggleBtn = event.target.closest('[data-edition-toggle]');
+    const isContentClick = event.target.closest('.edition-section__content') || event.target === section;
+
+    // FIX: If the section is already open, prevent clicks inside its content from collapsing it
+    if (section.classList.contains('is-active') && event.target.closest('.edition-section__content') && !toggleBtn) {
+      return;
+    }
+
+    if (toggleBtn || isContentClick) {
+      const isActive = section.classList.contains('is-active');
+      const allSections = arquivoList.querySelectorAll('.edition-section');
+
+      // Reset all states smoothly via class definitions
+      allSections.forEach(s => {
+        s.classList.remove('is-active');
+        const btn = s.querySelector('.edition-section__button');
+        if (btn) btn.classList.remove('edition-section__button--open');
+      });
+      arquivoList.classList.remove('edicoes-page--item-active');
+
+      // If we are activating a section
+      if (!isActive) {
+        section.classList.add('is-active');
+        arquivoList.classList.add('edicoes-page--item-active');
+        const btn = section.querySelector('.edition-section__button');
+        if (btn) btn.classList.add('edition-section__button--open');
+
+        // Load and initialize archive content dynamically
+        initializeArchiveContent(section);
+      }
+
+      // Trigger navbar update after the transition finishes
+      setTimeout(updateNavbarTheme, 800);
+    }
+  });
+
+  // 2. Event Listener for Combinable Client-Side Inputs
+  const debouncedArchiveUpdate = debounce(updateArchiveDisplay, 300);
+
+  arquivoList.addEventListener('input', function(e) {
+    if (e.target.closest('[data-archive-filters]')) {
+      const section = e.target.closest('.edition-section');
+      
+      // Reset visible counts to initial subsets when filters change
+      section._agendaVisibleCount = 4;
+      section._newsVisibleCount = 3;
+      debouncedArchiveUpdate(section);
+    }
+  });
+}
+
+function initializeArchiveContent(section) {
+  const year = section.dataset.editionYear;
+
+  // If data is already cached, execute client-side filter update instantly
+  if (section._archiveLoaded) {
+    updateArchiveDisplay(section);
+    return;
+  }
+
+  if (section._archiveLoading) return;
+  section._archiveLoading = true;
+
+  // Parallel asynchronous fetching
+  Promise.all([
+    loadArchiveAgenda(section, year),
+    loadArchiveNews(section, year)
+  ]).then(() => {
+    section._archiveLoaded = true;
+    section._archiveLoading = false;
+  }).catch(() => {
+    section._archiveLoading = false;
+  });
+}
+
+function updateArchiveDisplay(section) {
+  // Centralized pipeline to filter both datasets simultaneously
+  renderArchiveAgenda(section);
+  renderArchiveNews(section);
+}
+
+// ==========================================
+// AGENDA ARCHITECTURE (REUSING COMPONENT PATTERNS)
+// ==========================================
+
+function loadArchiveAgenda(section, year) {
+  const container = section.querySelector('[data-archive-agenda]');
+  if (!container) return;
+
+  container.innerHTML = '<p class="agenda-list__empty" style="margin-top: 60px;">A carregar eventos de ' + year + '...</p>';
+
+  return fetch('/api/events?year=' + year + '&limit=500')
+    .then(function (res) { return res.json(); })
+    .then(function (result) {
+      const events = extractData(result) || [];
+
+      // Cache data scoped to this year
+      section._allEvents = events;
+
+      section._agendaVisibleCount = 4;
+      renderArchiveAgenda(section);
+    })
+    .catch(function () {
+      container.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
+      throw new Error('Fetch failed for Archive Agenda');
+    });
+}
+
+function renderArchiveAgenda(section) {
+  const container = section.querySelector('[data-archive-agenda]');
+  if (!container || !section._allEvents) return;
+
+  // Collect values from the combinable filter architecture
+  const titleVal = (section.querySelector('[data-filter-title]')?.value || '').toLowerCase();
+  const localVal = (section.querySelector('[data-filter-local]')?.value || '').toLowerCase();
+  const dateVal = (section.querySelector('[data-filter-date]')?.value || '').toLowerCase();
+
+  // Evaluate combined constraints client-side
+  const filteredEvents = section._allEvents.filter(function (event) {
+    const matchTitle = !titleVal || (event.title || '').toLowerCase().includes(titleVal);
+    
+    const locationStr = ((event.locationSummary || '') + ' ' + (event.sessions || []).map(s => s.specificLocation || '').join(' ')).toLowerCase();
+    const matchLocal = !localVal || locationStr.includes(localVal);
+
+    const sessionDatesStr = (event.sessions || []).map(s => {
+      if (!s.date) return '';
+      const d = new Date(s.date);
+      return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    }).join(' ');
+    const matchDate = !dateVal || sessionDatesStr.includes(dateVal) || (event.sessions || []).some(s => (s.date || '').includes(dateVal));
+
+    return matchTitle && matchLocal && matchDate;
+  });
+
+  if (filteredEvents.length === 0) {
+    const year = section.dataset.editionYear;
+    const emptyMsg = (section._allEvents && section._allEvents.length > 0) 
+      ? "Nenhum evento corresponde aos filtros." 
+      : "Não existem eventos para esta edição.";
+
+    container.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
+        <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <p class="agenda-list__empty" style="margin: 0;">${emptyMsg}</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  const limit = section._agendaVisibleCount || 4;
+
+  // Reuse existing architected components
+  filteredEvents.slice(0, limit).forEach(function (ev, idx) {
+    if (typeof createAgendaCard === 'function') {
+      container.appendChild(createAgendaCard(ev, idx));
+    } else if (typeof createProximoEventoCard === 'function') {
+      container.appendChild(createProximoEventoCard(ev));
+    }
+  });
+
+  // Reusable load-more pattern
+  if (limit < filteredEvents.length) {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.style.padding = '60px 0';
+    btnWrapper.style.textAlign = 'center';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'agenda-event-card__button agenda-event-card__button--outline';
+    btn.textContent = 'Carregar mais';
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      section._agendaVisibleCount += 4;
+      renderArchiveAgenda(section);
+    });
+    btnWrapper.appendChild(btn);
+    container.appendChild(btnWrapper);
+  }
+}
+
+// ==========================================
+// NOTÍCIAS ARCHITECTURE (REUSING HOMEPAGE PATTERNS)
+// ==========================================
+
+function loadArchiveNews(section, year) {
+  const container = section.querySelector('[data-archive-news]');
+  if (!container) return;
+
+  container.innerHTML = '<p class="press__loading" style="margin-top: 60px;">A carregar notícias de ' + year + '...</p>';
+
+  return fetch('/api/news?year=' + year + '&limit=500')
+    .then(function (res) { return res.json(); })
+    .then(function (result) {
+      const news = extractData(result) || [];
+
+      // Cache data scoped to this year
+      section._allNews = news;
+
+      section._newsVisibleCount = 3;
+      renderArchiveNews(section);
+    })
+    .catch(function () {
+      container.innerHTML = '<p class="press__loading">Não foi possível carregar as notícias.</p>';
+      throw new Error('Fetch failed for Archive News');
+    });
+}
+
+function renderArchiveNews(section) {
+  const container = section.querySelector('[data-archive-news]');
+  if (!container || !section._allNews) return;
+
+  // Cross-cutting search requirements across loaded news
+  const titleVal = (section.querySelector('[data-filter-title]')?.value || '').toLowerCase();
+  const localVal = (section.querySelector('[data-filter-local]')?.value || '').toLowerCase();
+  const dateVal = (section.querySelector('[data-filter-date]')?.value || '').toLowerCase();
+
+  const filteredNews = section._allNews.filter(function (item) {
+    const matchTitle = !titleVal || (item.title || '').toLowerCase().includes(titleVal) || (item.caption || '').toLowerCase().includes(titleVal);
+    const matchLocal = !localVal || (item.caption || '').toLowerCase().includes(localVal);
+    
+    let dateStr = '';
+    if (item.publishDate) {
+      const d = new Date(item.publishDate);
+      dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    }
+    const matchDate = !dateVal || dateStr.includes(dateVal) || (item.publishDate || '').includes(dateVal);
+
+    return matchTitle && matchLocal && matchDate;
+  });
+
+  if (filteredNews.length === 0) {
+    const year = section.dataset.editionYear;
+    const emptyMsg = (section._allNews && section._allNews.length > 0) 
+      ? "Nenhuma notícia corresponde aos filtros." 
+      : "Não existem notícias para esta edição.";
+
+    container.innerHTML = `
+      <h3 class="edition-section__subtitle" style="font-size: 24px; margin-top: 80px; margin-bottom: 40px; text-align: left;">Notícias ${year}</h3>
+      <div style="text-align: center; padding: 40px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
+        <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px; opacity: 0.5;">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <p class="press__loading" style="margin: 0;">${emptyMsg}</p>
+      </div>`;
+    return;
+  }
+
+  const year = section.dataset.editionYear;
+  container.innerHTML = '<h3 class="edition-section__subtitle" style="font-size: 24px; margin-top: 80px; margin-bottom: 40px; text-align: left;">Notícias ' + year + '</h3>';
+  
+  const list = document.createElement('ul');
+  list.className = 'press__list';
+  container.appendChild(list);
+
+  const limit = section._newsVisibleCount || 3;
+
+  filteredNews.slice(0, limit).forEach(function (item) {
+    if (typeof createPressRow === 'function') {
+      list.appendChild(createPressRow(item));
+    }
+  });
+
+  // Reusable load-more pattern matching standard architecture
+  if (limit < filteredNews.length) {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.className = 'load-more-news-btn';
+    btnWrapper.style.padding = '40px 0';
+    btnWrapper.style.textAlign = 'center';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'agenda-event-card__button agenda-event-card__button--outline';
+    btn.textContent = 'Carregar mais notícias';
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      section._newsVisibleCount += 3;
+      renderArchiveNews(section);
+    });
+    btnWrapper.appendChild(btn);
+    container.appendChild(btnWrapper);
+  }
+}
+
+function updateArchiveParallax() {
+  const sections = document.querySelectorAll('.edition-section');
+  sections.forEach(function(section) {
+    // Only apply to sections that have a background image set
+    if (!section.style.backgroundImage || section.style.backgroundImage === 'none') return;
+    
+    const rect = section.getBoundingClientRect();
+    const winH = window.innerHeight;
+    
+    if (rect.top < winH && rect.bottom > 0) {
+      const yPos = (rect.top * 0.15); // Adjust this factor for more/less intensity
+      section.style.backgroundPositionY = 'calc(50% + ' + yPos + 'px)';
+    }
+  });
+}
+
+// ==========================================
+// DYNAMIC PAGE BOOTSTRAPPER (DOM INJECTION)
+// ==========================================
+
+function loadArquivoPage() {
+  const container = document.querySelector('[data-arquivo-list]');
+  if (!container) return;
+
+  container.innerHTML = '<p class="agenda-list__empty">A carregar arquivo...</p>';
+
+  fetch('/api/arquivos')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Erro na rede');
+      return response.json();
+    })
+    .then(function (result) {
+      const archives = extractData(result);
+      if (!archives || archives.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 100px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
+            <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 24px; opacity: 0.4;">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <p class="agenda-list__empty" style="margin: 0;">Não existem edições no arquivo.</p>
+          </div>`;
+        return;
+      }
+
+      archives.sort((a, b) => b.year - a.year);
+      container.innerHTML = `
+        <style>
+          .edition-section {
+            opacity: 0;
+            animation: sectionEntrance 0.7s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+            background-size: cover;
+            background-position: center;
+          }
+          @keyframes sectionEntrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .edition-section__button { 
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), background-color 0.3s ease !important; 
+          }
+          .edition-section__button:hover { transform: translateY(-2px); background-color: rgba(255, 255, 255, 0.12); }
+          .edition-section__button:active { transform: translateY(0) scale(0.95); }
+          .edition-section__button--open { transform: rotate(180deg); }
+          .edition-section__button--open:hover { transform: rotate(180deg) translateY(2px); }
+          .edition-section__button--open:active { transform: rotate(180deg) scale(0.95); }
+        </style>`;
+      const fragment = document.createDocumentFragment();
+
+      archives.forEach((archive, idx) => {
+        const theme = idx % 2 === 0 ? 'navy' : 'orange';
+        const section = document.createElement('section');
+        section.className = `edition-section edition-section--${theme}`;
+        section.dataset.navbarTheme = theme === 'navy' ? 'dark-blue' : theme;
+        section.dataset.editionYear = archive.year;
+        section.style.animationDelay = Math.min(idx * 0.1, 1.5) + 's';
+
+        if (archive.image) {
+          section.style.backgroundImage = `linear-gradient(rgba(18, 34, 86, 0.4), rgba(18, 34, 86, 0.4)), url(${archive.image.replace(/'/g, '%27')})`;
+        }
+
+        // FIX: Replaced isolated sorting buttons with a true, flexible, combinable architectural layout
+        section.innerHTML = `
+          <button type="button" class="edition-section__button" aria-label="Ver arquivo ${archive.year}" data-edition-toggle="${archive.year}">
+            ↓
+          </button>
+          <div class="edition-section__content">
+            <h2 class="edition-section__year">${archive.year}</h2>
+            <p class="edition-section__subtitle">${archive.description || ''}</p>
+            
+            <div class="archive-filters" data-archive-filters>
+               <div class="archive-filters__group" style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Título..." data-filter-title>
+                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Local..." data-filter-local>
+                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Data (DD/MM/AAAA)..." data-filter-date>
+                  <button type="button" class="agenda-event-card__button agenda-event-card__button--outline" style="height: 44px; padding: 0 15px; font-size: 14px; margin: 0; white-space: nowrap;" data-archive-clear>Limpar Filtros</button>
+               </div>
+            </div>
+
+            <div class="edition-section__agenda" data-archive-agenda></div>
+            <div class="edition-section__news" data-archive-news></div>
+          </div>
+        `;
+        fragment.appendChild(section);
+      });
+
+      container.appendChild(fragment);
+      updateNavbarTheme();
+      updateArchiveParallax();
+    })
+    .catch(function () {
+      container.innerHTML = `
+        <section class="edition-section edition-section--navy" data-navbar-theme="dark-blue" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; opacity: 1;">
+          <div style="text-align: center; color: var(--color-off-white); padding: 40px; animation: archiveFadeIn 0.5s ease-out forwards;">
+            <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 24px; opacity: 0.6;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <h2 class="edition-section__year" style="font-size: 32px; margin-bottom: 16px;">Ops! Algo desafinou.</h2>
+            <p class="edition-section__subtitle" style="max-width: 400px; margin: 0 auto 32px; opacity: 0.8;">
+              Não foi possível carregar o arquivo de edições neste momento. Por favor, tente recarregar a página.
+            </p>
+            <button onclick="window.location.reload()" class="agenda-event-card__button agenda-event-card__button--outline" style="color: inherit; border-color: currentColor;">
+              Recarregar Arquivo
+            </button>
+          </div>
+        </section>`;
+      updateNavbarTheme();
     });
 }
 
@@ -1194,6 +1660,8 @@ function createProximoEventoCard(event) {
 }
 
 function loadProximosEventos(grid, excludeId) {
+  grid.innerHTML = '<p class="schedule__loading">A carregar próximos eventos...</p>';
+
   fetch('/api/events?limit=4')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
@@ -1585,9 +2053,13 @@ if (instagramNext) {
   footerIo.observe(footerEl);
 }());
 
-window.addEventListener('scroll', updateNavbarTheme);
+window.addEventListener('scroll', function() {
+  updateNavbarTheme();
+  updateArchiveParallax();
+});
 window.addEventListener('resize', () => {
   updateNavbarTheme();
+  updateArchiveParallax();
 
   if (window.innerWidth > 768 && navbar && menuToggle) {
     navbar.classList.remove('is-open');
@@ -1607,6 +2079,7 @@ loadHomeEvents();
 loadHomeHeroEvent();
 loadHomePress();
 loadAgendaEvents();
+loadArquivoPage();
 loadEventoPage();
 loadTicketEvents();
 loadInstagramPosts();

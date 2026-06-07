@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <header class="navbar navbar--transparent">
+    <header class="navbar navbar--dark-blue">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo">FIATO</a>
 
@@ -36,17 +36,8 @@
       </div>
     </header>
 
-    <main class="edicoes-page navbar_height">
-      <!-- O conteúdo será populado dinamicamente via JS ou estaticamente se preferível -->
-      <section class="edition-section edition-section--navy" data-navbar-theme="navy" data-edition-year="2026">
-        <button type="button" class="edition-section__button" aria-label="Ver arquivo 2026" data-edition-toggle="2026">
-          ↓
-        </button>
-        <div class="edition-section__content">
-          <h2 class="edition-section__year">2026</h2>
-          <p class="edition-section__subtitle">Edição Atual</p>
-        </div>
-      </section>
+    <main class="edicoes-page navbar_height" data-arquivo-list data-navbar-theme="dark-blue">
+      <p class="agenda-list__empty">A carregar arquivo...</p>
     </main>
 
     <footer class="footer" data-navbar-theme="orange">
