@@ -1389,7 +1389,7 @@ img {
 }
 
 .agenda-list__month--blue .agenda-list__month-header {
-  background-color: var(--color-navy-base);
+ /* background-color: var(--color-navy-base); */
   color: var(--color-white);
 }
 
@@ -1644,16 +1644,43 @@ img {
   align-items: center;
   justify-content: center;
   padding: 160px 32px 120px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-color: var(--section-tint, var(--color-navy-80));
   overflow: hidden;
   transition: 
     min-height 0.8s cubic-bezier(0.77, 0, 0.175, 1),
     padding 0.8s cubic-bezier(0.77, 0, 0.175, 1),
     opacity 0.5s ease,
+    background-color 0.8s cubic-bezier(0.77, 0, 0.175, 1),
+    box-shadow 0.8s cubic-bezier(0.77, 0, 0.175, 1),
     transform 0.6s ease;
   will-change: min-height, opacity;
+  z-index: 1;
+}
+
+.edition-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--archive-bg);
+  background-size: cover;
+  background-position: center calc(50% + var(--parallax-y, 0px));
+  background-repeat: no-repeat;
+  z-index: -1;
+  opacity: 0.5;
+  transition: filter 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+}
+
+.edition-section.is-active::before {
+  filter: blur(300px) scale(4.4);
+  opacity: 0.10;
+}
+
+.edition-section.is-active {
+  box-shadow: inset 0 0 200px 100px var(--section-tint, var(--color-navy-80));
+}
+
+.edition-section:not(.is-active) [data-archive-container] {
+  display: none;
 }
 
 .archive-filters {
@@ -1702,13 +1729,21 @@ img {
 }
 
 .edition-section--navy {
-  background-color: var(--color-navy-40);
+  --section-tint: var(--color-navy-40);
   color: var(--color-white);
 }
 
+.edition-section--navy.is-active {
+  --section-tint: var(--color-navy-80);
+}
+
 .edition-section--orange {
-  background-color: var(--color-accent);
+  --section-tint: var(--color-accent);
   color: var(--color-white);
+}
+
+.edition-section--orange.is-active {
+  --section-tint: #8b2b16; /* Tom de laranja profundo e escuro para contraste no estado ativo */
 }
 
 .edition-section__content {
@@ -1716,6 +1751,8 @@ img {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .edition-section__year {
@@ -1754,6 +1791,13 @@ img {
   font-weight: 400;
   font-style: italic;
   line-height: 1;
+  transition: opacity 0.8s cubic-bezier(0.2, 0, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+  opacity: 0.5;
+}
+
+.edition-section.is-active .edition-section__subtitle {
+  opacity: 1;
+  transform: translateY(-8px);
 }
 
 .edition-section__button {
@@ -1763,6 +1807,7 @@ img {
   width: 38px;
   height: 38px;
   border: 1.5px solid currentColor;
+  z-index: 3;
   border-radius: var(--radius-pill);
   background-color: transparent;
   color: inherit;

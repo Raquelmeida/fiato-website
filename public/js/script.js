@@ -950,7 +950,7 @@ function loadAgendaEvents() {
 
             var label = document.createElement('span');
             label.className = 'agenda-filters__label';
-            label.textContent = 'Filtrar por';
+            label.textContent = 'Ordenar por';
             btn.appendChild(label);
 
             var val = document.createElement('span');
@@ -1011,8 +1011,10 @@ if (arquivoList) {
 
       setTimeout(() => {
         const spinner = '<div style="display:flex;justify-content:center;padding:40px;width:100%;"><div style="width:24px;height:24px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:archive-spin 0.8s linear infinite;"></div><style>@keyframes archive-spin{to{transform:rotate(360deg)}}</style></div>';
-        if (agendaContainer) agendaContainer.innerHTML = spinner;
-        if (newsContainer) newsContainer.innerHTML = '';
+        const aList = agendaContainer?.querySelector('[data-agenda-events]');
+        const nList = newsContainer?.querySelector('.press__list');
+        if (aList) aList.innerHTML = spinner;
+        if (nList) nList.innerHTML = '';
         containers.forEach(c => c.style.opacity = '1');
 
         setTimeout(() => {
@@ -1031,7 +1033,7 @@ if (arquivoList) {
     const isContentClick = event.target.closest('.edition-section__content') || event.target === section;
 
     // FIX: If the section is already open, prevent clicks inside its content from collapsing it
-    if (section.classList.contains('is-active') && event.target.closest('.edition-section__content') && !toggleBtn) {
+    if (section.classList.contains('is-active') && event.target.closest('[data-archive-container]') && !toggleBtn) {
       return;
     }
 
@@ -1080,6 +1082,75 @@ if (arquivoList) {
 
 function initializeArchiveContent(section) {
   const year = section.dataset.editionYear;
+  const theme = section.classList.contains('edition-section--navy') ? 'navy' : 'orange';
+  const dynamicContainer = section.querySelector('[data-archive-container]');
+
+  // Lazy-inject the internal structure (headers, hidden filter bars, and list containers)
+  if (dynamicContainer && !dynamicContainer.innerHTML.trim()) {
+    dynamicContainer.innerHTML = `
+      <!-- Agenda Section -->
+      <div class="agenda-list__month agenda-list__month--${theme === 'navy' ? 'blue' : 'light'}" style="margin-top: 80px; background: transparent; text-align: left;">
+         <div class="agenda-list__month-header" style="border-bottom: none; padding-bottom: 20px;">
+            <div class="press__heading-group">
+                  <span class="press__label">Eventos</span>
+                  <span class="press__heading">${year}</span>
+               </div>
+         </div>
+         
+         <div class="agenda-list__filters" style="display: none; padding: 0 32px 48px; border-bottom: 1px solid currentColor; margin-bottom: 40px;">
+            <div class="agenda-filters" aria-label="Filtros da agenda" style="justify-content: flex-start; gap: 14px; flex-wrap: wrap;">
+               <button type="button" class="agenda-filters__button" data-agenda-sort="title">
+                  <span class="agenda-filters__label">Ordenar por</span>
+                  <span class="agenda-filters__value">Título</span>
+               </button>
+               <button type="button" class="agenda-filters__button" data-agenda-sort="place">
+                  <span class="agenda-filters__label">Ordenar por</span>
+                  <span class="agenda-filters__value">Local</span>
+               </button>
+               <button type="button" class="agenda-filters__button is-active" data-agenda-sort="date">
+                  <span class="agenda-filters__label">Ordenar por</span>
+                  <span class="agenda-filters__value">Data</span>
+               </button>
+               
+               <div style="display: contents;" data-archive-filters>
+                  <input type="text" class="archive-filters__search" style="width: auto; min-width: 200px; max-width: 100%; height: 48px; flex: 1 1 auto;" placeholder="Procurar título..." data-filter-title>
+                  <input type="text" class="archive-filters__search" style="width: auto; min-width: 150px; max-width: 100%; height: 48px; flex: 1 1 auto;" placeholder="Local..." data-filter-local>
+                  <input type="text" class="archive-filters__search" style="width: auto; min-width: 150px; max-width: 100%; height: 48px; flex: 1 1 auto;" placeholder="Data..." data-filter-date>
+                  <button type="button" class="agenda-filters__button" style="min-width: 120px; flex: 0 1 auto;" data-archive-clear>
+                     <span class="agenda-filters__label">Limpar</span>
+                     <span class="agenda-filters__value">Filtros</span>
+                  </button>
+               </div>
+            </div>
+         </div>
+         <div class="edition-section__agenda" data-archive-agenda><div class="agenda-list__events" data-agenda-events></div></div>
+      </div>
+
+      <!-- Notícias Section -->
+      <div class="press" style="background: transparent; text-align: left; padding: 0;">
+         <div class="press__inner">
+            <div class="press__header" style="margin-top: 80px; margin-bottom: 20px;">
+               <div class="press__heading-group">
+                  <span class="press__label">NOTÍCIAS</span>
+                  <h2 class="press__heading">${year}</h2>
+               </div>
+            </div>
+            <div class="press__filters" style="display: none; padding-bottom: 64px; border-bottom: 1px solid rgba(251, 251, 249, 0.15); margin-bottom: 40px;">
+               <div class="agenda-filters" aria-label="Filtros de notícias" style="justify-content: flex-start; gap: 14px; flex-wrap: wrap;">
+                  <div style="display: contents;" data-archive-filters>
+                     <input type="text" class="archive-filters__search" style="width: auto; min-width: 240px; max-width: 100%; height: 48px; flex: 1 1 auto;" placeholder="Procurar nas notícias..." data-filter-title>
+                     <button type="button" class="agenda-filters__button" style="min-width: 120px; flex: 0 1 auto;" data-archive-clear>
+                        <span class="agenda-filters__label">Limpar</span>
+                        <span class="agenda-filters__value">Filtros</span>
+                     </button>
+                  </div>
+               </div>
+            </div>
+            <div class="edition-section__news" data-archive-news><ul class="press__list"></ul></div>
+         </div>
+      </div>
+    `;
+  }
 
   // If data is already cached, execute client-side filter update instantly
   if (section._archiveLoaded) {
@@ -1116,12 +1187,22 @@ function loadArchiveAgenda(section, year) {
   const container = section.querySelector('[data-archive-agenda]');
   if (!container) return;
 
-  container.innerHTML = '<p class="agenda-list__empty" style="margin-top: 60px;">A carregar eventos de ' + year + '...</p>';
+  const eventsList = container.querySelector('[data-agenda-events]');
+  if (eventsList) {
+    eventsList.innerHTML = '<p class="agenda-list__empty" style="margin-top: 60px;">A carregar eventos de ' + year + '...</p>';
+  }
 
   return fetch('/api/events?year=' + year + '&limit=500')
     .then(function (res) { return res.json(); })
     .then(function (result) {
-      const events = extractData(result) || [];
+      let events = extractData(result) || [];
+
+      // Ensure default chronological sorting for accurate "Date" filter and dataset.order
+      events.sort(function (a, b) {
+        const dateA = a.sessions && a.sessions[0] && a.sessions[0].date ? new Date(a.sessions[0].date).getTime() : 0;
+        const dateB = b.sessions && b.sessions[0] && b.sessions[0].date ? new Date(b.sessions[0].date).getTime() : 0;
+        return dateA - dateB;
+      });
 
       // Cache data scoped to this year
       section._allEvents = events;
@@ -1130,19 +1211,52 @@ function loadArchiveAgenda(section, year) {
       renderArchiveAgenda(section);
     })
     .catch(function () {
-      container.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
+      const el = container.querySelector('[data-agenda-events]');
+      if (el) el.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
       throw new Error('Fetch failed for Archive Agenda');
     });
 }
 
 function renderArchiveAgenda(section) {
   const container = section.querySelector('[data-archive-agenda]');
-  if (!container || !section._allEvents) return;
+  if (!container || !section._allEvents || container.dataset.initialized) {
+    // If already has structure, just render items
+  } else {
+    // Setup sorting functionality once
+    const sortButtons = section.querySelectorAll('[data-agenda-sort]');
+    sortButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sortButtons.forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        
+        const list = section.querySelector('[data-agenda-events]');
+        if (!list) return;
+        const cards = Array.from(list.querySelectorAll('.agenda-event-card'));
+        const sortKey = btn.dataset.agendaSort;
+        
+        cards.sort((a, b) => {
+          if (sortKey === 'date') return Number(a.dataset.order) - Number(b.dataset.order);
+          const valA = (a.dataset[sortKey] || '').toLowerCase();
+          const valB = (b.dataset[sortKey] || '').toLowerCase();
+          return valA.localeCompare(valB, 'pt');
+        });
+        
+        list.innerHTML = '';
+        cards.forEach(c => list.appendChild(c));
+      });
+    });
+    container.dataset.initialized = 'true';
+  }
 
-  // Collect values from the combinable filter architecture
-  const titleVal = (section.querySelector('[data-filter-title]')?.value || '').toLowerCase();
-  const localVal = (section.querySelector('[data-filter-local]')?.value || '').toLowerCase();
-  const dateVal = (section.querySelector('[data-filter-date]')?.value || '').toLowerCase();
+  const eventsList = section.querySelector('[data-agenda-events]');
+  if (!eventsList) return;
+
+  // Collect values scoped to the agenda container to avoid cross-filtering with news
+  const agendaScope = section.querySelector('.agenda-list__month');
+  const titleVal = (agendaScope?.querySelector('[data-filter-title]')?.value || '').toLowerCase();
+  const localVal = (agendaScope?.querySelector('[data-filter-local]')?.value || '').toLowerCase();
+  const dateVal = (agendaScope?.querySelector('[data-filter-date]')?.value || '').toLowerCase();
 
   // Evaluate combined constraints client-side
   const filteredEvents = section._allEvents.filter(function (event) {
@@ -1154,12 +1268,20 @@ function renderArchiveAgenda(section) {
     const sessionDatesStr = (event.sessions || []).map(s => {
       if (!s.date) return '';
       const d = new Date(s.date);
-      return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return `${day}/${month}/${d.getFullYear()}`;
     }).join(' ');
     const matchDate = !dateVal || sessionDatesStr.includes(dateVal) || (event.sessions || []).some(s => (s.date || '').includes(dateVal));
 
     return matchTitle && matchLocal && matchDate;
   });
+
+  // Reveal filters only after data exists
+  const filtersContainer = section.querySelector('.agenda-list__filters');
+  if (filtersContainer && section._allEvents.length > 0) {
+    filtersContainer.style.display = 'block';
+  }
 
   if (filteredEvents.length === 0) {
     const year = section.dataset.editionYear;
@@ -1167,8 +1289,8 @@ function renderArchiveAgenda(section) {
       ? "Nenhum evento corresponde aos filtros." 
       : "Não existem eventos para esta edição.";
 
-    container.innerHTML = `
-      <div style="text-align: center; padding: 60px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
+    eventsList.innerHTML = `
+      <div style="text-align: center; padding: 100px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
         <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
           <circle cx="11" cy="11" r="8"></circle>
@@ -1176,25 +1298,34 @@ function renderArchiveAgenda(section) {
         </svg>
         <p class="agenda-list__empty" style="margin: 0;">${emptyMsg}</p>
       </div>`;
+    
+    // Clean up any existing load more button outside eventsList
+    const oldBtn = container.querySelector('.archive-load-more');
+    if (oldBtn) oldBtn.remove();
     return;
   }
 
-  container.innerHTML = '';
+  eventsList.innerHTML = '';
+
   const limit = section._agendaVisibleCount || 4;
 
   // Reuse existing architected components
   filteredEvents.slice(0, limit).forEach(function (ev, idx) {
     if (typeof createAgendaCard === 'function') {
-      container.appendChild(createAgendaCard(ev, idx));
+      eventsList.appendChild(createAgendaCard(ev, idx));
     } else if (typeof createProximoEventoCard === 'function') {
-      container.appendChild(createProximoEventoCard(ev));
+      eventsList.appendChild(createProximoEventoCard(ev));
     }
   });
 
   // Reusable load-more pattern
+  const oldBtn = container.querySelector('.archive-load-more');
+  if (oldBtn) oldBtn.remove();
+
   if (limit < filteredEvents.length) {
     const btnWrapper = document.createElement('div');
-    btnWrapper.style.padding = '60px 0';
+    btnWrapper.className = 'archive-load-more';
+    btnWrapper.style.padding = '80px 0';
     btnWrapper.style.textAlign = 'center';
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -1218,7 +1349,10 @@ function loadArchiveNews(section, year) {
   const container = section.querySelector('[data-archive-news]');
   if (!container) return;
 
-  container.innerHTML = '<p class="press__loading" style="margin-top: 60px;">A carregar notícias de ' + year + '...</p>';
+  const list = container.querySelector('.press__list');
+  if (list) {
+    list.innerHTML = '<p class="press__loading" style="margin-top: 60px;">A carregar notícias de ' + year + '...</p>';
+  }
 
   return fetch('/api/news?year=' + year + '&limit=500')
     .then(function (res) { return res.json(); })
@@ -1232,33 +1366,45 @@ function loadArchiveNews(section, year) {
       renderArchiveNews(section);
     })
     .catch(function () {
-      container.innerHTML = '<p class="press__loading">Não foi possível carregar as notícias.</p>';
+      const el = container.querySelector('.press__list');
+      if (el) el.innerHTML = '<p class="press__loading">Não foi possível carregar as notícias.</p>';
       throw new Error('Fetch failed for Archive News');
     });
 }
 
 function renderArchiveNews(section) {
   const container = section.querySelector('[data-archive-news]');
-  if (!container || !section._allNews) return;
+  const list = section.querySelector('.press__list');
+  if (!container || !section._allNews || !list) return;
 
-  // Cross-cutting search requirements across loaded news
-  const titleVal = (section.querySelector('[data-filter-title]')?.value || '').toLowerCase();
-  const localVal = (section.querySelector('[data-filter-local]')?.value || '').toLowerCase();
-  const dateVal = (section.querySelector('[data-filter-date]')?.value || '').toLowerCase();
+  // Collect values scoped to the news container
+  const newsScope = section.querySelector('.press');
+  const titleVal = (newsScope?.querySelector('[data-filter-title]')?.value || '').toLowerCase();
+  // News UI in archive only supports title search; default others to empty
+  const localVal = '';
+  const dateVal = '';
 
   const filteredNews = section._allNews.filter(function (item) {
-    const matchTitle = !titleVal || (item.title || '').toLowerCase().includes(titleVal) || (item.caption || '').toLowerCase().includes(titleVal);
-    const matchLocal = !localVal || (item.caption || '').toLowerCase().includes(localVal);
+    const matchTitle = !titleVal || (item.title || '').toLowerCase().includes(titleVal) || (item.body || '').toLowerCase().includes(titleVal);
+    const matchLocal = !localVal || (item.body || '').toLowerCase().includes(localVal);
     
     let dateStr = '';
     if (item.publishDate) {
       const d = new Date(item.publishDate);
-      dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      dateStr = `${day}/${month}/${d.getFullYear()}`;
     }
     const matchDate = !dateVal || dateStr.includes(dateVal) || (item.publishDate || '').includes(dateVal);
 
     return matchTitle && matchLocal && matchDate;
   });
+
+  // Reveal filters only after data exists
+  const filtersContainer = section.querySelector('.press__filters');
+  if (filtersContainer && section._allNews.length > 0) {
+    filtersContainer.style.display = 'block';
+  }
 
   if (filteredNews.length === 0) {
     const year = section.dataset.editionYear;
@@ -1266,25 +1412,18 @@ function renderArchiveNews(section) {
       ? "Nenhuma notícia corresponde aos filtros." 
       : "Não existem notícias para esta edição.";
 
-    container.innerHTML = `
-      <h3 class="edition-section__subtitle" style="font-size: 24px; margin-top: 80px; margin-bottom: 40px; text-align: left;">Notícias ${year}</h3>
-      <div style="text-align: center; padding: 40px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
-        <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px; opacity: 0.5;">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <p class="press__loading" style="margin: 0;">${emptyMsg}</p>
+    list.innerHTML = `
+      <div style="text-align: center; padding: 80px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
+        <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
+        <p class="press__loading">${emptyMsg}</p>
       </div>`;
+    
+    const oldBtn = container.querySelector('.load-more-news-btn');
+    if (oldBtn) oldBtn.remove();
     return;
   }
 
-  const year = section.dataset.editionYear;
-  container.innerHTML = '<h3 class="edition-section__subtitle" style="font-size: 24px; margin-top: 80px; margin-bottom: 40px; text-align: left;">Notícias ' + year + '</h3>';
-  
-  const list = document.createElement('ul');
-  list.className = 'press__list';
-  container.appendChild(list);
+  list.innerHTML = '';
 
   const limit = section._newsVisibleCount || 3;
 
@@ -1295,6 +1434,9 @@ function renderArchiveNews(section) {
   });
 
   // Reusable load-more pattern matching standard architecture
+  const oldBtn = container.querySelector('.load-more-news-btn');
+  if (oldBtn) oldBtn.remove();
+
   if (limit < filteredNews.length) {
     const btnWrapper = document.createElement('div');
     btnWrapper.className = 'load-more-news-btn';
@@ -1318,14 +1460,14 @@ function updateArchiveParallax() {
   const sections = document.querySelectorAll('.edition-section');
   sections.forEach(function(section) {
     // Only apply to sections that have a background image set
-    if (!section.style.backgroundImage || section.style.backgroundImage === 'none') return;
+    if (!section.style.getPropertyValue('--archive-bg')) return;
     
     const rect = section.getBoundingClientRect();
     const winH = window.innerHeight;
     
     if (rect.top < winH && rect.bottom > 0) {
       const yPos = (rect.top * 0.15); // Adjust this factor for more/less intensity
-      section.style.backgroundPositionY = 'calc(50% + ' + yPos + 'px)';
+      section.style.setProperty('--parallax-y', yPos + 'px');
     }
   });
 }
@@ -1391,8 +1533,8 @@ function loadArquivoPage() {
         section.dataset.editionYear = archive.year;
         section.style.animationDelay = Math.min(idx * 0.1, 1.5) + 's';
 
-        if (archive.image) {
-          section.style.backgroundImage = `linear-gradient(rgba(18, 34, 86, 0.4), rgba(18, 34, 86, 0.4)), url(${archive.image.replace(/'/g, '%27')})`;
+        if (archive.imageUrl) {
+          section.style.setProperty('--archive-bg', `url(${archive.imageUrl.replace(/'/g, '%27')})`);
         }
 
         // FIX: Replaced isolated sorting buttons with a true, flexible, combinable architectural layout
@@ -1403,18 +1545,7 @@ function loadArquivoPage() {
           <div class="edition-section__content">
             <h2 class="edition-section__year">${archive.year}</h2>
             <p class="edition-section__subtitle">${archive.description || ''}</p>
-            
-            <div class="archive-filters" data-archive-filters>
-               <div class="archive-filters__group" style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
-                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Título..." data-filter-title>
-                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Local..." data-filter-local>
-                  <input type="text" class="archive-filters__search" placeholder="Filtrar por Data (DD/MM/AAAA)..." data-filter-date>
-                  <button type="button" class="agenda-event-card__button agenda-event-card__button--outline" style="height: 44px; padding: 0 15px; font-size: 14px; margin: 0; white-space: nowrap;" data-archive-clear>Limpar Filtros</button>
-               </div>
-            </div>
-
-            <div class="edition-section__agenda" data-archive-agenda></div>
-            <div class="edition-section__news" data-archive-news></div>
+            <div data-archive-container></div>
           </div>
         `;
         fragment.appendChild(section);
