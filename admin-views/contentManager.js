@@ -3,7 +3,8 @@ let appState = {
     news: [],
     contacts: [],
     tickets: [],
-    instagram: []
+    instagram: [],
+    about: null
 };
 
 let currentEditId = null;
@@ -39,6 +40,7 @@ async function loadTabContent(schema) {
     if (schema === "contacts") endpoint = "/api/contact-requests";
     if (schema === "tickets") endpoint = "/api/tickets";
     if (schema === "instagram") endpoint = "/api/instagram";
+    if (schema === "about") endpoint = "/api/about-page";
 
     try {
         const response = await fetch(endpoint);
@@ -53,15 +55,28 @@ async function loadTabContent(schema) {
         const json = await response.json();
         
         if (json.success) {
-            appState[schema] = Array.isArray(json.data) ? json.data : [];
-            renderTable(schema, appState[schema]);
+            if (schema === "about") {
+                appState.about = json.data || {};
+                renderAboutCards(appState.about);
+            } else {
+                appState[schema] = Array.isArray(json.data) ? json.data : [];
+                renderTable(schema, appState[schema]);
+            }
         } else {
-            console.warn(`Aviso do Servidor: ${json.error}`);
-            renderTable(schema, []);
+            if (schema === "about") {
+                appState.about = {};
+                renderAboutCards({});
+            } else {
+                renderTable(schema, []);
+            }
         }
     } catch (err) {
         console.error(`Erro crítico de rede ao ler dados de ${schema}:`, err);
-        renderTable(schema, []);
+        if (schema === "about") {
+            renderAboutCards({});
+        } else {
+            renderTable(schema, []);
+        }
     }
 }
 
@@ -187,7 +202,7 @@ function renderTable(schema, dataset) {
 // GESTÃO DE JANELAS MODAIS
 // ==========================================
 function clearFormErrors(schema) {
-    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : null;
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : schema === 'about' ? 'about' : null;
     if (!prefix) return;
     const banner = document.getElementById(`${prefix}-error-banner`);
     if (banner) {
@@ -446,7 +461,7 @@ async function saveNews() {
 
 // Função auxiliar para exibir erros no banner e no pop-up (alert)
 function displayFormError(schema, message) {
-    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : 'instagram';
+    const prefix = schema === 'events' ? 'event' : schema === 'news' ? 'news' : schema === 'instagram' ? 'instagram' : 'about';
     const banner = document.getElementById(`${prefix}-error-banner`);
     const cleanMsg = message || "Erro desconhecido ao processar dados.";
     
@@ -594,4 +609,469 @@ async function saveInstagram() {
         console.error(err);
         displayFormError("instagram", "Erro de ligação ao servidor.");
     }
+}
+
+// ==========================================
+// CONTROLADOR COMPLETO: SOBRE NÓS (ABOUT PAGE)
+// ==========================================
+
+var defaultAboutData = {
+    heroDescription: "Desde 2014, transformando a cidade do Porto num palco cultural vivo através de performances inovadoras em espaços não convencionais.",
+    heroCtaLinks: [
+        { label: "Programação", url: "agenda.html" },
+        { label: "Edições", url: "edicoes.html" },
+        { label: "Contactos", url: "contactos.html" }
+    ],
+    manifestoEyebrow: "Um encontro singular entre tradição e inovação.",
+    manifestoTitle: "Nascemos da vontade de trazer a arte lírica e performativa para o coração da cidade.",
+    manifestoBodyLeft: "Ao longo das suas edições, o Fiato reuniu artistas nacionais e internacionais em palcos icónicos do Porto, celebrando a riqueza cultural da cidade e do país. Uma experiência imersiva que convida o público a descobrir, sentir e partilhar a força da ópera.",
+    manifestoBodyRight: "Com raízes profundas na identidade portuense, projecta-se para além fronteiras, colocando o Porto no mapa dos grandes festivais europeus de artes performativas. Uma celebração da voz humana, da música e do movimento — ano após ano, edição após edição.",
+    marqueeItems: [
+        { text: "A Ópera Desce à Rua" },
+        { text: "Ocupação Lírica" }
+    ],
+    editionEyebrow: "O FIATO é para todos",
+    editionYearTop: "20",
+    editionYearBottom: "26",
+    editionDescription: "Uma edição revolucionária que transforma a cidade numa galeria viva de expressão operática contemporânea.",
+    editionCtaLabel: "Consultar Arquivo",
+    editionCtaUrl: "edicoes.html",
+    editionImageUrl: "",
+    teamEyebrow: "A equipa por trás das cortinas",
+    teamHeading: "Uma disrupção necessária ao serviço da democratização cultural.",
+    teamMembers: [],
+    faqEyebrow: "O Fiato é para todos",
+    faqHeading: "Perguntas \\nFrequentes",
+    faqItems: [
+        { question: "Os espectáculos são acessíveis a todos os públicos?", answer: "Sim, a nossa programação inclui propostas para diferentes idades e níveis de familiaridade com a ópera. Dos 6 meses aos 100 anos.", order: 0 },
+        { question: "Onde decorrem os eventos?", answer: "Em espaços icónicos do Porto, desde teatros históricos a locais ao ar livre.", order: 1 },
+        { question: "Como posso comprar bilhetes?", answer: "Através do nosso site oficial ou nas bilheteiras dos espaços parceiros.", order: 2 },
+        { question: "É necessário conhecer ópera para assistir?", answer: "Não. Os nossos espectáculos são pensados para acolher tanto os mais experientes como quem descobre a ópera pela primeira vez.", order: 3 }
+    ]
+};
+
+let aboutRowCounters = { heroCta: 0, marquee: 0, team: 0, faq: 0 };
+
+function clearAboutFormErrors() {
+    const banner = document.getElementById("about-error-banner");
+    if (banner) { banner.innerText = ""; banner.classList.add("is-hidden"); }
+}
+
+let currentAboutSection = null;
+
+function editAboutSection(section) {
+    clearAboutFormErrors();
+    currentAboutSection = section || null;
+    const data = (appState.about && Object.keys(appState.about).length > 0) ? appState.about : defaultAboutData;
+
+    // Toggle section visibility
+    document.querySelectorAll('.about-section-fields').forEach(function(el) {
+        el.style.display = (!section || el.getAttribute('data-about-section') === section) ? '' : 'none';
+    });
+
+    var titles = {
+        hero: 'Hero / Editorial',
+        manifesto: 'Manifesto',
+        marquee: 'Marquee',
+        edition: 'Bloco 2026',
+        team: 'Equipa / Bastidores',
+        faq: 'FAQ'
+    };
+    document.getElementById('modal-about-title').innerText = section
+        ? 'Editar: ' + (titles[section] || section)
+        : 'Editar Página "Sobre Nós"';
+
+    // Populate all fields
+    document.getElementById("about-heroDescription").value = data.heroDescription || "";
+    document.getElementById("about-manifestoEyebrow").value = data.manifestoEyebrow || "";
+    document.getElementById("about-manifestoTitle").value = data.manifestoTitle || "";
+    document.getElementById("about-manifestoBodyLeft").value = data.manifestoBodyLeft || "";
+    document.getElementById("about-manifestoBodyRight").value = data.manifestoBodyRight || "";
+    document.getElementById("about-editionEyebrow").value = data.editionEyebrow || "";
+    document.getElementById("about-editionYearTop").value = data.editionYearTop || "";
+    document.getElementById("about-editionYearBottom").value = data.editionYearBottom || "";
+    document.getElementById("about-editionDescription").value = data.editionDescription || "";
+    document.getElementById("about-editionCtaLabel").value = data.editionCtaLabel || "";
+    document.getElementById("about-editionCtaUrl").value = data.editionCtaUrl || "";
+    document.getElementById("about-editionImageUrl").value = data.editionImageUrl || "";
+    document.getElementById("about-teamEyebrow").value = data.teamEyebrow || "";
+    document.getElementById("about-teamHeading").value = data.teamHeading || "";
+    document.getElementById("about-faqEyebrow").value = data.faqEyebrow || "";
+    document.getElementById("about-faqHeading").value = data.faqHeading || "";
+
+    // Reset and populate dynamic rows
+    document.getElementById("about-hero-ctas-wrapper").innerHTML = "";
+    document.getElementById("about-marquee-wrapper").innerHTML = "";
+    document.getElementById("about-team-wrapper").innerHTML = "";
+    document.getElementById("about-faq-wrapper").innerHTML = "";
+    aboutRowCounters = { heroCta: 0, marquee: 0, team: 0, faq: 0 };
+
+    if (data.heroCtaLinks && Array.isArray(data.heroCtaLinks)) {
+        data.heroCtaLinks.forEach(function(cta) { addHeroCtaRow(cta); });
+    }
+    if (data.marqueeItems && Array.isArray(data.marqueeItems)) {
+        data.marqueeItems.forEach(function(item) { addMarqueeRow(item); });
+    }
+    if (data.teamMembers && Array.isArray(data.teamMembers)) {
+        data.teamMembers.forEach(function(m) { addTeamMemberRow(m); });
+    }
+    if (data.faqItems && Array.isArray(data.faqItems)) {
+        data.faqItems.forEach(function(faq) { addFaqRow(faq); });
+    }
+
+    document.getElementById("modal-about").classList.add("is-active");
+}
+
+function renderAboutCards(data) {
+    var container = document.getElementById('about-cards-container');
+    if (!container) return;
+    var d = data || {};
+
+    function filled(val) { return !!(val && (typeof val === 'string' ? val.trim() : (Array.isArray(val) ? val.length : val))); }
+    function preview(str, maxLen) {
+        if (!str) return '<span class="has-text-grey-light"><em>Vazio</em></span>';
+        var s = str.replace(/\\n/g, ' ');
+        maxLen = maxLen || 100;
+        return '<span class="has-text-grey">' + escHtml(s.substring(0, maxLen)) + (s.length > maxLen ? '…' : '') + '</span>';
+    }
+    function count(arr) { return (arr && Array.isArray(arr)) ? arr.length : 0; }
+
+    var sections = [
+        {
+            icon: 'fa-star', title: 'Hero / Editorial',
+            preview: function() {
+                var c = count(d.heroCtaLinks);
+                return preview(d.heroDescription, 80) + '<br><span class="tag is-small is-light mt-2">' + c + ' CTA link(s)</span>';
+            },
+            status: function() { return filled(d.heroDescription) || count(d.heroCtaLinks) > 0; },
+            key: 'hero'
+        },
+        {
+            icon: 'fa-quote-right', title: 'Manifesto',
+            preview: function() {
+                var h = '';
+                if (d.manifestoEyebrow) h += '<div class="has-text-grey-light" style="font-size:0.75rem;text-transform:uppercase;">' + escHtml(d.manifestoEyebrow) + '</div>';
+                h += preview(d.manifestoTitle, 80);
+                return h;
+            },
+            status: function() { return filled(d.manifestoEyebrow) || filled(d.manifestoTitle); },
+            key: 'manifesto'
+        },
+        {
+            icon: 'fa-arrows-alt-h', title: 'Marquee',
+            preview: function() {
+                var c = count(d.marqueeItems);
+                var h = '<span class="tag is-small is-light">' + c + ' item(ns)</span>';
+                if (c > 0) {
+                    h += '<div class="mt-2" style="font-size:0.85rem;">';
+                    d.marqueeItems.slice(0, 2).forEach(function(item) {
+                        h += '<div class="has-text-grey">• ' + escHtml(item.text || '') + '</div>';
+                    });
+                    if (c > 2) h += '<div class="has-text-grey-light">…</div>';
+                    h += '</div>';
+                }
+                return h;
+            },
+            status: function() { return count(d.marqueeItems) > 0; },
+            key: 'marquee'
+        },
+        {
+            icon: 'fa-calendar', title: 'Bloco 2026',
+            preview: function() {
+                var h = '';
+                if (d.editionEyebrow) h += '<div class="has-text-grey-light" style="font-size:0.75rem;text-transform:uppercase;">' + escHtml(d.editionEyebrow) + '</div>';
+                var yearParts = (d.editionYearTop || '') + (d.editionYearBottom ? '/' + d.editionYearBottom : '');
+                if (yearParts) h += '<div class="has-text-weight-bold" style="font-size:1.2rem;">' + escHtml(yearParts) + '</div>';
+                h += preview(d.editionDescription, 60);
+                if (d.editionCtaLabel) h += '<br><span class="tag is-small is-light mt-2">' + escHtml(d.editionCtaLabel) + '</span>';
+                return h;
+            },
+            status: function() { return filled(d.editionEyebrow) || filled(d.editionDescription); },
+            key: 'edition'
+        },
+        {
+            icon: 'fa-users', title: 'Equipa / Bastidores',
+            preview: function() {
+                var h = preview(d.teamEyebrow, 60) + '<br>' + preview(d.teamHeading, 60);
+                var c = count(d.teamMembers);
+                h += '<br><span class="tag is-small is-light mt-2">' + c + ' membro(s)</span>';
+                return h;
+            },
+            status: function() { return filled(d.teamEyebrow) || filled(d.teamHeading) || count(d.teamMembers) > 0; },
+            key: 'team'
+        },
+        {
+            icon: 'fa-question-circle', title: 'FAQ',
+            preview: function() {
+                var h = preview(d.faqEyebrow, 60) + '<br>' + preview(d.faqHeading, 60);
+                var c = count(d.faqItems);
+                h += '<br><span class="tag is-small is-light mt-2">' + c + ' pergunta(s)</span>';
+                return h;
+            },
+            status: function() { return filled(d.faqEyebrow) || filled(d.faqHeading) || count(d.faqItems) > 0; },
+            key: 'faq'
+        }
+    ];
+
+    var html = '';
+    sections.forEach(function(s) {
+        var isFilled = s.status();
+        var btnLabel = s.title.split(' / ')[0];
+        html += '<div class="column is-6">' +
+            '<div class="factory-card p-4" style="height:100%;display:flex;flex-direction:column;">' +
+            '<div class="is-flex is-justify-content-space-between is-align-items-start mb-3">' +
+            '<h5 class="title is-6 mb-0" style="color:var(--fiato-dark);">' +
+            '<span class="icon has-text-grey mr-2"><i class="fas ' + s.icon + '"></i></span>' + s.title +
+            '</h5>' +
+            '<span class="tag is-small ' + (isFilled ? 'is-success is-light' : 'is-light') + '">' +
+            (isFilled ? 'preenchido' : 'vazio') +
+            '</span></div>' +
+            '<div class="mb-3" style="flex:1;">' + s.preview() + '</div>' +
+            '<div><button class="button is-small is-dark" onclick="editAboutSection(\'' + s.key + '\')" style="border-radius:8px;font-weight:600;">Editar ' + btnLabel + '</button></div>' +
+            '</div></div>';
+    });
+
+    container.innerHTML = html;
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// --- Hero CTA rows ---
+function addHeroCtaRow(data) {
+    const wrapper = document.getElementById("about-hero-ctas-wrapper");
+    const id = 'hero_cta_' + (aboutRowCounters.heroCta++);
+    const labelVal = data && data.label ? data.label : "";
+    const urlVal = data && data.url ? data.url : "";
+
+    const box = document.createElement("div");
+    box.className = "box session-item-row p-3 mb-3";
+    box.id = id;
+    box.style = "border: 1px solid var(--fiato-border); background-color: #fafbfc; border-radius: 12px; position: relative;";
+    box.innerHTML = `
+        <div class="columns is-mobile">
+            <div class="column is-5">
+                <input type="text" class="input is-small hero-cta-label" placeholder="Label (ex: Programação)" value="${labelVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-5">
+                <input type="text" class="input is-small hero-cta-url" placeholder="URL (ex: agenda.html)" value="${urlVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-2 is-flex is-align-items-center">
+                <button type="button" class="button is-small is-danger is-light" onclick="removeAboutRow('${id}')" style="border-radius:8px; width:100%;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>`;
+    wrapper.appendChild(box);
+}
+
+// --- Marquee rows ---
+function addMarqueeRow(data) {
+    const wrapper = document.getElementById("about-marquee-wrapper");
+    const id = 'marquee_' + (aboutRowCounters.marquee++);
+    const textVal = data && data.text ? data.text : "";
+
+    const box = document.createElement("div");
+    box.className = "box session-item-row p-3 mb-3";
+    box.id = id;
+    box.style = "border: 1px solid var(--fiato-border); background-color: #fafbfc; border-radius: 12px; position: relative;";
+    box.innerHTML = `
+        <div class="columns is-mobile">
+            <div class="column is-10">
+                <input type="text" class="input is-small marquee-text" placeholder="Texto do marquee" value="${textVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-2 is-flex is-align-items-center">
+                <button type="button" class="button is-small is-danger is-light" onclick="removeAboutRow('${id}')" style="border-radius:8px; width:100%;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>`;
+    wrapper.appendChild(box);
+}
+
+// --- Team Member rows ---
+function addTeamMemberRow(data) {
+    const wrapper = document.getElementById("about-team-wrapper");
+    const id = 'team_' + (aboutRowCounters.team++);
+    const nameVal = data && data.name ? data.name : "";
+    const photoVal = data && data.photoUrl ? data.photoUrl : "";
+    const orderVal = data && data.order !== undefined ? data.order : 0;
+
+    const box = document.createElement("div");
+    box.className = "box session-item-row p-3 mb-3";
+    box.id = id;
+    box.style = "border: 1px solid var(--fiato-border); background-color: #fafbfc; border-radius: 12px; position: relative;";
+    box.innerHTML = `
+        <div class="columns is-mobile">
+            <div class="column is-4">
+                <input type="text" class="input is-small team-name" placeholder="Nome do membro" value="${nameVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-4">
+                <input type="text" class="input is-small team-photo-url" placeholder="URL da foto" value="${photoVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-2">
+                <input type="number" class="input is-small team-order" placeholder="Ordem" value="${orderVal}">
+            </div>
+            <div class="column is-2 is-flex is-align-items-center">
+                <button type="button" class="button is-small is-danger is-light" onclick="removeAboutRow('${id}')" style="border-radius:8px; width:100%;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>`;
+    wrapper.appendChild(box);
+}
+
+// --- FAQ rows ---
+function addFaqRow(data) {
+    const wrapper = document.getElementById("about-faq-wrapper");
+    const id = 'faq_' + (aboutRowCounters.faq++);
+    const questionVal = data && data.question ? data.question : "";
+    const answerVal = data && data.answer ? data.answer : "";
+    const orderVal = data && data.order !== undefined ? data.order : 0;
+
+    const box = document.createElement("div");
+    box.className = "box session-item-row p-3 mb-3";
+    box.id = id;
+    box.style = "border: 1px solid var(--fiato-border); background-color: #fafbfc; border-radius: 12px; position: relative;";
+    box.innerHTML = `
+        <div class="columns is-mobile">
+            <div class="column is-5">
+                <input type="text" class="input is-small faq-question" placeholder="Pergunta" value="${questionVal.replace(/"/g, '&quot;')}">
+            </div>
+            <div class="column is-5">
+                <textarea class="textarea is-small faq-answer" placeholder="Resposta" rows="2">${answerVal.replace(/"/g, '&quot;')}</textarea>
+            </div>
+            <div class="column is-2 is-flex is-align-items-center">
+                <button type="button" class="button is-small is-danger is-light" onclick="removeAboutRow('${id}')" style="border-radius:8px; width:100%;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>`;
+    wrapper.appendChild(box);
+}
+
+function removeAboutRow(rowId) {
+    const row = document.getElementById(rowId);
+    if (row) row.remove();
+}
+
+// --- Save About Section ---
+async function saveAboutSection() {
+    clearAboutFormErrors();
+    const section = currentAboutSection;
+
+    const existing = (appState.about && Object.keys(appState.about).length > 0)
+        ? JSON.parse(JSON.stringify(appState.about))
+        : JSON.parse(JSON.stringify(defaultAboutData));
+
+    const payload = {};
+
+    function shouldCollect(s) { return !section || section === s; }
+
+    if (shouldCollect('hero')) {
+        payload.heroDescription = document.getElementById("about-heroDescription").value;
+        payload.heroCtaLinks = collectHeroCtas();
+    }
+
+    if (shouldCollect('manifesto')) {
+        payload.manifestoEyebrow = document.getElementById("about-manifestoEyebrow").value;
+        payload.manifestoTitle = document.getElementById("about-manifestoTitle").value;
+        payload.manifestoBodyLeft = document.getElementById("about-manifestoBodyLeft").value;
+        payload.manifestoBodyRight = document.getElementById("about-manifestoBodyRight").value;
+    }
+
+    if (shouldCollect('marquee')) {
+        payload.marqueeItems = collectMarqueeItems();
+    }
+
+    if (shouldCollect('edition')) {
+        payload.editionEyebrow = document.getElementById("about-editionEyebrow").value;
+        payload.editionYearTop = document.getElementById("about-editionYearTop").value;
+        payload.editionYearBottom = document.getElementById("about-editionYearBottom").value;
+        payload.editionDescription = document.getElementById("about-editionDescription").value;
+        payload.editionCtaLabel = document.getElementById("about-editionCtaLabel").value;
+        payload.editionCtaUrl = document.getElementById("about-editionCtaUrl").value;
+        payload.editionImageUrl = document.getElementById("about-editionImageUrl").value;
+    }
+
+    if (shouldCollect('team')) {
+        payload.teamEyebrow = document.getElementById("about-teamEyebrow").value;
+        payload.teamHeading = document.getElementById("about-teamHeading").value;
+        payload.teamMembers = collectTeamMembers();
+    }
+
+    if (shouldCollect('faq')) {
+        payload.faqEyebrow = document.getElementById("about-faqEyebrow").value;
+        payload.faqHeading = document.getElementById("about-faqHeading").value;
+        payload.faqItems = collectFaqItems();
+    }
+
+    const merged = Object.assign({}, existing, payload);
+
+    try {
+        const response = await fetch("/api/about-page", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(merged)
+        });
+        const result = await response.json();
+        if (result.success) {
+            appState.about = result.data || {};
+            closeModal("modal-about");
+            renderAboutCards(appState.about);
+        } else {
+            displayFormError("about", result.error || "Erro ao guardar.");
+        }
+    } catch (err) {
+        console.error(err);
+        displayFormError("about", "Erro de ligação ao servidor.");
+    }
+}
+
+function collectHeroCtas() {
+    const items = [];
+    document.querySelectorAll("#about-hero-ctas-wrapper .hero-cta-label").forEach(function(el, i) {
+        const urlEl = document.querySelectorAll("#about-hero-ctas-wrapper .hero-cta-url")[i];
+        items.push({ label: el.value, url: urlEl ? urlEl.value : "" });
+    });
+    return items;
+}
+
+function collectMarqueeItems() {
+    const items = [];
+    document.querySelectorAll("#about-marquee-wrapper .marquee-text").forEach(function(el) {
+        items.push({ text: el.value });
+    });
+    return items;
+}
+
+function collectTeamMembers() {
+    const items = [];
+    const nameEls = document.querySelectorAll("#about-team-wrapper .team-name");
+    const photoEls = document.querySelectorAll("#about-team-wrapper .team-photo-url");
+    const orderEls = document.querySelectorAll("#about-team-wrapper .team-order");
+    nameEls.forEach(function(el, i) {
+        items.push({
+            name: el.value,
+            photoUrl: photoEls[i] ? photoEls[i].value : "",
+            order: orderEls[i] ? parseInt(orderEls[i].value, 10) || 0 : 0
+        });
+    });
+    return items;
+}
+
+function collectFaqItems() {
+    const items = [];
+    const questionEls = document.querySelectorAll("#about-faq-wrapper .faq-question");
+    const answerEls = document.querySelectorAll("#about-faq-wrapper .faq-answer");
+    questionEls.forEach(function(el, i) {
+        items.push({
+            question: el.value,
+            answer: answerEls[i] ? answerEls[i].value : "",
+            order: i
+        });
+    });
+    return items;
 }

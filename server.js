@@ -162,11 +162,35 @@ const instagramPostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const aboutPageSchema = new mongoose.Schema({
+  heroDescription: { type: String, trim: true, default: '' },
+  heroCtaLinks: [{ label: { type: String, trim: true }, url: { type: String, trim: true } }],
+  manifestoEyebrow: { type: String, trim: true, default: '' },
+  manifestoTitle: { type: String, trim: true, default: '' },
+  manifestoBodyLeft: { type: String, trim: true, default: '' },
+  manifestoBodyRight: { type: String, trim: true, default: '' },
+  marqueeItems: [{ text: { type: String, trim: true } }],
+  editionEyebrow: { type: String, trim: true, default: '' },
+  editionYearTop: { type: String, trim: true, default: '' },
+  editionYearBottom: { type: String, trim: true, default: '' },
+  editionDescription: { type: String, trim: true, default: '' },
+  editionCtaLabel: { type: String, trim: true, default: '' },
+  editionCtaUrl: { type: String, trim: true, default: '' },
+  editionImageUrl: { type: String, trim: true, default: '' },
+  teamEyebrow: { type: String, trim: true, default: '' },
+  teamHeading: { type: String, trim: true, default: '' },
+  teamMembers: [{ name: { type: String, trim: true }, photoUrl: { type: String, trim: true, default: '' }, order: { type: Number, default: 0 } }],
+  faqEyebrow: { type: String, trim: true, default: '' },
+  faqHeading: { type: String, trim: true, default: '' },
+  faqItems: [{ question: { type: String, trim: true }, answer: { type: String, trim: true }, order: { type: Number, default: 0 } }]
+}, { timestamps: true });
+
 const ContactRequest = mongoose.model("ContactRequest", contactRequestSchema);
 const Event = mongoose.model("Event", eventSchema);
 const InstagramPost = mongoose.model("InstagramPost", instagramPostSchema);
 const News = mongoose.model("News", newsSchema);
 const Ticket = mongoose.model("Ticket", ticketSchema);
+const AboutPage = mongoose.model("AboutPage", aboutPageSchema);
 
 // ==========================================
 // ROTAS DE NAVEGAÇÃO DO BACKOFFICE
@@ -200,6 +224,14 @@ app.get("/api/events/gallery", async (req, res) => {
   try {
     const galleryItems = await Event.find({}, "title imageUrl locationSummary").sort({ createdAt: -1 }).limit(6).lean();
     res.json({ success: true, count: galleryItems.length, data: galleryItems });
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
+
+app.get("/api/about-page", async (req, res) => {
+  try {
+    let page = await AboutPage.findOne().lean();
+    if (!page) page = {};
+    res.json({ success: true, data: page });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
@@ -474,6 +506,31 @@ app.delete("/api/instagram/:id", checkAdminAuth, async (req, res) => {
     res.json({ success: true, message: "Eliminado." });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// --- OPERAÇÕES MASTER: ABOUT PAGE (SINGLETON) ---
+app.put("/api/about-page", checkAdminAuth, async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+
+    // Parse JSON string arrays if sent as strings (from FormData)
+    if (updateData.heroCtaLinks && typeof updateData.heroCtaLinks === 'string') updateData.heroCtaLinks = JSON.parse(updateData.heroCtaLinks);
+    if (updateData.marqueeItems && typeof updateData.marqueeItems === 'string') updateData.marqueeItems = JSON.parse(updateData.marqueeItems);
+    if (updateData.teamMembers && typeof updateData.teamMembers === 'string') updateData.teamMembers = JSON.parse(updateData.teamMembers);
+    if (updateData.faqItems && typeof updateData.faqItems === 'string') updateData.faqItems = JSON.parse(updateData.faqItems);
+
+    const page = await AboutPage.findOneAndUpdate(
+      {},
+      { $set: updateData },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    res.json({ success: true, data: page });
+  } catch (err) {
+    console.error("🔴 Erro ao atualizar About Page:", err.message);
+    const errorMsg = err.name === 'ValidationError' ? Object.values(err.errors).map(e => e.message).join(". ") : err.message;
+    res.status(400).json({ success: false, error: errorMsg });
   }
 });
 
