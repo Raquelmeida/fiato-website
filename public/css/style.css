@@ -1374,7 +1374,7 @@ img {
 
 .agenda-list__month--light {
   background-color: var(--color-neutral-200);
-  color: var(--color-navy-base);
+  color: var(--color-off-white);
 }
 
 .agenda-list__month-header {
@@ -1394,8 +1394,8 @@ img {
 }
 
 .agenda-list__month--light .agenda-list__month-header {
-  background-color: var(--color-neutral-200);
-  color: var(--color-navy-base);
+  /* background-color: var(--color-neutral-200); */
+  color: var(--color-off-white);
 }
 
 .agenda-list__month-header h2 {
