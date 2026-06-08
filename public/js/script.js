@@ -8,7 +8,6 @@ const agendaList = document.querySelector('[data-agenda-list]');
 const agendaFilterButtons = document.querySelectorAll('[data-agenda-sort]');
 const agendaMonthNames = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 const editionToggleButtons = document.querySelectorAll('[data-edition-toggle]');
-const faqTriggers = document.querySelectorAll('[data-faq-trigger]');
 const eventoAccordionTriggers = document.querySelectorAll('[data-evento-accordion-trigger]');
 const ticketForm = document.querySelector('[data-ticket-form]');
 const ticketShow = document.querySelector('[data-ticket-show]');
@@ -158,34 +157,54 @@ document.getElementById('novidades')?.addEventListener('click', function (event)
   sortAgenda(button.dataset.agendaSort);
 });
 
-faqTriggers.forEach((trigger) => {
-  trigger.addEventListener('click', () => {
-    const item = trigger.closest('.faq-list__item');
-    const answer = item?.querySelector('.faq-list__answer-wrap');
-    const icon = item?.querySelector('.faq-list__icon');
-    const isOpen = item?.classList.contains('faq-list__item--open');
 
-    if (!item || !answer || !icon) return;
+editionToggleButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const year = button.dataset.editionToggle;
 
-    faqTriggers.forEach((otherTrigger) => {
-      const otherItem = otherTrigger.closest('.faq-list__item');
-      const otherAnswer = otherItem?.querySelector('.faq-list__answer-wrap');
-      const otherIcon = otherItem?.querySelector('.faq-list__icon');
+    if (year === '2026') return;
 
-      otherItem?.classList.remove('faq-list__item--open');
-      otherTrigger.setAttribute('aria-expanded', 'false');
+    const isOpen = button.classList.contains('edition-section__button--open');
 
-      if (otherAnswer) otherAnswer.hidden = true;
-      if (otherIcon) otherIcon.textContent = '+';
+    editionToggleButtons.forEach((toggleButton) => {
+      toggleButton.classList.remove('edition-section__button--open');
     });
 
     if (!isOpen) {
-      item.classList.add('faq-list__item--open');
-      trigger.setAttribute('aria-expanded', 'true');
-      answer.hidden = false;
-      icon.textContent = '–';
+      button.classList.add('edition-section__button--open');
     }
   });
+});
+
+document.addEventListener('click', function (event) {
+  var trigger = event.target.closest('[data-faq-trigger]');
+  if (!trigger) return;
+
+  var item = trigger.closest('.faq-list__item');
+  var list = item?.closest('.faq-list, [data-sobre-faq-list]');
+  var answer = item?.querySelector('.faq-list__answer-wrap');
+  var icon = item?.querySelector('.faq-list__icon');
+  var isOpen = item?.classList.contains('faq-list__item--open');
+
+  if (!item || !answer || !icon || !list) return;
+
+  list.querySelectorAll('.faq-list__item').forEach(function (otherItem) {
+    var otherTrigger = otherItem.querySelector('[data-faq-trigger]');
+    var otherAnswer = otherItem.querySelector('.faq-list__answer-wrap');
+    var otherIcon = otherItem.querySelector('.faq-list__icon');
+
+    otherItem.classList.remove('faq-list__item--open');
+    if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+    if (otherAnswer) otherAnswer.hidden = true;
+    if (otherIcon) otherIcon.textContent = '+';
+  });
+
+  if (!isOpen) {
+    item.classList.add('faq-list__item--open');
+    trigger.setAttribute('aria-expanded', 'true');
+    answer.hidden = false;
+    icon.textContent = '\u2013';
+  }
 });
 
 document.querySelector('.evento-accordion')?.addEventListener('click', function (event) {
@@ -2119,6 +2138,176 @@ function loadInstagramPosts() {
     });
 }
 
+function loadAboutPage() {
+  var heroDesc = document.querySelector('[data-sobre-hero-description]');
+  if (!heroDesc) return;
+
+  fetch('/api/about-page')
+    .then(function (r) { return r.json(); })
+    .then(function (result) {
+      if (!result.success || !result.data) return;
+      var page = result.data;
+      if (Object.keys(page).length === 0) return;
+
+      // Hero
+      if (page.heroDescription && heroDesc) heroDesc.textContent = page.heroDescription;
+
+      if (page.heroCtaLinks && page.heroCtaLinks.length > 0) {
+        var ctasContainer = document.querySelector('[data-sobre-hero-ctas]');
+        if (ctasContainer) {
+          ctasContainer.innerHTML = '';
+          page.heroCtaLinks.forEach(function (cta) {
+            var a = document.createElement('a');
+            a.href = cta.url || '#';
+            a.className = 'editorial-hero__action';
+            a.textContent = cta.label || '';
+            ctasContainer.appendChild(a);
+          });
+        }
+      }
+
+      // Manifesto
+      setTextContent('[data-sobre-manifesto-eyebrow]', page.manifestoEyebrow);
+      setTextContent('[data-sobre-manifesto-title]', page.manifestoTitle);
+      setTextContent('[data-sobre-manifesto-left]', page.manifestoBodyLeft);
+      setTextContent('[data-sobre-manifesto-right]', page.manifestoBodyRight);
+
+      // Marquee
+      if (page.marqueeItems && page.marqueeItems.length > 0) {
+        var marqueeTrack = document.querySelector('[data-sobre-marquee-track]');
+        if (marqueeTrack) {
+          marqueeTrack.innerHTML = '';
+          for (var m = 0; m < 6; m++) {
+            page.marqueeItems.forEach(function (item) {
+              var span = document.createElement('span');
+              span.className = 'marquee__item';
+              var textSpan = document.createElement('span');
+              textSpan.className = 'marquee__text';
+              textSpan.textContent = item.text || '';
+              span.appendChild(textSpan);
+              var dot = document.createElement('span');
+              dot.className = 'marquee__dot';
+              dot.setAttribute('aria-hidden', 'true');
+              dot.textContent = '\u2022';
+              span.appendChild(dot);
+              marqueeTrack.appendChild(span);
+            });
+          }
+        }
+      }
+
+      // Edition Feature
+      if (page.editionImageUrl) {
+        var editionPhoto = document.querySelector('[data-sobre-edition-photo]');
+        if (editionPhoto) {
+          editionPhoto.style.backgroundImage = 'url(' + page.editionImageUrl + ')';
+        }
+      }
+      setTextContent('[data-sobre-edition-eyebrow]', page.editionEyebrow);
+      setTextContent('[data-sobre-edition-year-top]', page.editionYearTop);
+      setTextContent('[data-sobre-edition-year-bottom]', page.editionYearBottom);
+      setTextContent('[data-sobre-edition-description]', page.editionDescription);
+
+      if (page.editionCtaLabel) {
+        var editionCta = document.querySelector('[data-sobre-edition-cta]');
+        if (editionCta) {
+          editionCta.textContent = page.editionCtaLabel;
+          if (page.editionCtaUrl) editionCta.href = page.editionCtaUrl;
+        }
+      }
+
+      // Team
+      setTextContent('[data-sobre-team-eyebrow]', page.teamEyebrow);
+      setTextContent('[data-sobre-team-heading]', page.teamHeading);
+
+      if (page.teamMembers && page.teamMembers.length > 0) {
+        var teamGrid = document.querySelector('[data-sobre-team-grid]');
+        if (teamGrid) {
+          teamGrid.innerHTML = '';
+          page.teamMembers.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+          page.teamMembers.forEach(function (member) {
+            var memberDiv = document.createElement('div');
+            memberDiv.className = 'team__member';
+            var photoDiv = document.createElement('div');
+            photoDiv.className = 'team__photo' + (member.photoUrl ? '' : ' ph');
+            if (member.photoUrl) photoDiv.style.backgroundImage = 'url(' + member.photoUrl + ')';
+            if (member.name) photoDiv.setAttribute('aria-label', member.name);
+            else photoDiv.setAttribute('aria-label', 'Membro da equipa');
+            memberDiv.appendChild(photoDiv);
+            teamGrid.appendChild(memberDiv);
+          });
+        }
+      }
+
+      // FAQ
+      setTextContent('[data-sobre-faq-eyebrow]', page.faqEyebrow);
+
+      if (page.faqHeading) {
+        var faqHeading = document.querySelector('[data-sobre-faq-heading]');
+        if (faqHeading) {
+          var brIndex = page.faqHeading.indexOf('\\n');
+          if (brIndex !== -1) {
+            faqHeading.innerHTML = page.faqHeading.substring(0, brIndex) + ' <br /> ' + page.faqHeading.substring(brIndex + 2);
+          } else {
+            faqHeading.textContent = page.faqHeading;
+          }
+        }
+      }
+
+      if (page.faqItems && page.faqItems.length > 0) {
+        var faqList = document.querySelector('[data-sobre-faq-list]');
+        if (faqList) {
+          faqList.innerHTML = '';
+          page.faqItems.forEach(function (faq, index) {
+            var li = document.createElement('li');
+            li.className = 'faq-list__item' + (index === 0 ? ' faq-list__item--open' : '');
+
+            var trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'faq-list__trigger';
+            trigger.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+            trigger.setAttribute('data-faq-trigger', '');
+
+            var qSpan = document.createElement('span');
+            qSpan.className = 'faq-list__question';
+            qSpan.textContent = faq.question || '';
+            trigger.appendChild(qSpan);
+
+            var iconSpan = document.createElement('span');
+            iconSpan.className = 'faq-list__icon';
+            iconSpan.setAttribute('aria-hidden', 'true');
+            iconSpan.textContent = index === 0 ? '\u2013' : '+';
+            trigger.appendChild(iconSpan);
+
+            li.appendChild(trigger);
+
+            var answerWrap = document.createElement('div');
+            answerWrap.className = 'faq-list__answer-wrap';
+            if (index !== 0) answerWrap.setAttribute('hidden', '');
+            answerWrap.setAttribute('role', 'region');
+
+            var p = document.createElement('p');
+            p.className = 'faq-list__answer';
+            p.textContent = faq.answer || '';
+            answerWrap.appendChild(p);
+
+            li.appendChild(answerWrap);
+            faqList.appendChild(li);
+          });
+        }
+      }
+    })
+    .catch(function () {
+      // Fallback: do nothing, keep static HTML
+    });
+}
+
+function setTextContent(selector, value) {
+  if (!value) return;
+  var el = document.querySelector(selector);
+  if (el) el.textContent = value;
+}
+
 if (instagramPrev) {
   instagramPrev.addEventListener('click', function () {
     if (instagramPosts.length <= 1) return;
@@ -2214,3 +2403,4 @@ loadArquivoPage();
 loadEventoPage();
 loadTicketEvents();
 loadInstagramPosts();
+loadAboutPage();

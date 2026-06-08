@@ -48,6 +48,9 @@
                     <li class="tab-link" data-tab="instagram">
                         <a><i class="fas fa-camera mr-2"></i>Instagram</a>
                     </li>
+                    <li class="tab-link" data-tab="about">
+                        <a><i class="fas fa-info-circle mr-2"></i>Sobre Nós</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -226,6 +229,21 @@
                     <tbody id="table-body-instagram"></tbody>
                 </table>
             </div>
+        </section>
+
+        <section id="about" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <h3 class="title is-4" style="color: var(--fiato-dark);">Sobre Nós</h3>
+                </div>
+                <div class="level-right">
+                    <button class="button is-light" onclick="editAboutSection()" style="border-radius: 10px; font-weight: 600;">
+                        <span class="icon"><i class="fas fa-pen"></i></span><span>Editar página completa</span>
+                    </button>
+                </div>
+            </div>
+            <p class="mb-5" style="color: #64748b;">Gere aqui os conteúdos da página Sobre Nós por secções.</p>
+            <div class="columns is-multiline" id="about-cards-container"></div>
         </section>
     </main>
 
@@ -501,6 +519,178 @@
             <footer class="modal-card-foot is-justify-content-end">
                 <button class="button is-ghost" onclick="closeModal('modal-instagram')" style="color: #64748b;">Cancelar</button>
                 <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveInstagram()">Gravar</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-about">
+        <div class="modal-background" onclick="closeModal('modal-about')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-about-title">Editar Página "Sobre Nós"</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-about')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="about-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-about">
+
+                    <!-- HERO -->
+                    <div class="about-section-fields" data-about-section="hero">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-star mr-2"></i>Hero / Editorial
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Descrição (hero)</label>
+                            <div class="control"><textarea class="textarea" id="about-heroDescription" rows="2"></textarea></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Links CTA do Hero</label>
+                            <div id="about-hero-ctas-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addHeroCtaRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar CTA</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MANIFESTO -->
+                    <div class="about-section-fields" data-about-section="manifesto">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-quote-right mr-2"></i>Manifesto
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-manifestoEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-manifestoTitle"></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Coluna Esquerda</label>
+                                    <div class="control"><textarea class="textarea" id="about-manifestoBodyLeft" rows="3"></textarea></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Coluna Direita</label>
+                                    <div class="control"><textarea class="textarea" id="about-manifestoBodyRight" rows="3"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MARQUEE -->
+                    <div class="about-section-fields" data-about-section="marquee">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-arrows-alt-h mr-2"></i>Marquee
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Itens do Marquee</label>
+                            <div id="about-marquee-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addMarqueeRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Item</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- EDIÇÃO 2026 -->
+                    <div class="about-section-fields" data-about-section="edition">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-calendar mr-2"></i>Bloco 2026
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-editionEyebrow"></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Ano (linha superior)</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionYearTop"></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Ano (linha inferior)</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionYearBottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Descrição</label>
+                            <div class="control"><textarea class="textarea" id="about-editionDescription" rows="2"></textarea></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Label do CTA</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionCtaLabel"></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">URL do CTA</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionCtaUrl"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">URL da Imagem de Fundo</label>
+                            <div class="control"><input class="input" type="text" id="about-editionImageUrl"></div>
+                        </div>
+                    </div>
+
+                    <!-- EQUIPA -->
+                    <div class="about-section-fields" data-about-section="team">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-users mr-2"></i>Equipa / Bastidores
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-teamEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-teamHeading"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Membros da Equipa</label>
+                            <div id="about-team-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addTeamMemberRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Membro</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FAQ -->
+                    <div class="about-section-fields" data-about-section="faq">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-question-circle mr-2"></i>FAQ
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-faqEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-faqHeading"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Perguntas Frequentes</label>
+                            <div id="about-faq-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addFaqRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Pergunta</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-about')" style="color: #64748b;">Cancelar</button>
+                <button class="button" onclick="saveAboutSection()" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;">Gravar</button>
             </footer>
         </div>
     </div>
