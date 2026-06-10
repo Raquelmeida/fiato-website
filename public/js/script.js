@@ -38,7 +38,20 @@ function debounce(func, wait) {
     }, wait);
   };
 }
+const mainNavbar = document.querySelector('.navbar');
 
+if (mainNavbar) {
+  const navbarObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      // Get the exact, real-time height of the navbar element
+      const actualHeight = entry.target.offsetHeight;
+      // Inject it dynamically into the document root
+      document.documentElement.style.setProperty('--navbar-height', actualHeight + 'px');
+    }
+  });
+  
+  navbarObserver.observe(mainNavbar);
+}
 function updateCountdown() {
   if (!countdownDays || !countdownHours || !countdownMinutes) return;
 
