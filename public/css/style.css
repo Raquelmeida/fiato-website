@@ -4947,6 +4947,62 @@ img {
   }
 }
 
+/* 1. Core ALTCHA variables to match your theme */
+altcha-widget {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+
+  /* Theme Configurations */
+  --altcha-bg: rgba(255, 255, 255, 0.03);       /* Translucent dark-blue field look */
+  --altcha-color: #ffffff;                      /* Crisp white text */
+  --altcha-border-color: rgba(255, 255, 255, 0.3);/* Soft translucent border to match inputs */
+  --altcha-border-radius: 24px;                 /* Pill shape matching 'Nome', 'Email', etc. */
+  
+  /* Accent Color: Use #e54e2b to match your 'Enviar' button, or keep your pink/magenta */
+  --altcha-accent-color: #e54e2b; 
+}
+
+/* 2. Overrides for internal layout and padding */
+altcha-widget .altcha {
+  border: 1px solid var(--altcha-border-color) !important;
+  border-radius: var(--altcha-border-radius) !important;
+  background: var(--altcha-bg) !important;
+  padding: 18px 28px !important;                /* Generous vertical/horizontal padding */
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+/* Hover effect matching modern form fields */
+altcha-widget .altcha:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Layout alignment */
+altcha-widget .altcha-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;                                    /* Balanced gap between checkbox and text */
+}
+
+/* Typography adjustment */
+altcha-widget .altcha-label {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Checkbox specific styling */
+altcha-widget .altcha-checkbox input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: var(--altcha-accent-color);
+  border-radius: 6px;
+}
+
 @media (min-width: 900px) {
   .team__break {
     display: inline;

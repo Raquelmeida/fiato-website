@@ -20,6 +20,9 @@ let countdownTarget = Date.now()
   + (8 * 60 * 60 * 1000)
   + (32 * 60 * 1000);
 
+// Anti-spam timestamp
+const formLoadTime = Date.now();
+
 function pad(value) {
   return String(value).padStart(2, '0');
 }
@@ -56,7 +59,7 @@ function updateNavbarTheme() {
   const sections = document.querySelectorAll('[data-navbar-theme]');
   const navbarHeight = navbar.getBoundingClientRect().height;
   // Set default theme: dark-blue for archive page to ensure contrast on load, transparent for others
-  let currentTheme = document.querySelector('[data-arquivo-list]') ? 'dark-blue' : 'transparent';
+  let currentTheme = document.querySelector('[data-arquivo-list]') ? 'dark-blue' : 'dark-blue';
 
   sections.forEach((section) => {
     const rect = section.getBoundingClientRect();
@@ -246,7 +249,7 @@ if (ticketForm) {
     }
   });
 
-  ticketForm.addEventListener('submit', function (event) {
+  ticketForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     var requiredFields = ticketForm.querySelectorAll('[required]');
@@ -275,39 +278,48 @@ if (ticketForm) {
       return;
     }
 
+    var altchaWidget = ticketForm.querySelector('altcha-widget');
+    if (altchaWidget && altchaWidget.state !== 'verified') {
+      ticketMessage.className = 'ticket-form__message';
+      ticketMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      return;
+    }
+
     var formData = new FormData(ticketForm);
 
     var body = {
       eventId: eventId,
       sessionId: sessionId,
+      altcha: formData.get('altcha') || '',
       firstName: formData.get('nome') || '',
       lastName: formData.get('apelido') || '',
       email: formData.get('email') || '',
       phone: formData.get('telefone') || '',
       quantity: Number(formData.get('quantidade') || 1),
-      observations: formData.get('observacoes') || ''
+      observations: formData.get('observacoes') || '',
+      b_website: formData.get('b_website') || '',
+      ts: formLoadTime
     };
 
-    fetch('/api/tickets', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Erro na rede');
-        return response.json();
-      })
-      .then(function (result) {
-        if (!result.success) throw new Error(result.error || 'Erro da API');
+    try {
+      const response = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
         ticketMessage.className = 'ticket-form__message is-success';
         ticketMessage.textContent = 'Pedido de reserva registado. A equipa FIATO entrará em contacto.';
         ticketForm.reset();
         updateTicketSummary();
-      })
-      .catch(function () {
+    } catch (err) {
         ticketMessage.className = 'ticket-form__message';
-        ticketMessage.textContent = 'Ocorreu um erro ao processar a reserva. Tenta novamente.';
-      });
+        ticketMessage.textContent = err.message || 'Ocorreu um erro ao processar a reserva. Tenta novamente.';
+    }
   });
 }
 
@@ -316,7 +328,7 @@ var contactForm = document.querySelector('[data-contact-form]');
 var contactMessage = document.querySelector('[data-contact-message]');
 
 if (contactForm) {
-  contactForm.addEventListener('submit', function (event) {
+  contactForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     var requiredFields = contactForm.querySelectorAll('[required]');
@@ -336,35 +348,44 @@ if (contactForm) {
       return;
     }
 
+    var altchaWidget = contactForm.querySelector('altcha-widget');
+    if (altchaWidget && altchaWidget.state !== 'verified') {
+      contactMessage.className = 'contactos-form__message';
+      contactMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      return;
+    }
+
     var formData = new FormData(contactForm);
 
     var body = {
+      altcha: formData.get('altcha') || '',
       firstName: formData.get('nome') || '',
       lastName: formData.get('apelido') || '',
       email: formData.get('email') || '',
       message: formData.get('mensagem') || '',
-      type: 'general'
+      type: 'general',
+      b_website: formData.get('b_website') || '',
+      ts: formLoadTime
     };
 
-    fetch('/api/contact-requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Erro na rede');
-        return response.json();
-      })
-      .then(function (result) {
-        if (!result.success) throw new Error(result.error || 'Erro da API');
+    try {
+      const response = await fetch('/api/contact-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
         contactMessage.className = 'contactos-form__message is-success';
         contactMessage.textContent = 'Mensagem enviada com sucesso. Entraremos em contacto brevemente.';
         contactForm.reset();
-      })
-      .catch(function () {
+    } catch (err) {
         contactMessage.className = 'contactos-form__message';
-        contactMessage.textContent = 'Ocorreu um erro ao enviar a mensagem. Tenta novamente.';
-      });
+        contactMessage.textContent = err.message || 'Ocorreu um erro ao enviar a mensagem.';
+    }
   });
 }
 
@@ -372,7 +393,7 @@ var memberForm = document.querySelector('[data-member-form]');
 var memberMessage = document.querySelector('[data-member-message]');
 
 if (memberForm) {
-  memberForm.addEventListener('submit', function (event) {
+  memberForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     var requiredFields = memberForm.querySelectorAll('[required]');
@@ -392,36 +413,44 @@ if (memberForm) {
       return;
     }
 
+    var altchaWidget = memberForm.querySelector('altcha-widget');
+    if (altchaWidget && altchaWidget.state !== 'verified') {
+      memberMessage.className = 'member-form__message';
+      memberMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      return;
+    }
+
     var formData = new FormData(memberForm);
 
     var body = {
+      altcha: formData.get('altcha') || '',
       firstName: formData.get('nome') || '',
       lastName: formData.get('apelido') || '',
       email: formData.get('email') || '',
-      message: formData.get('mensagem') || 'Pedido de adesão como membro.',
-      documentUrl: formData.get('link') || formData.get('portfolio') || '',
-      type: 'membership'
+      documentUrl: formData.get('portfolio') || '',
+      type: 'membership',
+      b_website: formData.get('b_website') || '',
+      ts: formLoadTime
     };
 
-    fetch('/api/contact-requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Erro na rede');
-        return response.json();
-      })
-      .then(function (result) {
-        if (!result.success) throw new Error(result.error || 'Erro da API');
+    try {
+      const response = await fetch('/api/contact-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
         memberMessage.className = 'member-form__message is-success';
         memberMessage.textContent = 'Pedido de adesão enviado com sucesso. Entraremos em contacto brevemente.';
         memberForm.reset();
-      })
-      .catch(function () {
+    } catch (err) {
         memberMessage.className = 'member-form__message';
-        memberMessage.textContent = 'Ocorreu um erro ao enviar o pedido. Tenta novamente.';
-      });
+        memberMessage.textContent = err.message || 'Ocorreu um erro ao enviar o pedido.';
+    }
   });
 }
 

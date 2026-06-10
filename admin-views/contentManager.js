@@ -147,7 +147,7 @@ function renderTable(schema, dataset) {
                 <td class="has-text-centered"><div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 6px; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;"></div></td>
                 <td class="has-text-right">
                     <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditArquivo('${item._id}')"><i class="fas fa-pen"></i></button>
-                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('arquivos', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
+                    <button class="button is-small is-white" style="color:#ef4444;" onclick="deleteResource('arquivo', '${item._id}')"><i class="fas fa-trash-alt"></i></button>
                 </td>
             `;
         }
@@ -169,11 +169,14 @@ function renderTable(schema, dataset) {
                 processed: 'background-color: #dcfce7; color: #16a34a; font-weight:600;', 
                 archived: 'background-color: #f1f5f9; color: #64748b;' 
             };
+            const createdAtDate = new Date(item.createdAt).toLocaleDateString('pt-PT', { year: 'numeric', month: 'short', day: 'numeric' });
+            const createdAtTime = new Date(item.createdAt).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
             row.innerHTML = `
                 <td><strong style="color: var(--fiato-dark);">${item.firstName} ${item.lastName}</strong></td>
                 <td style="color:#475569; font-size:0.9rem;">${item.email}</td>
                 <td><span class="tag is-white" style="border: 1px solid var(--fiato-border); color:var(--fiato-dark); font-weight:500; border-radius:6px;">${item.type ? item.type.toUpperCase() : 'GERAL'}</span></td>
                 <td><span class="tag" style="border-radius:6px; ${statusTags[item.status] || ''}">${item.status === 'unread' ? 'Pendente' : item.status === 'processed' ? 'Tratado' : 'Arquivado'}</span></td>
+                <td><span class="has-text-grey" style="font-size:0.9rem;">${createdAtDate} ${createdAtTime}</span></td>
                 <td class="has-text-right">
                     <button class="button is-small is-dark" style="border-radius:8px; font-weight:600; background-color: var(--fiato-dark);" onclick="openViewContact('${item._id}')"><i class="fas fa-envelope-open mr-2"></i> Abrir</button>
                 </td>
@@ -600,8 +603,17 @@ async function updateContactStatus() {
 async function deleteResource(schema, id) {
     if (!confirm("Pretendes eliminar permanentemente este registo na base de dados Cloud?")) return;
     
+    // Mapeamento de esquemas internos para endpoints de API
+    const endpoints = {
+        arquivo: 'arquivos',
+        events: 'events',
+        news: 'news',
+        instagram: 'instagram'
+    };
+    const apiPath = endpoints[schema] || schema;
+
     try {
-        const response = await fetch(`/api/${schema}/${id}`, { method: "DELETE" });
+        const response = await fetch(`/api/${apiPath}/${id}`, { method: "DELETE" });
         const result = await response.json();
         if (result.success) {
             loadTabContent(schema);

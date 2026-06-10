@@ -6,6 +6,7 @@
     <title>Contactos | FIATO</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="stylesheet" href="css/style.css" />
+    <script async defer src="https://cdn.jsdelivr.net/npm/altcha/dist/altcha.min.js" type="module"></script>
   </head>
   <body>
     <header class="navbar navbar--transparent">
@@ -62,6 +63,9 @@
 
             <textarea name="mensagem" placeholder="Mensagem" required></textarea>
 
+            <!-- Self-hosted ALTCHA widget -->
+            <altcha-widget name="altcha" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+
             <p class="contactos-form__message" data-contact-message aria-live="polite"></p>
 
             <button type="submit">Enviar</button>
@@ -85,8 +89,17 @@
           </p>
 
           <form class="member-form" data-member-form novalidate>
+            <div class="contactos-form__row">
+              <input type="text" name="nome" placeholder="Nome" required />
+              <input type="text" name="apelido" placeholder="Apelido" required />
+            </div>
+
             <input type="email" name="email" placeholder="E-mail" required />
-            <button type="button" class="member-form__upload">Upload Documentos</button>
+            <input type="url" name="portfolio" placeholder="Link para Portefólio ou Currículo" required />
+
+            <!-- Self-hosted ALTCHA widget -->
+            <altcha-widget name="altcha" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+
             <p class="member-form__message" data-member-message aria-live="polite"></p>
             <button type="submit" class="member-form__submit">Enviar</button>
           </form>

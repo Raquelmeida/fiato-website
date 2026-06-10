@@ -1,10 +1,12 @@
+import { webcrypto } from "node:crypto";
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
-import cookieParser from "cookie-parser"; 
+import cookieParser from "cookie-parser";
 import multer from "multer";
 import fs from "fs";
+import { createChallenge, verifySolution } from "altcha-lib/v1"; // Removed encodeChallenge import
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +14,11 @@ const PORT = process.env.PORT || 3000;
 // Configurações Globais e Credenciais http://localhost:3000/backoffice/login
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; 
 const MONGODB_URI = process.env.MONGODB_URI;
+let ALTCHA_HMAC_KEY = process.env.ALTCHA_HMAC_KEY;
+if (!ALTCHA_HMAC_KEY) {
+  console.warn("ALTCHA_HMAC_KEY not found in environment variables. Generating a random key for development. PLEASE SET ALTCHA_HMAC_KEY IN PRODUCTION.");
+  ALTCHA_HMAC_KEY = Buffer.from(webcrypto.getRandomValues(new Uint8Array(32))).toString('hex');
+}
 
 if (!MONGODB_URI || !ADMIN_PASSWORD) {
   console.warn("⚠️  WARNING: Environment variables MONGODB_URI or ADMIN_PASSWORD are missing. Check your .env file.");
@@ -37,6 +44,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const phoneRegex = /^\+?[0-9\s\-]{9,15}$/; 
 const urlRegex = /^(https?:\/\/|\/)[^\s$.?#].[^\s]*$/;
+
+// Reusable Captcha Verification Helper
+const validateSecurity = async (req) => {
+  const { altcha } = req.body;
+  if (!altcha) throw new Error("A verificação de segurança é obrigatória.");
+  
+  const isValid = await verifySolution(altcha, ALTCHA_HMAC_KEY);
+  if (!isValid) throw new Error("Falha na verificação de segurança. Tente novamente.");
+  return true;
+};
 
 // ==========================================
 // MIDDLEWARE DE PROTEÇÃO DE ACESSO
@@ -374,46 +391,111 @@ app.get("/api/instagram", async (req, res) => {
   }
 });
 
+// Endpoint to generate ALTCHA challenge
+app.get("/api/captcha-challenge", async (req, res) => {
+  try {
+    // createChallenge for iterative challenges (with hmacKey and maxNumber)
+    // returns a Challenge object that already contains the 'challenge' string
+    // (base64-encoded public parameters) and the 'number' (solution).
+    const challengeWithSolution = await createChallenge({
+      hmacKey: ALTCHA_HMAC_KEY, // HMAC secret for signing the challenge
+      maxNumber: 100000, // This sets the computational difficulty for the client
+      expires: new Date(Date.now() + 15 * 60 * 1000), // Challenge validity period
+    });
+
+    // Destructure to omit the 'number' (solution) field before sending to the client.
+    // The 'challenge' property (the base64 string) is already part of publicChallengeFields.
+    const { number, ...publicChallengeFields } = challengeWithSolution;
+    const payload = publicChallengeFields;
+
+    // Log the full output for debugging purposes
+    console.log("ALTCHA V2 Challenge Generated:", JSON.stringify(payload, null, 2));
+    res.json(payload);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      error: "ALTCHA challenge failed"
+    });
+  }
+});
 // ==========================================
 // ENDPOINTS DE SUBMISSÃO PÚBLICA
 // ==========================================
-app.post("/api/contact-requests", async (req, res) => {
+app.post("/api/captcha-verify", async (req, res) => {
   try {
-    const contactDoc = await ContactRequest.create(req.body);
-    res.status(201).json({ success: true, data: contactDoc });
-  } catch (err) { res.status(400).json({ success: false, error: err.message }); }
+    const { altcha } = req.body;
+
+    const valid = await verifySolution(altcha, ALTCHA_HMAC_KEY);
+
+    if (!valid) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid CAPTCHA"
+      });
+    }
+
+    return res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false });
+  }
 });
 
 app.post("/api/tickets", async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
-    const { firstName, lastName, email, phone, eventId, sessionId, quantity, observations } = req.body;
-    if (!eventId || !sessionId || !quantity) return res.status(400).json({ success: false, error: "Malformed payload." });
-
-    const targetedEvent = await Event.findById(eventId).session(session);
-    if (!targetedEvent) return res.status(404).json({ success: false, error: "Event not located." });
-
-    const targetSubSession = targetedEvent.sessions.id(sessionId);
-    if (!targetSubSession) return res.status(404).json({ success: false, error: "Schedule missing." });
-
-    if (targetSubSession.status !== "available" || targetSubSession.availableTickets < quantity) {
-      return res.status(400).json({ success: false, error: "Tickets mapping unavailable." });
+    const { altcha, firstName, lastName, email, phone, eventId, sessionId, quantity, observations } = req.body;
+    
+    // Strict input validation to prevent transaction corruption
+    const qty = parseInt(quantity, 10);
+    if (!eventId || !sessionId || isNaN(qty) || qty < 1 || qty > 10) {
+      return res.status(400).json({ success: false, error: "Dados da reserva inválidos ou quantidade fora do limite (1-10)." });
     }
 
-    targetSubSession.availableTickets -= quantity;
-    if (targetSubSession.availableTickets === 0) targetSubSession.status = "sold_out";
+    await validateSecurity(req);
 
-    await targetedEvent.save({ session });
-    const receipt = await Ticket.create([{ firstName, lastName, email, phone, eventId, sessionId, quantity, observations }], { session });
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const targetedEvent = await Event.findById(eventId).session(session);
+      if (!targetedEvent) return res.status(404).json({ success: false, error: "Event not located." });
 
-    await session.commitTransaction();
-    session.endSession();
-    res.status(201).json({ success: true, receipt: receipt[0] });
+      const targetSubSession = targetedEvent.sessions.id(sessionId);
+      if (!targetSubSession) return res.status(404).json({ success: false, error: "Schedule missing." });
+
+      if (targetSubSession.status !== "available" || targetSubSession.availableTickets < quantity) {
+        return res.status(400).json({ success: false, error: "Tickets mapping unavailable." });
+      }
+
+      targetSubSession.availableTickets -= quantity;
+      if (targetSubSession.availableTickets === 0) targetSubSession.status = "sold_out";
+
+      await targetedEvent.save({ session });
+      const receipt = await Ticket.create([{ firstName, lastName, email, phone, eventId, sessionId, quantity, observations }], { session });
+
+      await session.commitTransaction();
+      session.endSession();
+      res.status(201).json({ success: true, receipt: receipt[0] });
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      throw err;
+    }
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
-    res.status(400).json({ success: false, error: err.message });
+    const isValidation = err.name === 'ValidationError';
+    const isSafe = [
+      "A verificação de segurança é obrigatória.",
+      "Falha na verificação de segurança. Tente novamente.",
+      "Demasiados pedidos. Por favor, aguarde alguns minutos.",
+      "Dados da reserva inválidos ou quantidade fora do limite (1-10).", 
+      "Event not located.", 
+      "Schedule missing.", 
+      "Tickets mapping unavailable."
+    ].includes(err.message);
+
+    const errorMsg = isValidation ? Object.values(err.errors).map(e => e.message).join(". ") : (isSafe ? err.message : "Ocorreu um erro ao processar a reserva.");
+    res.status(400).json({ success: false, error: errorMsg });
   }
 });
 
