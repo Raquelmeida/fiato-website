@@ -4,7 +4,7 @@
   --color-navy-base: #1E388F;
   --color-navy-20: #182D72;
   --color-navy-40: #122256;
-  --color-navy-60: #0C1639;
+  --color-navy-60: #1E388F;
   --color-navy-80: #060B1D;
   --color-navy-light-20: #4B60A5;
   --color-navy-light-40: #7888BC;
@@ -744,7 +744,7 @@ img {
 .contactos-hero__content {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
-  align-items: center;
+  align-items: top;
   gap: 80px;
   max-width: 1440px;
   margin: 0 auto;
