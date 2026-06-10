@@ -2337,6 +2337,124 @@ function setTextContent(selector, value) {
   if (el) el.textContent = value;
 }
 
+// ==========================================
+// LATEST ARQUIVO FEATURES (SOBRE NÓS PAGE)
+// ==========================================
+function loadLatestArquivoFeatures() {
+  const container = document.querySelector('[data-latest-archives-container]');
+  if (!container) return;
+
+  fetch('/api/arquivo/latest')
+    .then(response => {
+      if (!response.ok) throw new Error('Falha ao carregar arquivos recentes.');
+      return response.json();
+    })
+    .then(latestArchives => {
+      if (!latestArchives || latestArchives.length === 0) return;
+
+      // 1. Clear only inner static content
+      container.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      latestArchives.forEach(item => {
+        // 2. Year splitting logic (Defensive)
+        const yearStr = item.year ? String(item.year) : '0000';
+        const yearTop = yearStr.length >= 4 ? yearStr.slice(0, 2) : '20';
+        const yearBottom = yearStr.length >= 4 ? yearStr.slice(2, 4) : '--';
+        
+        const safeImg = item.imageUrl ? item.imageUrl.replace(/'/g, '%27') : 'assets/img-contactos.png';
+
+        const section = document.createElement('section');
+        section.className = 'edition-feature';
+        section.dataset.navbarTheme = 'light'; // Requirement: keep tracking intact
+
+        // 3. Inject Template
+        section.innerHTML = `
+          <div class="edition-feature__photo ph" data-sobre-edition-photo aria-hidden="true" style="background-image: url('${safeImg}');"></div>
+          <div class="edition-feature__content">
+            <span class="edition-feature__eyebrow" data-sobre-edition-eyebrow>${item.title || 'Arquivo FIATO'}</span>
+            <div class="edition-feature__year">
+              <span class="edition-feature__year-top" data-sobre-edition-year-top>${yearTop}</span>
+              <span class="edition-feature__year-bottom" data-sobre-edition-year-bottom>${yearBottom}</span>
+            </div>
+            <p class="edition-feature__description" data-sobre-edition-description>${item.description || ''}</p>
+            <a href="arquivo.html?id=${item._id}" class="edition-feature__cta">Consultar Arquivo</a>
+          </div>`;
+        
+        fragment.appendChild(section);
+      });
+
+      container.appendChild(fragment);
+      // 4. Force navbar re-sync after DOM update
+      updateNavbarTheme();
+    })
+    .catch(error => console.error('🔴 Erro ao carregar os últimos arquivos:', error));
+}
+
+
+window.addEventListener('scroll', function() {
+  updateNavbarTheme();
+  updateArchiveParallax();
+});
+window.addEventListener('resize', () => {
+  updateNavbarTheme();
+  updateArchiveParallax();
+
+  if (window.innerWidth > 768 && navbar && menuToggle) {
+    navbar.classList.remove('is-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Abrir menu');
+  }
+});
+
+updateNavbarTheme();
+
+if (countdownDays && countdownHours && countdownMinutes) {
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+
+// Wrap page-specific loaders in DOMContentLoaded for robust execution
+document.addEventListener('DOMContentLoaded', () => {
+  // Loaders for index.html
+  if (document.querySelector('.home')) {
+    loadHomeEvents();
+    loadHomeHeroEvent();
+    loadHomePress();
+    loadInstagramPosts();
+  }
+
+  // Loaders for agenda.html
+  if (document.querySelector('.agenda-page')) {
+    loadAgendaEvents();
+  }
+
+  // Loaders for arquivo.html
+  if (document.querySelector('.edicoes-page')) { // .edicoes-page is the main class for arquivo.html
+    loadArquivoPage();
+  }
+
+  // Loaders for evento.html
+  if (document.querySelector('.evento-page')) {
+    loadEventoPage();
+  }
+
+  // Loaders for bilhetes.html
+  if (document.querySelector('.bilhetes-page')) {
+    loadTicketEvents();
+  }
+
+  // Loaders for sobre-nos.html
+  if (document.querySelector('.sobre-nos')) {
+    loadAboutPage();
+    loadLatestArquivoFeatures();
+  }
+
+  // Initial navbar theme update after all content might have loaded
+  updateNavbarTheme();
+});
+
 if (instagramPrev) {
   instagramPrev.addEventListener('click', function () {
     if (instagramPosts.length <= 1) return;
@@ -2424,6 +2542,7 @@ if (countdownDays && countdownHours && countdownMinutes) {
   setInterval(updateCountdown, 1000);
 }
 
+
 loadHomeEvents();
 loadHomeHeroEvent();
 loadHomePress();
@@ -2433,3 +2552,4 @@ loadEventoPage();
 loadTicketEvents();
 loadInstagramPosts();
 loadAboutPage();
+loadLatestArquivoFeatures();

@@ -91,7 +91,7 @@ img {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 50;
+  z-index: 9999; /* CRITICAL: Garante que a navbar fica sempre por cima */
   background: transparent;
   padding: 18px 30px; 
   transition:
@@ -1972,6 +1972,34 @@ img {
   background: var(--color-accent);
   color: var(--color-white);
 }
+
+
+.edition-feature {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  background: var(--color-off-white);
+  min-height: 540px;
+  /* 3. Aplica position: sticky e top para a altura da navbar */
+  position: sticky;
+  top: 80px; /* Ajustado para a altura da navbar (aprox. 70px + padding) */
+  /* Adiciona uma sombra subtil para realçar o efeito de empilhamento */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Garante que o elemento cria um novo contexto de empilhamento */
+  will-change: transform, z-index;
+}
+
+.edition-feature:nth-child(1) { z-index: 10; } /* 4. z-index para empilhamento */
+.edition-feature:nth-child(2) { z-index: 11; }
+.edition-feature:nth-child(3) { z-index: 12; }
+
+[data-latest-archives-container] {
+  /* 2. Mantém o fluxo de bloco padrão (display: block) */
+  /* 6. Adiciona padding-bottom para garantir que o último cartão tenha espaço para "descolar" e o footer apareça naturalmente */
+  /*padding-bottom: 600px; Valor ligeiramente superior ao min-height de um .edition-feature */
+  position: relative; /* Cria um novo contexto de empilhamento para os filhos sticky */
+  background: transparent;
+}
+
 
 .team {
   background: var(--color-navy-60);

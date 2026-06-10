@@ -154,6 +154,7 @@ const newsSchema = new mongoose.Schema(
 const arquivoSchema = new mongoose.Schema(
   {
     year: { type: Number, required: [true, "O ano é obrigatório"] },
+    title: { type: String, trim: true, default: "Edição Especial" },
     description: { type: String, required: [true, "A descrição da edição é obrigatória"], trim: true },
     imageUrl: { type: String, required: [true, "A imagem de capa é obrigatória"], match: [urlRegex, "URL de imagem inválido"] }
   },
@@ -221,6 +222,20 @@ app.get("/api/arquivos", async (req, res) => {
     const list = await Arquivo.find().sort({ year: -1 }).lean();
     res.json({ success: true, data: list });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
+
+app.get("/api/arquivo/latest", async (req, res) => {
+  try {
+    const latest = await Arquivo.find({})
+      .sort({ year: -1, createdAt: -1 })
+      .limit(3)
+      .select('year title description imageUrl _id')
+      .lean();
+    res.json(latest || []);
+  } catch (err) {
+    console.error("🔴 Erro crítico API Arquivo Latest:", err.message);
+    res.json([]); // Retorno defensivo para não quebrar o frontend
+  }
 });
 
 app.post("/api/arquivos", checkAdminAuth, upload.single('image'), async (req, res) => {

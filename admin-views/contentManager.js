@@ -96,7 +96,7 @@ function filterData(schema) {
             return item.title.toLowerCase().includes(query);
         }
         if (schema === "arquivo") {
-            return item.year.toString().includes(query) || item.description.toLowerCase().includes(query);
+            return item.year.toString().includes(query) || item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query);
         }
         if (schema === "instagram") {
             return item.caption.toLowerCase().includes(query);
@@ -143,7 +143,8 @@ function renderTable(schema, dataset) {
         else if (schema === "arquivo") {
             row.innerHTML = `
                 <td><strong style="color: var(--fiato-dark);">${item.year}</strong></td>
-                <td><span class="has-text-grey" style="font-size:0.9rem;">${item.description}</span></td>
+                <td><span style="color: var(--fiato-dark); font-weight:500;">${item.title || 'Edição'}</span></td>
+                <td><p class="has-text-grey" style="font-size:0.85rem; max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.description}</p></td>
                 <td class="has-text-centered"><div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 6px; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;"></div></td>
                 <td class="has-text-right">
                     <button class="button is-small is-white" style="color:#0284c7;" onclick="openEditArquivo('${item._id}')"><i class="fas fa-pen"></i></button>
@@ -491,6 +492,7 @@ function openEditArquivo(id) {
     clearFormErrors("arquivo");
 
     document.getElementById("arquivo-year").value = item.year || "";
+    if (document.getElementById("arquivo-title")) document.getElementById("arquivo-title").value = item.title || "";
     document.getElementById("arquivo-description").value = item.description || "";
     document.getElementById("arquivo-imageFile").value = "";
 
@@ -509,6 +511,7 @@ async function saveArquivo() {
     const formData = new FormData();
     
     formData.append("year", document.getElementById("arquivo-year").value);
+    if (document.getElementById("arquivo-title")) formData.append("title", document.getElementById("arquivo-title").value);
     formData.append("description", document.getElementById("arquivo-description").value);
 
     if (imageInput.files[0]) {
