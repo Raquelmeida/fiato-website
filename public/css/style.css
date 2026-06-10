@@ -323,10 +323,15 @@ img {
   margin-top: var(--navbar-height);
 }
 
+/* ==========================================================================
+   1. HERO BASE & AGENDA REPLACEMENT (.hero)
+   ========================================================================== */
 .hero {
   position: relative;
-  min-height: 620px;
-  padding: 170px 32px 80px;
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--navbar-height) + 64px) 0 80px;
   background-color: var(--color-navy-40);
   background-position: center bottom;
   background-size: cover;
@@ -335,42 +340,49 @@ img {
   overflow: hidden;
 }
 
-.hero--agenda {
-  background-image:
-    linear-gradient(rgba(6, 11, 29, 0.72), rgba(6, 11, 29, 0.78)),
-    url('../assets/hero-agenda.png');
-}
-
 .hero__content {
-  max-width: 580px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
 }
 
 .hero__title {
   margin: 0;
   color: var(--color-accent);
   font-family: var(--font-display);
-  font-size: clamp(76px, 13vw, 168px);
+  font-size: clamp(54px, 7.5vw, 110px);
   font-weight: 400;
-  line-height: 0.8;
-  letter-spacing: -0.08em;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 
 .hero__title span {
+  font-family: var(--font-display);
+  font-weight: 400;
   display: block;
-  margin-left: 260px;
+  margin-top: 12px;
   color: var(--color-white);
-  font-size: clamp(48px, 6vw, 88px);
+  font-size: clamp(38px, 5vw, 72px);
   font-style: italic;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.04em;
 }
 
 .hero__description {
-  max-width: 360px;
-  margin-top: 80px;
+  max-width: 460px;
+  margin-top: 48px;
   font-family: var(--font-primary);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
+  opacity: 0.85;
 }
+
+.hero--agenda {
+  background-image:
+    linear-gradient(rgba(6, 11, 29, 0.436), rgba(7, 20, 65, 0.4)),
+    url('../assets/hero-agenda.png'); /* Keep page-specific background */
+}
+
 
 .hero__button {
   position: absolute;
@@ -392,10 +404,12 @@ img {
 }
 
 .editorial-hero {
-  background: var(--color-navy-60);
-  color: var(--color-off-white);
+  /* Source of truth, keep as is */
+  background: var(--color-navy-60); /* Keep page-specific background */
+  color: var(--color-off-white); /* Keep page-specific color */
   padding-top: calc(var(--navbar-height) + 32px);
   padding-bottom: 64px;
+  position: relative; /* Ensure proper stacking context */
 }
 
 .editorial-hero__inner {
@@ -409,6 +423,7 @@ img {
   font-family: var(--font-display);
   font-weight: 400;
   font-style: normal;
+  margin: 0;
   font-size: clamp(48px, 8vw, 120px);
   line-height: 1.02;
   letter-spacing: -0.03em;
@@ -496,6 +511,7 @@ img {
   font-family: var(--font-primary);
   font-size: 13px;
   line-height: 1.55;
+  margin: 0;
   opacity: 0.78;
 }
 
@@ -528,10 +544,12 @@ img {
 }
 
 .evento-hero {
-  position: relative;
+  position: relative; /* Ensure proper stacking context */
   min-height: 100vh;
   color: var(--color-white);
-  overflow: hidden;
+  overflow: hidden; /* Ensure proper containment */
+  background-size: cover; /* Standardized background composition */
+  background-position: center; /* Standardized background composition */
   display: flex;
   flex-direction: column;
 }
@@ -621,10 +639,12 @@ img {
 
 .evento-hero__content {
   position: relative;
-  z-index: 3;
-  padding: 0 48px;
+  z-index: 3; /* Preserve z-index */
   margin-top: auto;
   margin-bottom: 100px;
+  max-width: 1280px; /* Standardized inner content max-width */
+  margin-left: auto; /* Standardized inner content centering */
+  margin-right: auto; /* Standardized inner content centering */
 }
 
 .evento-hero__content h1 {
@@ -632,10 +652,11 @@ img {
   max-width: 800px;
   font-family: var(--font-display);
   font-size: clamp(64px, 9vw, 150px);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 0.92;
-  letter-spacing: -0.07em;
+  font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
+  font-weight: 400; /* Standardized H1 font-weight */
+  font-style: italic; /* Preserve existing font-style */
+  line-height: 1.02; /* Standardized H1 line-height */
+  letter-spacing: -0.03em; /* Standardized H1 letter-spacing */
 }
 
 .evento-hero h1 span {
@@ -671,92 +692,96 @@ img {
   font-size: 12px;
 }
 
+/* ==========================================================================
+   3. APOIOS REPLACEMENT (.apoios-hero)
+   ========================================================================== */
 .apoios-hero {
-  min-height: 650px;
-  padding: 190px 8vw 80px;
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--navbar-height) + 64px) 0 80px;
   background-image:
     linear-gradient(rgba(18, 34, 86, 0.78), rgba(18, 34, 86, 0.84)),
     url('../assets/img-contactos.png');
-  background-position: center;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   color: var(--color-white);
 }
 
 .apoios-hero__inner {
-  max-width: 1180px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
 }
 
 .apoios-hero h1 {
   margin: 0;
-  max-width: 760px;
+  max-width: 800px;
   font-family: var(--font-display);
-  font-size: clamp(58px, 8vw, 118px);
+  font-size: clamp(54px, 7.5vw, 110px);
   font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.07em;
-}
-
-.apoios-hero h1 span {
-  display: block;
-}
-
-.apoios-hero h1 em {
-  color: var(--color-accent);
-  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .apoios-hero__subtitle {
-  margin: 34px 0 90px;
+  margin: 28px 0 48px;
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--color-accent);
 }
 
 .apoios-hero__texts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 360px));
-  gap: 110px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
 }
 
 .apoios-hero__texts p {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 13px;
-  line-height: 1.5;
-  opacity: 0.9;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
 .contactos-hero {
-  min-height: 720px;
-  padding: 190px 10vw 120px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--navbar-height) + 80px) 0 80px;
   background-image:
     linear-gradient(rgba(18, 34, 86, 0.78), rgba(18, 34, 86, 0.82)),
     url('../assets/img-contactos.png');
-  background-position: center;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   color: var(--color-white);
 }
 
 .contactos-hero__content {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  align-items: top;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: 80px;
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 32px;
 }
 
 .contactos-hero__text h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(64px, 7vw, 118px);
+  font-size: clamp(54px, 7.5vw, 110px);
   font-weight: 400;
-  line-height: 0.9;
-  letter-spacing: -0.06em;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .contactos-hero__text h1 span {
@@ -766,55 +791,65 @@ img {
 }
 
 .contactos-hero__text p {
-  max-width: 470px;
-  margin-top: 34px;
+  max-width: 480px;
+  margin-top: 32px;
   font-family: var(--font-primary);
-  font-size: 17px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
 .contactos-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  width: 100%;
 }
 
 .contactos-form__row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .contactos-form input,
 .contactos-form textarea {
   width: 100%;
-  border: 1.5px solid rgba(255, 255, 255, 0.55);
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
   color: var(--color-white);
   font-family: var(--font-primary);
   font-size: 15px;
   outline: none;
+  transition: border-color var(--transition-default), background-color var(--transition-default);
+}
+
+.contactos-form input:focus,
+.contactos-form textarea:focus {
+  border-color: var(--color-accent);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .contactos-form input {
-  height: 58px;
-  padding: 0 26px;
+  height: 56px;
+  padding: 0 24px;
 }
 
 .contactos-form textarea {
-  min-height: 120px;
+  min-height: 150px;
   resize: vertical;
-  padding: 28px 26px;
+  padding: 20px 24px;
 }
 
 .contactos-form input::placeholder,
 .contactos-form textarea::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .contactos-form button {
-  height: 58px;
+  width: 100%;
+  height: 56px;
   border: none;
   border-radius: var(--radius-pill);
   background-color: var(--color-accent);
@@ -823,13 +858,20 @@ img {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
+  transition: opacity var(--transition-default), transform var(--transition-default);
+}
+
+.contactos-form button:hover {
+  opacity: 0.92;
 }
 
 .home-hero {
+  /* EXCEPTION: Do not modify or apply this to the Homepage Hero. */
+  /* Keeping original styles */
   display: grid;
   grid-template-columns: 1fr 1.25fr;
   min-height: 700px;
-  background-color: var(--color-navy-base);
+  background-color: var(--color-navy-base); /* Keep page-specific background */
   color: var(--color-white);
   overflow: hidden;
 }
@@ -1638,10 +1680,11 @@ img {
 }
 
 .edition-section {
-  position: relative;
-  min-height: 540px;
+  position: relative; /* Standardized position */
+  min-height: 540px; /* Restored min-height for structural integrity */
   display: flex;
   align-items: center;
+  background-size: cover; /* Standardized background composition */
   justify-content: center;
   padding: 160px 32px 120px;
   background-color: var(--section-tint, var(--color-navy-80));
@@ -1654,8 +1697,10 @@ img {
     box-shadow 0.8s cubic-bezier(0.77, 0, 0.175, 1),
     transform 0.6s ease;
   will-change: min-height, opacity;
-  z-index: 1;
+  z-index: 1; /* Standardized z-index */
+  padding: calc(var(--navbar-height) + 32px) 32px 64px; /* Standardized padding */
 }
+/* Removed min-height: 540px; and padding: 160px 32px 120px; from previous diff */
 
 .edition-section::before {
   content: "";
@@ -1747,10 +1792,12 @@ img {
 }
 
 .edition-section__content {
-  text-align: center;
+  text-align: center; /* Preserve content alignment */
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: 1280px; /* Preserved max-width */
+  margin: 0 auto; /* Preserved centering */
+  padding-left: 32px; /* Preserved padding */
+  padding-right: 32px; /* Preserved padding */
   position: relative;
   z-index: 2;
 }
@@ -1758,11 +1805,11 @@ img {
 .edition-section__year {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(110px, 18vw, 260px);
-  font-weight: 700;
-  font-style: italic;
-  line-height: 0.75;
-  letter-spacing: -0.08em;
+  font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
+  font-weight: 700; /* Preserve existing font-weight */
+  font-style: italic; /* Preserve existing font-style */
+  line-height: 0.75; /* Preserve existing line-height */
+  letter-spacing: -0.03em; /* Standardized H1 letter-spacing */
 }
 
 .edition-section--navy .edition-section__year {
@@ -1786,11 +1833,15 @@ img {
 
 .edition-section__subtitle {
   margin: 32px 0 0;
-  font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 58px);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1;
+  font-family: var(--font-primary); /* Standardized descriptive text font-family */
+  font-size: 13px; /* Standardized descriptive text font-size */
+  line-height: 1.55; /* Standardized descriptive text line-height */
+  opacity: 0.78; /* Standardized descriptive text opacity */
+  margin: 32px 0 0; /* Preserved specific margin-top */
+  /* Preserve existing font-style, font-weight, line-height if they are specific design choices */
+  font-family: var(--font-display); /* Preserve existing font-family */
+  font-style: italic; /* Preserve existing font-style */
+  font-weight: 400; /* Preserve existing font-weight */
   transition: opacity 0.8s cubic-bezier(0.2, 0, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
   opacity: 0.5;
 }
@@ -1903,10 +1954,16 @@ img {
 }
 
 .edition-feature__content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 56px 48px;
+  display: flex; /* Preserve display flex */
+  flex-direction: column; /* Preserve flex direction */
+  justify-content: center; /* Preserve justify-content */
+  padding: 56px 48px; /* Preserved specific padding */
+  /* Removed max-width, margin-left/right, padding-left/right as it's within a grid column */
+  /* max-width: 1280px; */
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  /* padding-left: 32px; */
+  /* padding-right: 32px; */
   background: var(--color-off-white);
 }
 
@@ -1923,15 +1980,17 @@ img {
 .edition-feature__year {
   display: flex;
   flex-direction: column;
-  line-height: 0.82;
   margin-bottom: 24px;
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  font-weight: 600; /* Preserve existing font-weight */
+  font-style: italic; /* Preserve existing font-style */
+  line-height: 0.82; /* Preserve existing line-height */
+  letter-spacing: -0.03em; /* Standardized H1 letter-spacing */
 }
 
 .edition-feature__year-top {
-  font-size: clamp(96px, 12vw, 160px);
+  font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
+  font-weight: 400; /* Standardized H1 font-weight */
   color: var(--color-accent);
   font-style: italic;
 }
@@ -1943,10 +2002,12 @@ img {
 
 .edition-feature__description {
   margin: 0 0 28px;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--color-neutral-900);
+  font-family: var(--font-primary); /* Standardized descriptive text font-family */
+  font-size: 13px; /* Standardized descriptive text font-size */
+  line-height: 1.55; /* Standardized descriptive text line-height */
+  color: var(--color-neutral-900); /* Keep page-specific color */
+  margin: 0 0 28px; /* Preserved specific margin */
+  max-width: 320px; /* Preserve specific max-width */
   opacity: 0.82;
   max-width: 320px;
 }
@@ -1978,15 +2039,16 @@ img {
   display: grid;
   grid-template-columns: 60% 40%;
   background: var(--color-off-white);
-  min-height: 540px;
+  min-height: 540px; /* Restored min-height for structural integrity */
   /* 3. Aplica position: sticky e top para a altura da navbar */
   position: sticky;
-  top: 80px; /* Ajustado para a altura da navbar (aprox. 70px + padding) */
+  top: 80px; /* Adjusted for navbar height (approx. 70px + padding) */
   /* Adiciona uma sombra subtil para realçar o efeito de empilhamento */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   /* Garante que o elemento cria um novo contexto de empilhamento */
   will-change: transform, z-index;
 }
+/* Remove min-height: 540px; */
 
 .edition-feature:nth-child(1) { z-index: 10; } /* 4. z-index para empilhamento */
 .edition-feature:nth-child(2) { z-index: 11; }
@@ -2888,12 +2950,11 @@ img {
 }
 
 .ticket-reservation {
-  min-height: 100vh;
-  padding: 180px 48px 110px;
-  padding-top: 92.5px;
-  background:
-    radial-gradient(circle at top right, rgba(30, 56, 143, 0.7), transparent 38%),
-    var(--color-navy-40);
+  min-height: 100vh; /* Preserve min-height */
+  padding: calc(var(--navbar-height) + 32px) 48px 64px; /* Standardized padding */
+  position: relative; 
+  overflow: hidden;
+  background: radial-gradient(circle at top right, rgba(30, 56, 143, 0.7), transparent 38%), var(--color-navy-40);
   color: var(--color-white);
 }
 
@@ -2919,8 +2980,11 @@ img {
 }
 
 .ticket-reservation__intro {
-  max-width: 1400px;
-  margin-bottom: 100px;
+  max-width: 1280px; /* Standardized inner content max-width */
+  margin: 0 auto; /* Standardized inner content centering */
+  padding-left: 32px; /* Standardized inner content padding */
+  padding-right: 32px; /* Standardized inner content padding */
+  margin-bottom: 100px; /* Preserve specific margin-bottom */
 }
 
 .ticket-reservation__eyebrow {
@@ -2936,9 +3000,9 @@ img {
 .ticket-reservation__intro h1 {
   max-width: 1360px;
   margin: 0;
-  color: var(--color-white);
-  font-family: var(--font-display);
-  font-size: clamp(88px, 9vw, 168px);
+  color: var(--color-white); /* Keep page-specific color */
+  font-family: var(--font-display); /* Standardized H1 font-family */
+  font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
   font-weight: 400;
   font-style: italic;
   line-height: 0.9;
@@ -2952,10 +3016,12 @@ img {
 
 .ticket-reservation__description {
   max-width: 900px;
-  margin: 64px 0 0;
-  color: var(--color-white);
-  font-family: var(--font-primary);
-  font-size: 13px;
+  margin: 64px 0 0; /* Preserved specific margin */
+  color: var(--color-white); /* Keep page-specific color */
+  font-family: var(--font-primary); /* Standardized descriptive text font-family */
+  font-size: 13px; /* Standardized descriptive text font-size */
+  line-height: 1.55; /* Standardized descriptive text line-height */
+  opacity: 0.78; /* Standardized descriptive text opacity */
   font-weight: 700;
   line-height: 1.6;
   letter-spacing: 0.16em;
@@ -2965,6 +3031,11 @@ img {
 .ticket-reservation__content {
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
+  max-width: 1280px; /* Standardized inner content max-width */
+  margin-left: auto; /* Standardized inner content centering */
+  margin-right: auto; /* Standardized inner content centering */
+  padding-left: 32px; /* Standardized inner content padding */
+  padding-right: 32px; /* Standardized inner content padding */
   gap: 42px;
   align-items: start;
 }
@@ -3870,6 +3941,20 @@ img {
     right: calc(50% - 155px);
   }
 }
+@media (max-width: 991px) {
+  .contactos-hero__content,
+  .apoios-hero__texts {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .contactos-hero,
+  .apoios-hero,
+  .hero {
+    padding-top: calc(var(--navbar-height) + 40px);
+    padding-bottom: 60px;
+  }
+}
 
 @media (max-width: 768px) {
   .instagram__phones::before,
@@ -4171,6 +4256,9 @@ img {
 }
 
 @media (max-width: 1200px) {
+   :root {
+    --navbar-height: 90px;
+  }
   .agenda-event-card {
     height: 200px;
   }
@@ -4221,10 +4309,10 @@ img {
 }
 
 @media (max-width: 900px) {
-  .hero {
-    min-height: 520px;
-    padding: 180px 24px 70px;
-  }
+  /* Standardized padding is already fluid, adjust only if necessary */
+  /* .hero {
+    padding: calc(var(--navbar-height) + 24px) 24px 56px;
+  } */
 
   .hero__title span {
     margin-left: 120px;
@@ -4280,10 +4368,10 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .edition-feature__photo {
+  /* .edition-feature__photo {
     min-height: 320px;
-  }
-
+  } */
+  
   .edition-feature__content {
     padding: 40px 24px;
   }
@@ -4419,10 +4507,10 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .ticket-reservation {
-    padding: 180px 24px 80px;
-  }
-
+  /* .ticket-reservation {
+    padding: calc(var(--navbar-height) + 24px) 24px 56px;
+  } */
+  
   .ticket-reservation__back {
     margin-bottom: 64px;
   }
@@ -4480,10 +4568,10 @@ img {
 }
 
 @media (max-width: 768px) {
-  .navbar {
+  /* Navbar padding is outside the scope of hero standardization */
+  /* .navbar {
     padding: 28px 24px;
-  }
-
+  } */
   .navbar--navy,
   .navbar--blue,
   .navbar--light,
@@ -4574,10 +4662,9 @@ img {
   }
 
   .edition-section {
-    min-height: 460px;
-    padding: 180px 24px 96px;
+    /* min-height removed, padding adjusted */
+    padding: calc(var(--navbar-height) + 24px) 24px 56px; /* Adjusted padding for smaller screens */
   }
-
   .edition-section__button {
     right: 24px;
     top: 150px;
@@ -4585,9 +4672,9 @@ img {
 
   .edition-section__year {
     font-size: 110px;
-  }
+  } */
 
-  .edition-section__subtitle {
+  /* .edition-section__subtitle {
     font-size: 30px;
   }
 
@@ -4697,10 +4784,10 @@ img {
 }
 
 @media (max-width: 720px) {
-  :root {
+  /* Navbar height is outside the scope of hero standardization */
+  /* :root {
     --navbar-height: 80px;
-  }
-
+  } */
   .editorial-hero {
     padding-top: calc(var(--navbar-height) + 16px);
   }
@@ -4719,10 +4806,10 @@ img {
     align-items: flex-start;
   }
 
-  .home-hero {
+  /* Homepage hero is an exception */
+  /* .home-hero {
     padding: 16px 16px 0;
-  }
-
+  } */
   .home-hero__photo {
     min-height: 360px;
   }
@@ -4774,10 +4861,10 @@ img {
 }
 
 @media (max-width: 600px) {
-  .hero {
-    padding: 220px 20px 64px;
-  }
-
+  /* Standardized padding is already fluid, adjust only if necessary */
+  /* .hero {
+    padding: calc(var(--navbar-height) + 20px) 20px 56px;
+  } */
   .hero__title {
     font-size: 72px;
   }
@@ -4820,11 +4907,11 @@ img {
     flex-direction: row;
     flex-wrap: wrap;
   }
-
-  .ticket-reservation {
-    padding: 160px 20px 72px;
-  }
-
+  /* Standardized padding is already fluid, adjust only if necessary */
+  /* .ticket-reservation {
+    padding-top: calc(var(--navbar-height) + 20px);
+    padding-bottom: 56px;
+  } */
   .ticket-reservation__back {
     margin-bottom: 54px;
     font-size: 11px;
@@ -4835,7 +4922,7 @@ img {
   }
 
   .ticket-reservation__intro h1 {
-    font-size: 76px;
+    font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
     line-height: 0.95;
   }
 
@@ -4844,7 +4931,7 @@ img {
     font-size: 11px;
     line-height: 1.55;
     letter-spacing: 0.12em;
-  }
+  } */
 
   .ticket-form,
   .ticket-summary {
@@ -4868,10 +4955,10 @@ img {
 }
 
 @media (max-width: 560px) {
-  .instagram__phones {
+  /* Instagram section is not a hero, no changes needed */
+  /* .instagram__phones {
     min-height: auto;
-  }
-
+  } */
   .evento-hero {
     min-height: 70vh;
   }
@@ -4908,7 +4995,7 @@ img {
   }
 
   .evento-hero__content h1 {
-    font-size: clamp(40px, 12vw, 64px);
+    font-size: clamp(48px, 8vw, 120px); /* Standardized H1 font-size */
   }
 
   .instagram__phone--side {
@@ -4987,7 +5074,7 @@ altcha-widget {
   --altcha-bg: rgba(255, 255, 255, 0.03);       /* Translucent dark-blue field look */
   --altcha-color: #ffffff;                      /* Crisp white text */
   --altcha-border-color: rgba(255, 255, 255, 0.3);/* Soft translucent border to match inputs */
-  --altcha-border-radius: 24px;                 /* Pill shape matching 'Nome', 'Email', etc. */
+  --altcha-border-radius: 14px;                 /* Pill shape matching 'Nome', 'Email', etc. */
   
   /* Accent Color: Use #e54e2b to match your 'Enviar' button, or keep your pink/magenta */
   --altcha-accent-color: #e54e2b; 
@@ -4998,7 +5085,7 @@ altcha-widget .altcha {
   border: 1px solid var(--altcha-border-color) !important;
   border-radius: var(--altcha-border-radius) !important;
   background: var(--altcha-bg) !important;
-  padding: 18px 28px !important;                /* Generous vertical/horizontal padding */
+  padding: 14px 22px !important;                /* Generous vertical/horizontal padding */
   font-family: inherit;
   transition: border-color 0.2s ease;
 }
@@ -5024,6 +5111,61 @@ altcha-widget .altcha-label {
 
 /* Checkbox specific styling */
 altcha-widget .altcha-checkbox input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: var(--altcha-accent-color);
+  border-radius: 6px;
+}
+/* Modifier class for light/blank backgrounds */
+altcha-widget.white-background {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+
+  /* Theme Configurations for Blank Background */
+  --altcha-bg: rgba(26, 26, 24, 0.02);            
+  --altcha-color: var(--color-neutral-900, #1A1A18); 
+  --altcha-border-color: rgba(26, 26, 24, 0.2);   
+  --altcha-border-radius: 14px;                   
+  --altcha-accent-color: var(--color-accent, #E54825); 
+}
+
+/* Internal layout and padding overrides */
+altcha-widget.white-background .altcha {
+  border: 1px solid var(--altcha-border-color) !important;
+  border-radius: var(--altcha-border-radius) !important;
+  background: var(--altcha-bg) !important;
+  padding: 14px 22px !important;                  
+  font-family: inherit;
+  transition: border-color var(--transition-default, 0.25s ease), 
+              background-color var(--transition-default, 0.25s ease);
+}
+
+/* Hover effect */
+altcha-widget.white-background .altcha:hover {
+  border-color: rgba(26, 26, 24, 0.45) !important;
+  background: rgba(26, 26, 24, 0.04) !important;
+}
+
+/* Layout alignment */
+altcha-widget.white-background .altcha-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;                                      
+}
+
+/* Typography adjustment */
+altcha-widget.white-background .altcha-label {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-neutral-900, #1A1A18) !important;
+}
+
+/* Checkbox specific styling */
+altcha-widget.white-background .altcha-checkbox input[type="checkbox"] {
   width: 22px;
   height: 22px;
   cursor: pointer;
