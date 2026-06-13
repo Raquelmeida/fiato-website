@@ -88,14 +88,28 @@
             público a descobrir, sentir e partilhar a força da ópera.
           </p>
 
-          <form class="member-form" data-member-form novalidate>
+          <form class="member-form" data-member-form enctype="multipart/form-data" novalidate>
             <div class="contactos-form__row">
-              <input type="text" name="nome" placeholder="Nome" required />
-              <input type="text" name="apelido" placeholder="Apelido" required />
+              <label>
+                <span>Nome</span>
+                <input type="text" name="nome" placeholder="Nome próprio" required />
+              </label>
+              <label>
+                <span>Apelido</span>
+                <input type="text" name="apelido" placeholder="Apelido" required />
+              </label>
             </div>
 
-            <input type="email" name="email" placeholder="E-mail" required />
-            <input type="url" name="portfolio" placeholder="Link para Portefólio ou Currículo" required />
+            <label>
+              <span>E-mail</span>
+                <input type="email" name="email" placeholder="email@exemplo.pt" required />
+            </label>
+
+            <label class="member-form__file">
+              <span>Portefólio ou currículo em PDF</span>
+              <input type="file" name="document" accept="application/pdf,.pdf" required />
+              <small>PDF até 8 MB</small>
+            </label>
 
             <!-- Self-hosted ALTCHA widget -->
             <altcha-widget name="altcha" class="white-background" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>

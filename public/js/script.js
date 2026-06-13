@@ -23,6 +23,20 @@ let countdownTarget = Date.now()
 // Anti-spam timestamp
 const formLoadTime = Date.now();
 
+function isAltchaVerified(form) {
+  var widget = form.querySelector('altcha-widget');
+  if (!widget) return true;
+
+  var payload = new FormData(form).get('altcha');
+  if (payload) return true;
+
+  if (typeof widget.getState === 'function') {
+    return widget.getState() === 'verified';
+  }
+
+  return widget.getAttribute('state') === 'verified';
+}
+
 function pad(value) {
   return String(value).padStart(2, '0');
 }
@@ -291,8 +305,7 @@ if (ticketForm) {
       return;
     }
 
-    var altchaWidget = ticketForm.querySelector('altcha-widget');
-    if (altchaWidget && altchaWidget.state !== 'verified') {
+    if (!isAltchaVerified(ticketForm)) {
       ticketMessage.className = 'ticket-form__message';
       ticketMessage.textContent = 'Por favor, complete a verificação de segurança.';
       return;
@@ -361,8 +374,7 @@ if (contactForm) {
       return;
     }
 
-    var altchaWidget = contactForm.querySelector('altcha-widget');
-    if (altchaWidget && altchaWidget.state !== 'verified') {
+    if (!isAltchaVerified(contactForm)) {
       contactMessage.className = 'contactos-form__message';
       contactMessage.textContent = 'Por favor, complete a verificação de segurança.';
       return;
@@ -393,7 +405,13 @@ if (contactForm) {
         throw new Error(result.error);
       }
         contactMessage.className = 'contactos-form__message is-success';
-        contactMessage.textContent = 'Mensagem enviada com sucesso. Entraremos em contacto brevemente.';
+        contactMessage.textContent = 'Recebemos a tua mensagem. Vamos responder com a maior brevidade possível.';
+        var contactButton = contactForm.querySelector('button[type="submit"]');
+        if (contactButton) {
+          contactButton.textContent = 'Mensagem enviada';
+          contactButton.disabled = true;
+          contactButton.classList.add('is-complete');
+        }
         contactForm.reset();
     } catch (err) {
         contactMessage.className = 'contactos-form__message';
@@ -426,8 +444,7 @@ if (memberForm) {
       return;
     }
 
-    var altchaWidget = memberForm.querySelector('altcha-widget');
-    if (altchaWidget && altchaWidget.state !== 'verified') {
+    if (!isAltchaVerified(memberForm)) {
       memberMessage.className = 'member-form__message';
       memberMessage.textContent = 'Por favor, complete a verificação de segurança.';
       return;
@@ -435,22 +452,16 @@ if (memberForm) {
 
     var formData = new FormData(memberForm);
 
-    var body = {
-      altcha: formData.get('altcha') || '',
-      firstName: formData.get('nome') || '',
-      lastName: formData.get('apelido') || '',
-      email: formData.get('email') || '',
-      documentUrl: formData.get('portfolio') || '',
-      type: 'membership',
-      b_website: formData.get('b_website') || '',
-      ts: formLoadTime
-    };
+    formData.set('firstName', formData.get('nome') || '');
+    formData.set('lastName', formData.get('apelido') || '');
+    formData.set('type', 'membership');
+    formData.set('b_website', formData.get('b_website') || '');
+    formData.set('ts', String(formLoadTime));
 
     try {
       const response = await fetch('/api/contact-requests', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: formData
       });
       const result = await response.json();
 
@@ -458,7 +469,13 @@ if (memberForm) {
         throw new Error(result.error);
       }
         memberMessage.className = 'member-form__message is-success';
-        memberMessage.textContent = 'Pedido de adesão enviado com sucesso. Entraremos em contacto brevemente.';
+        memberMessage.textContent = 'Recebemos o teu pedido. Vamos analisar a candidatura e responder brevemente.';
+        var memberButton = memberForm.querySelector('button[type="submit"]');
+        if (memberButton) {
+          memberButton.textContent = 'Pedido enviado';
+          memberButton.disabled = true;
+          memberButton.classList.add('is-complete');
+        }
         memberForm.reset();
     } catch (err) {
         memberMessage.className = 'member-form__message';
@@ -1158,7 +1175,7 @@ function initializeArchiveContent(section) {
                </div>
          </div>
          
-         <div class="agenda-list__filters" style="display: none; padding: 0 32px 48px; border-bottom: 1px solid currentColor; margin-bottom: 40px;">
+         <div class="agenda-list__filters" style="display: none; padding: 0 var(--container-padding) 48px; border-bottom: 1px solid currentColor; margin-bottom: 40px;">
             <div class="agenda-filters" aria-label="Filtros da agenda" style="justify-content: flex-start; gap: 14px; flex-wrap: wrap;">
                <button type="button" class="agenda-filters__button" data-agenda-sort="title">
                   <span class="agenda-filters__label">Ordenar por</span>
@@ -1706,7 +1723,7 @@ ticketShow?.addEventListener('change', function () {
     option.dataset.place = session.specificLocation || event.locationSummary || '';
     option.dataset.price = event.price || '0';
 
-    if (session.availableTickets === 0 || session.status === 'soldout' || session.status === 'esgotado') {
+    if (session.availableTickets === 0 || session.status === 'sold_out' || session.status === 'soldout' || session.status === 'esgotado') {
       option.disabled = true;
       option.textContent += ' (Esgotado)';
     }
@@ -1748,7 +1765,7 @@ function createEventSessionEl(session) {
   strong.textContent = session.time || '';
   article.appendChild(strong);
 
-  var isSoldOut = session.status === 'soldout' || session.status === 'esgotado' || session.availableTickets === 0;
+  var isSoldOut = session.status === 'sold_out' || session.status === 'soldout' || session.status === 'esgotado' || session.availableTickets === 0;
 
   if (isSoldOut) {
     var btn = document.createElement('button');

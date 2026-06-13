@@ -16,10 +16,10 @@
 
     <header class="studio-navbar is-flex is-justify-content-between is-align-items-center">
         <div class="is-flex is-align-items-center">
-            <i class="fas fa-cubes mr-3 fa-lg" style="color: var(--fiato-coral);"></i>
+            <i class="fas fa-cubes mr-3 fa-lg coral-text"></i>
             <h1 class="studio-title">FIATO FESTIVAL — <span>STUDIO FACTORY</span></h1>
         </div>
-        <a href="/backoffice/logout" class="button is-small is-dark is-outlined" style="border-radius: 8px; color: #94a3b8; border-color: #334155;">
+        <a href="/backoffice/logout" class="button is-small is-dark is-outlined btn-logout">
             <span class="icon is-small"><i class="fas fa-power-off"></i></span>
             <span>Encerrar Sessão</span>
         </a>
@@ -29,7 +29,7 @@
         
         <div class="tabs-container mb-6">
             <div class="tabs modern-pills">
-                <ul style="border-bottom: none;">
+                <ul>
                     <li class="tab-link is-active" data-tab="events">
                         <a><i class="fas fa-calendar-alt mr-2"></i>Eventos</a>
                     </li>
@@ -58,7 +58,7 @@
         <section id="events" class="tab-content is-active">
             <div class="level control-deck">
                 <div class="level-left">
-                    <div class="field search-wrapper" style="width: 320px;">
+                    <div class="field search-wrapper w-search">
                         <p class="control has-icons-left">
                             <input class="input" type="text" id="search-events" placeholder="Pesquisar por título ou local..." oninput="filterData('events')">
                             <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
@@ -91,7 +91,7 @@
         <section id="news" class="tab-content">
             <div class="level control-deck">
                 <div class="level-left">
-                    <div class="field search-wrapper" style="width: 320px;">
+                    <div class="field search-wrapper w-search">
                         <p class="control has-icons-left">
                             <input class="input" type="text" id="search-news" placeholder="Filtrar artigos de imprensa..." oninput="filterData('news')">
                             <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
@@ -122,7 +122,7 @@
         <section id="arquivo" class="tab-content">
             <div class="level control-deck">
                 <div class="level-left">
-                    <div class="field search-wrapper" style="width: 320px;">
+                    <div class="field search-wrapper w-search">
                         <p class="control has-icons-left">
                             <input class="input" type="text" id="search-arquivo" placeholder="Filtrar por ano ou descrição..." oninput="filterData('arquivo')">
                             <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
@@ -154,7 +154,7 @@
         <section id="contacts" class="tab-content">
             <div class="level control-deck">
                 <div class="level-left">
-                    <div class="field search-wrapper" style="width: 320px;">
+                    <div class="field search-wrapper w-search">
                         <p class="control has-icons-left">
                             <input class="input" type="text" id="search-contacts" placeholder="Pesquisar remetente ou e-mail..." oninput="filterData('contacts')">
                             <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
@@ -182,7 +182,7 @@
         <section id="tickets" class="tab-content">
             <div class="level control-deck">
                 <div class="level-left">
-                    <div class="field search-wrapper" style="width: 320px;">
+                    <div class="field search-wrapper w-search">
                         <p class="control has-icons-left">
                             <input class="input" type="text" id="search-tickets" placeholder="Procurar titular de bilhete..." oninput="filterData('tickets')">
                             <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
@@ -415,12 +415,12 @@
             </header>
             <section class="modal-card-body">
                 <div class="content">
-                    <div class="is-flex is-justify-content-between is-align-items-center mb-4">
-                        <div>
-                            <h4 class="title is-5 mb-1" id="view-contact-name" style="color: var(--fiato-dark);"></h4>
-                            <p class="subtitle is-6 has-text-grey-dark" id="view-contact-email"></p>
+                    <div class="contact-profile mb-4">
+                        <div class="contact-profile__identity">
+                            <h4 class="contact-profile__name" id="view-contact-name"></h4>
+                            <p class="contact-profile__email" id="view-contact-email"></p>
                         </div>
-                        <span class="tag is-medium" id="view-contact-type" style="border-radius: 8px; font-weight: 600; background-color: #f1f5f9; color: var(--fiato-dark);"></span>
+                        <span class="contact-profile__type" id="view-contact-type"></span>
                     </div>
                     <hr style="background-color: var(--fiato-bg); height: 1px;">
                     
@@ -432,7 +432,7 @@
                     <div id="wrapper-view-document" class="is-hidden mb-4">
                         <label class="form-label-custom d-block">Portefólio / Documentação Relacionada</label>
                         <a id="view-contact-docUrl" class="button is-light is-fullwidth" target="_blank" style="border-radius: 10px; font-weight: 600; border: 1px dashed #cbd5e1;">
-                            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Inspecionar Ficheiro Anexo</span>
+                            <span class="icon"><i class="fas fa-file-pdf"></i></span><span id="view-contact-docLabel">Inspecionar Ficheiro Anexo</span>
                         </a>
                     </div>
                     <hr style="background-color: var(--fiato-bg); height: 1px;">

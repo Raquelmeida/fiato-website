@@ -33,6 +33,11 @@ if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
+const DOCUMENT_DIR = path.join(__dirname, 'public', 'documents');
+if (!fs.existsSync(DOCUMENT_DIR)) {
+  fs.mkdirSync(DOCUMENT_DIR, { recursive: true });
+}
+
 // ==========================================
 // MIDDLEWARES GLOBAIS
 // ==========================================
@@ -83,6 +88,23 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+const documentStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, DOCUMENT_DIR),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname).toLowerCase());
+  }
+});
+
+const uploadDocument = multer({
+  storage: documentStorage,
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') return cb(null, true);
+    cb(new Error("O documento deve ser um ficheiro PDF."));
+  }
+});
+
 // Protected static serving for admin views
 // Ensures that admin assets/HTML are only accessible to authenticated users
 app.use('/backoffice', (req, res, next) => {
@@ -109,7 +131,7 @@ const contactRequestSchema = new mongoose.Schema(
     lastName: { type: String, required: [true, "O apelido é obrigatório"], trim: true },
     email: { type: String, required: [true, "O e-mail é obrigatório para podermos responder"], trim: true, lowercase: true, match: [emailRegex, "O formato do e-mail não é válido"] },
     message: { type: String, trim: true, required: [function () { return this.type === "general"; }, "Por favor, escreva a sua mensagem"] },
-    documentUrl: { type: String, trim: true, required: [function () { return this.type === "membership"; }, "É necessário o link para o seu portefólio ou currículo"] },
+    documentUrl: { type: String, trim: true, required: [function () { return this.type === "membership"; }, "É necessário anexar o portefólio ou currículo em PDF"] },
     status: { type: String, enum: ["unread", "processed", "archived"], default: "unread" }
   },
   { timestamps: true }
@@ -399,7 +421,19 @@ app.get("/api/news", async (req, res) => {
 
 app.get("/api/instagram", async (req, res) => {
   try {
-    const posts = await InstagramPost.find({ isPublished: true }).sort({ order: 1, date: -1 }).limit(10).lean();
+    const includeDrafts = req.query.all === "true";
+    if (includeDrafts && req.cookies.admin_session !== ADMIN_PASSWORD) {
+      return res.status(401).json({
+        success: false,
+        error: "Acesso negado. Sessão de administrador inválida."
+      });
+    }
+
+    const query = includeDrafts ? {} : { isPublished: true };
+    const findQuery = InstagramPost.find(query).sort({ order: 1, date: -1 });
+    if (!includeDrafts) findQuery.limit(10);
+
+    const posts = await findQuery.lean();
     res.json({ success: true, data: posts });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -460,7 +494,7 @@ app.post("/api/captcha-verify", async (req, res) => {
 
 app.post("/api/tickets", async (req, res) => {
   try {
-    const { altcha, firstName, lastName, email, phone, eventId, sessionId, quantity, observations } = req.body;
+    const { firstName, lastName, email, phone, eventId, sessionId, quantity, observations } = req.body;
     
     // Strict input validation to prevent transaction corruption
     const qty = parseInt(quantity, 10);
@@ -471,31 +505,31 @@ app.post("/api/tickets", async (req, res) => {
     await validateSecurity(req);
 
     const session = await mongoose.startSession();
-    session.startTransaction();
     try {
+      session.startTransaction();
       const targetedEvent = await Event.findById(eventId).session(session);
-      if (!targetedEvent) return res.status(404).json({ success: false, error: "Event not located." });
+      if (!targetedEvent) throw new Error("Event not located.");
 
       const targetSubSession = targetedEvent.sessions.id(sessionId);
-      if (!targetSubSession) return res.status(404).json({ success: false, error: "Schedule missing." });
+      if (!targetSubSession) throw new Error("Schedule missing.");
 
-      if (targetSubSession.status !== "available" || targetSubSession.availableTickets < quantity) {
-        return res.status(400).json({ success: false, error: "Tickets mapping unavailable." });
+      if (targetSubSession.status !== "available" || targetSubSession.availableTickets < qty) {
+        throw new Error("Tickets mapping unavailable.");
       }
 
-      targetSubSession.availableTickets -= quantity;
+      targetSubSession.availableTickets -= qty;
       if (targetSubSession.availableTickets === 0) targetSubSession.status = "sold_out";
 
       await targetedEvent.save({ session });
-      const receipt = await Ticket.create([{ firstName, lastName, email, phone, eventId, sessionId, quantity, observations }], { session });
+      const receipt = await Ticket.create([{ firstName, lastName, email, phone, eventId, sessionId, quantity: qty, observations }], { session });
 
       await session.commitTransaction();
-      session.endSession();
       res.status(201).json({ success: true, receipt: receipt[0] });
     } catch (err) {
-      await session.abortTransaction();
-      session.endSession();
+      if (session.inTransaction()) await session.abortTransaction();
       throw err;
+    } finally {
+      session.endSession();
     }
   } catch (err) {
     const isValidation = err.name === 'ValidationError';
@@ -519,6 +553,59 @@ app.post("/api/tickets", async (req, res) => {
 // ==========================================
 
 // --- MENSAGENS DOS UTILIZADORES ---
+const handleContactDocumentUpload = (req, res, next) => {
+  uploadDocument.single('document')(req, res, (err) => {
+    if (!err) return next();
+    const errorMsg = err.message === "File too large" ? "O PDF deve ter no máximo 8 MB." : err.message;
+    return res.status(400).json({ success: false, error: errorMsg });
+  });
+};
+
+app.post("/api/contact-requests", handleContactDocumentUpload, async (req, res) => {
+  try {
+    const { type, firstName, lastName, email, message, documentUrl, b_website, ts } = req.body;
+
+    if (b_website) {
+      return res.status(400).json({ success: false, error: "Pedido inválido." });
+    }
+
+    const elapsedSinceLoad = Date.now() - Number(ts || 0);
+    if (ts && elapsedSinceLoad >= 0 && elapsedSinceLoad < 1500) {
+      return res.status(429).json({ success: false, error: "Demasiados pedidos. Por favor, aguarde alguns minutos." });
+    }
+
+    await validateSecurity(req);
+
+    const resolvedDocumentUrl = req.file ? `/documents/${req.file.filename}` : documentUrl;
+
+    const created = await ContactRequest.create({
+      type,
+      firstName,
+      lastName,
+      email,
+      message,
+      documentUrl: resolvedDocumentUrl
+    });
+
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    const isValidation = err.name === 'ValidationError';
+    const isSafe = [
+      "A verificação de segurança é obrigatória.",
+      "Falha na verificação de segurança. Tente novamente.",
+      "Demasiados pedidos. Por favor, aguarde alguns minutos.",
+      "Pedido inválido.",
+      "O documento deve ser um ficheiro PDF.",
+      "File too large"
+    ].includes(err.message);
+
+    const errorMsg = isValidation
+      ? Object.values(err.errors).map(e => e.message).join(". ")
+      : (err.message === "File too large" ? "O PDF deve ter no máximo 8 MB." : (isSafe ? err.message : "Ocorreu um erro ao enviar o pedido."));
+    res.status(400).json({ success: false, error: errorMsg });
+  }
+});
+
 app.get("/api/contact-requests", checkAdminAuth, async (req, res) => {
   try {
     const list = await ContactRequest.find().sort({ createdAt: -1 }).lean();

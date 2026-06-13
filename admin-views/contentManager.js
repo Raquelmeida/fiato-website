@@ -40,7 +40,7 @@ async function loadTabContent(schema) {
     if (schema === "news") endpoint = "/api/news";
     if (schema === "contacts") endpoint = "/api/contact-requests";
     if (schema === "tickets") endpoint = "/api/tickets";
-    if (schema === "instagram") endpoint = "/api/instagram";
+    if (schema === "instagram") endpoint = "/api/instagram?all=true";
     if (schema === "arquivo") endpoint = "/api/arquivos";
     if (schema === "about") endpoint = "/api/about-page";
 
@@ -574,7 +574,11 @@ function openViewContact(id) {
         document.getElementById("wrapper-view-message").classList.remove("is-hidden");
         document.getElementById("wrapper-view-document").classList.add("is-hidden");
     } else {
-        document.getElementById("view-contact-docUrl").setAttribute("href", item.documentUrl || "#");
+        const docLink = document.getElementById("view-contact-docUrl");
+        const docLabel = document.getElementById("view-contact-docLabel");
+        const docUrl = item.documentUrl || "#";
+        docLink.setAttribute("href", docUrl);
+        if (docLabel) docLabel.innerText = docUrl && docUrl !== "#" ? docUrl.split("/").pop() : "Sem documento disponível";
         document.getElementById("wrapper-view-document").classList.remove("is-hidden");
         document.getElementById("wrapper-view-message").classList.add("is-hidden");
     }
