@@ -226,14 +226,14 @@ document.addEventListener('click', function (event) {
     otherItem.classList.remove('faq-list__item--open');
     if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
     if (otherAnswer) otherAnswer.hidden = true;
-    if (otherIcon) otherIcon.textContent = '+';
+    if (otherIcon) otherIcon.innerHTML = '<i class="fas fa-plus"></i>';
   });
 
   if (!isOpen) {
     item.classList.add('faq-list__item--open');
     trigger.setAttribute('aria-expanded', 'true');
     answer.hidden = false;
-    icon.textContent = '\u2013';
+    icon.innerHTML = '<i class="fas fa-minus"></i>';
   }
 });
 
@@ -254,13 +254,13 @@ document.querySelector('.evento-accordion')?.addEventListener('click', function 
 
     otherItem.classList.remove('evento-accordion__item--open');
     if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
-    if (otherIcon) otherIcon.textContent = '+';
+    if (otherIcon) otherIcon.innerHTML = '<i class="fas fa-plus"></i>';
   });
 
   if (!isOpen) {
     item.classList.add('evento-accordion__item--open');
     trigger.setAttribute('aria-expanded', 'true');
-    icon.textContent = '−';
+    icon.innerHTML = '<i class="fas fa-minus"></i>';
   }
 });
 
@@ -519,11 +519,12 @@ function createScheduleCard(event) {
 
   if (hasPrice) {
     icon.className = 'schedule__badge-icon';
-    icon.textContent = '€';
+    icon.innerHTML = '<i class="fas fa-euro-sign"></i>';
     badge.appendChild(icon);
     badge.appendChild(document.createTextNode(' ' + formatSchedulePrice(numericPrice)));
   } else {
     icon.className = 'schedule__badge-dot';
+    icon.innerHTML = '<i class="fas fa-circle"></i>';
     badge.appendChild(icon);
     badge.appendChild(document.createTextNode(' Grátis'));
   }
@@ -711,7 +712,7 @@ function loadHomeHeroEvent() {
       }
 
       // Badge
-      if (heroBadge && event.quote) heroBadge.textContent = event.quote;
+      if (heroBadge) heroBadge.textContent = 'Estreia';
 
       // Sessions
       if (event.sessions && event.sessions.length > 0) {
@@ -815,7 +816,7 @@ function createPressRow(item) {
   arrowLink.className = 'press__arrow-btn';
   arrowLink.href = item.articleUrl || '#';
   arrowLink.setAttribute('aria-label', 'Ler notícia');
-  arrowLink.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>';
+  arrowLink.innerHTML = '<i class="fas fa-arrow-up" aria-hidden="true"></i>';
   if (item.articleUrl) {
     arrowLink.target = '_blank';
     arrowLink.rel = 'noopener';
@@ -1370,10 +1371,7 @@ function renderArchiveAgenda(section) {
     eventsList.innerHTML = `
       <div style="text-align: center; padding: 100px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
         <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <i class="fas fa-magnifying-glass empty-state__icon" aria-hidden="true"></i>
         <p class="agenda-list__empty" style="margin: 0;">${emptyMsg}</p>
       </div>`;
     
@@ -1571,9 +1569,7 @@ function loadArquivoPage() {
         container.innerHTML = `
           <div style="text-align: center; padding: 100px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
             <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.7; transform: translateY(0); } }</style>
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 24px; opacity: 0.4;">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <i class="fas fa-folder-open empty-state__icon empty-state__icon--large" aria-hidden="true"></i>
             <p class="agenda-list__empty" style="margin: 0;">Não existem edições no arquivo.</p>
           </div>`;
         return;
@@ -1638,11 +1634,7 @@ function loadArquivoPage() {
         <section class="edition-section edition-section--navy" data-navbar-theme="dark-blue" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; opacity: 1;">
           <div style="text-align: center; color: var(--color-off-white); padding: 40px; animation: archiveFadeIn 0.5s ease-out forwards;">
             <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 24px; opacity: 0.6;">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
+            <i class="fas fa-triangle-exclamation empty-state__icon empty-state__icon--large" aria-hidden="true"></i>
             <h2 class="edition-section__year" style="font-size: 32px; margin-bottom: 16px;">Ops! Algo desafinou.</h2>
             <p class="edition-section__subtitle" style="max-width: 400px; margin: 0 auto 32px; opacity: 0.8;">
               Não foi possível carregar o arquivo de edições neste momento. Por favor, tente recarregar a página.
@@ -1782,7 +1774,7 @@ function createEventSessionEl(session) {
 
     var arrow = document.createElement('span');
     arrow.className = 'evento-sessoes__button-arrow';
-    arrow.textContent = '→';
+    arrow.innerHTML = '<i class="fas fa-arrow-right" aria-hidden="true"></i>';
     a.appendChild(arrow);
 
     article.appendChild(a);
@@ -1813,7 +1805,7 @@ function createEventFaqItem(faq, index) {
 
   var icon = document.createElement('span');
   icon.className = 'evento-accordion__icon';
-  icon.textContent = '+';
+  icon.innerHTML = '<i class="fas fa-plus"></i>';
   trigger.appendChild(icon);
 
   item.appendChild(trigger);
@@ -2070,7 +2062,7 @@ function createInstagramCard(post, position) {
   var icon = document.createElement('span');
   icon.className = 'instagram__phone-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = '▶';
+  icon.innerHTML = '<i class="fas fa-play"></i>';
   header.appendChild(icon);
 
   card.appendChild(header);
@@ -2335,7 +2327,7 @@ function loadAboutPage() {
             var iconSpan = document.createElement('span');
             iconSpan.className = 'faq-list__icon';
             iconSpan.setAttribute('aria-hidden', 'true');
-            iconSpan.textContent = index === 0 ? '\u2013' : '+';
+            iconSpan.innerHTML = index === 0 ? '<i class="fas fa-minus"></i>' : '<i class="fas fa-plus"></i>';
             trigger.appendChild(iconSpan);
 
             li.appendChild(trigger);
