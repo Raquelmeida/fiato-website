@@ -86,7 +86,9 @@ function updateNavbarTheme() {
   const sections = document.querySelectorAll('[data-navbar-theme]');
   const navbarHeight = navbar.getBoundingClientRect().height;
   // Set default theme: dark-blue for archive page to ensure contrast on load, transparent for others
-  let currentTheme = document.querySelector('[data-arquivo-list]') ? 'dark-blue' : 'dark-blue';
+  let currentTheme = (document.querySelector('[data-arquivo-list]') || 
+                      document.querySelector('[data-agenda-list]') || 
+                      document.querySelector('.contactos-page')) ? 'dark-blue' : 'dark-blue';
 
   sections.forEach((section) => {
     const rect = section.getBoundingClientRect();

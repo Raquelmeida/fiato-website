@@ -190,15 +190,25 @@ img {
     color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.navbar__link:hover {
-  opacity: 0.65;
-}
+/* ==========================================================================
+   NAVBAR INTERACTION: CALM CENTER-OUTWARD LIGHTING WAVE (HOVER & ACTIVE ONLY)
+   ========================================================================== */
 
+.navbar__link:hover {
+  opacity: 1;
+}
 .navbar__link--active {
   opacity: 1;
-  color: var(--color-white);
-  font-size: 16px;
-  font-weight: 800;
+  position: relative;
+  display: inline-block;
+
+  -webkit-text-stroke: 0.5px currentColor;
+  -webkit-mask-image: radial-gradient(
+    circle at center, 
+    rgba(0,0,0,1) 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }
 
 .navbar__link--active:hover {
