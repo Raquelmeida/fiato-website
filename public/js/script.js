@@ -15,6 +15,7 @@ const ticketSession = document.querySelector('[data-ticket-session]');
 const ticketQuantity = document.querySelector('[data-ticket-quantity]');
 const ticketMessage = document.querySelector('[data-ticket-message]');
 const fallbackTeamPhoto = 'assets/estrela.svg';
+const currentProgramYear = 2026;
 const i18nState = {
   lang: localStorage.getItem('fiato-lang') || document.documentElement.lang || 'pt',
   map: {
@@ -705,6 +706,23 @@ function translateAttr(element, attr) {
   if (translated !== val.trim()) element.setAttribute(attr, val.replace(val.trim(), translated));
 }
 
+function forceAltchaPortugueseLabels() {
+  document.querySelectorAll('altcha-widget').forEach(function (widget) {
+    widget.setAttribute('language', 'pt-pt');
+    var roots = [widget];
+    if (widget.shadowRoot) roots.push(widget.shadowRoot);
+
+    roots.forEach(function (root) {
+      root.querySelectorAll('.altcha-label, label, [part="label"]').forEach(function (label) {
+        var text = (label.textContent || '').trim().toLowerCase();
+        if (text === "i'm not a robot" || text === "i’m not a robot" || text === 'i am not a robot') {
+          label.textContent = 'Não sou um robô';
+        }
+      });
+    });
+  });
+}
+
 function translatePageText(lang) {
   var wasEn = i18nState.lang === 'en';
   i18nState.lang = lang === 'en' ? 'en' : 'pt';
@@ -718,7 +736,7 @@ function translatePageText(lang) {
   });
 
   document.querySelectorAll('altcha-widget').forEach(function (widget) {
-    widget.setAttribute('language', i18nState.lang);
+    widget.setAttribute('language', i18nState.lang === 'pt' ? 'pt-pt' : i18nState.lang);
   });
 
   if (i18nState.lang !== 'en') {
@@ -768,6 +786,20 @@ function initLanguageToggle() {
         verifying: 'A verificar...',
         error: 'Falha na verificação. Tente novamente.'
       });
+      globalThis.$altcha.i18n.set('pt-pt', {
+        ...currentPt,
+        label: 'Não sou um robô',
+        verified: 'Verificado',
+        verifying: 'A verificar...',
+        error: 'Falha na verificação. Tente novamente.'
+      });
+      document.querySelectorAll('altcha-widget').forEach(function (widget) {
+        if ((document.documentElement.lang || 'pt').toLowerCase().startsWith('pt')) {
+          widget.setAttribute('language', 'pt-pt');
+        }
+      });
+      forceAltchaPortugueseLabels();
+      setTimeout(forceAltchaPortugueseLabels, 500);
       clearInterval(altchaI18nTimer);
     }
     if (altchaI18nAttempts > 30) clearInterval(altchaI18nTimer);
@@ -921,7 +953,7 @@ function loadHomeEvents() {
 
   scheduleGrid.innerHTML = '<p class="schedule__loading">' + translateText('A carregar eventos...') + '</p>';
 
-  fetch('/api/events?featured=true&limit=3')
+  fetch('/api/events?year=' + currentProgramYear + '&featured=true&limit=3')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
@@ -936,7 +968,7 @@ function loadHomeEvents() {
         return;
       }
 
-      return fetch('/api/events?limit=6')
+      return fetch('/api/events?year=' + currentProgramYear + '&limit=6')
         .then(function (res) { return res.json(); })
         .then(function (allResult) {
           if (!allResult.success) throw new Error(allResult.error || 'Erro da API');
@@ -998,7 +1030,7 @@ function loadHomeHeroEvent() {
 
   if (!heroTitleLight) return;
 
-  fetch('/api/events?featured=true&limit=1')
+  fetch('/api/events?year=' + currentProgramYear + '&search=' + encodeURIComponent('A Vida do Grande Camilo') + '&limit=1')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
@@ -1268,7 +1300,7 @@ function loadAgendaEvents() {
 
   agendaList.innerHTML = '<p class="agenda-list__empty">' + translateText('A carregar agenda...') + '</p>';
 
-  fetch('/api/events?limit=50')
+  fetch('/api/events?year=' + currentProgramYear + '&limit=50')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
@@ -1976,7 +2008,7 @@ function loadTicketEvents() {
   var requestedEvent = params.get('event');
   var requestedSession = params.get('session');
 
-  fetch('/api/events?limit=50')
+  fetch('/api/events?year=' + currentProgramYear + '&limit=50')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
@@ -2197,7 +2229,7 @@ function createProximoEventoCard(event) {
 function loadProximosEventos(grid, excludeId) {
   grid.innerHTML = '<p class="schedule__loading">A carregar próximos eventos...</p>';
 
-  fetch('/api/events?limit=4')
+  fetch('/api/events?year=' + currentProgramYear + '&limit=4')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();

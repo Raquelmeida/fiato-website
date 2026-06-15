@@ -49,6 +49,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const phoneRegex = /^\+?[0-9\s\-]{9,15}$/; 
 const urlRegex = /^(https?:\/\/|\/)[^\s$.?#].[^\s]*$/;
+const CURRENT_PROGRAM_YEAR = 2026;
+
+function addEventYearFilter(query, year) {
+  const yearNum = parseInt(year, 10);
+  if (!Number.isFinite(yearNum)) return query;
+
+  query["sessions.date"] = {
+    $gte: new Date(yearNum, 0, 1),
+    $lt: new Date(yearNum + 1, 0, 1)
+  };
+  return query;
+}
 
 // Reusable Captcha Verification Helper
 const validateSecurity = async (req) => {
@@ -346,11 +358,9 @@ app.get("/api/events", async (req, res) => {
     if (featured) buildQuery.isFeatured = featured === "true";
     if (search) buildQuery.title = new RegExp(search, "i");
     if (year) {
-      const yearNum = parseInt(year);
-      buildQuery["sessions.date"] = {
-        $gte: new Date(yearNum, 0, 1),
-        $lt: new Date(yearNum + 1, 0, 1)
-      };
+      addEventYearFilter(buildQuery, year);
+    } else if (page || limit || featured || search) {
+      addEventYearFilter(buildQuery, CURRENT_PROGRAM_YEAR);
     }
 
     // Inteligência Admin: Se não houver paginação explícita, entrega tudo ao Dashboard

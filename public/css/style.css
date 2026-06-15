@@ -886,7 +886,7 @@ img {
   padding: calc(var(--navbar-height) + 80px) 0 80px;
   background-image:
     linear-gradient(var(--hero-overlay-start), var(--hero-overlay-end)),
-    url('../assets/img-contactos.png');
+    url('../images/1780866735574-575808413.jpg');
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
@@ -1728,11 +1728,12 @@ img {
   grid-template-columns: minmax(0, 1.55fr) minmax(180px, 0.45fr) minmax(150px, 0.35fr);
   align-items: center;
   gap: 40px;
-  height: 220px;
+  min-height: 220px;
+  height: auto;
   padding-top: 26px;
   padding-bottom: 26px;
   border-bottom: 1px solid currentColor;
-  overflow: hidden;
+  overflow: visible;
   transition:
     background-color var(--transition-default),
     color var(--transition-default);
@@ -1779,10 +1780,11 @@ img {
   max-width: 860px;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(44px, 5.5vw, 82px);
+  font-size: clamp(42px, 4.9vw, 76px);
   font-weight: 400;
   line-height: 0.95;
   letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
 }
 
 .agenda-event-card__info {
@@ -1877,6 +1879,28 @@ img {
 
 .agenda-list__month--light .agenda-event-card:hover {
   color: var(--color-white);
+}
+
+/* Orange section overrides: replace navy with off-white for light variant */
+.edition-section--orange .agenda-list__month--light,
+.edition-section--orange .agenda-list__month--light .agenda-list__month-header,
+.edition-section--orange .agenda-list__month--light .agenda-event-card {
+  color: var(--color-off-white);
+}
+
+.edition-section--orange .agenda-list__month--light .agenda-filters {
+  color: var(--color-off-white);
+}
+
+.edition-section--orange .agenda-list__month--light .agenda-filters__button {
+  border-color: var(--color-off-white);
+  color: var(--color-off-white);
+}
+
+.edition-section--orange .agenda-list__month--light .agenda-filters__button:hover {
+  background-color: var(--color-off-white);
+  border-color: var(--color-off-white);
+  color: var(--color-accent);
 }
 
 .edition-section {
@@ -4670,6 +4694,12 @@ img {
     color: var(--color-navy);
   }
 
+  .edition-section--orange .agenda-list__month--light .agenda-filters__button:hover {
+    background-color: transparent;
+    border-color: var(--color-off-white);
+    color: var(--color-off-white);
+  }
+
   .agenda-event-card__actions {
     opacity: 1;
     transform: none;
@@ -4737,11 +4767,11 @@ img {
     --navbar-height: 90px;
   }
   .agenda-event-card {
-    height: 200px;
+    min-height: 210px;
   }
 
   .agenda-event-card__title {
-    font-size: clamp(44px, 5vw, 72px);
+    font-size: clamp(40px, 5vw, 68px);
   }
 }
 
@@ -4761,7 +4791,7 @@ img {
 @media (max-width: 1000px) {
   .agenda-event-card {
     height: auto;
-    min-height: 220px;
+    min-height: auto;
     grid-template-columns: 1fr;
     gap: 24px;
   }
@@ -5385,16 +5415,21 @@ img {
   }
 
   .agenda-event-card__title {
-    font-size: 54px;
+    font-size: clamp(38px, 12vw, 52px);
   }
 
   .agenda-event-card__date span {
-    font-size: 58px;
+    font-size: clamp(50px, 14vw, 58px);
   }
 
   .agenda-event-card__actions {
     flex-direction: row;
     flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .agenda-event-card__button {
+    flex: 1 1 150px;
   }
   /* Standardized padding is already fluid, adjust only if necessary */
   /* .ticket-reservation {

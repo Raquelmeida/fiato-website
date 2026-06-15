@@ -90,6 +90,144 @@ const img = {
 
 const events = [
   {
+    title: "Ópera no Jardim",
+    imageUrl: img.solo,
+    locationSummary: "Jardins do Palácio de Cristal",
+    quote: "A natureza como palco e a ópera como banda sonora de um jardim encantado.",
+    direction: "Rui Carvalho",
+    duration: "1H00M",
+    description: "Ópera no Jardim levou a música lírica aos Jardins do Palácio de Cristal, com pequenas estações de performance espalhadas pelos recantos do parque. O público foi convidado a descobrir cada momento musical num percurso livre e intimista.",
+    price: "8",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2024-06-15T16:00:00.000Z"), time: "17H00", specificLocation: "Jardins do Palácio de Cristal", availableTickets: 0, status: "sold_out" },
+      { date: new Date("2024-06-16T16:00:00.000Z"), time: "17H00", specificLocation: "Jardins do Palácio de Cristal", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "O evento realiza-se ao ar livre?", answer: "Sim, nos Jardins do Palácio de Cristal. Recomenda-se roupa confortável." }
+    ]
+  },
+  {
+    title: "Vozes no Mercado (Edição Fundadora)",
+    imageUrl: img.stageTall,
+    locationSummary: "Mercado do Bolhão",
+    quote: "A primeira ocupação lírica do Bolhão abriu caminho para uma nova relação entre ópera e quotidiano.",
+    direction: "Luís Carvalho",
+    duration: "55M",
+    description: "A edição fundadora de Vozes no Mercado apresentou pequenas intervenções vocais no Mercado do Bolhão, aproximando intérpretes, comerciantes e visitantes. A proposta estabeleceu o modelo de proximidade que viria a marcar a identidade do FIATO.",
+    price: "",
+    isFeatured: true,
+    sessions: [
+      { date: new Date("2024-09-08T10:30:00.000Z"), time: "11H30", specificLocation: "Mercado do Bolhão", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "A entrada é gratuita?", answer: "Sim, mas a reserva é recomendada para garantir acompanhamento no percurso." }
+    ]
+  },
+  {
+    title: "Cantata para a Cidade",
+    imageUrl: img.stageWide,
+    locationSummary: "Praça de Gomes Teixeira",
+    quote: "Uma criação coral para uma cidade que se reconhece na voz coletiva.",
+    direction: "Inês Tavares",
+    duration: "1H05M",
+    description: "Cantata para a Cidade reuniu coro comunitário, solistas convidados e ensemble de câmara numa criação apresentada ao ar livre. O espetáculo partiu de histórias recolhidas no Porto e transformou-as numa partitura acessível, luminosa e participada.",
+    price: "",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2024-05-18T17:30:00.000Z"), time: "18H30", specificLocation: "Praça de Gomes Teixeira", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "Foi um espetáculo participativo?", answer: "Sim. A criação contou com participantes de oficinas vocais realizadas nos meses anteriores." }
+    ]
+  },
+  {
+    title: "Oficina de Voz e Espaço Público",
+    imageUrl: img.solo,
+    locationSummary: "Biblioteca Municipal Almeida Garrett",
+    quote: "Uma sessão prática para descobrir como a voz muda quando encontra a cidade.",
+    direction: "Clara Santos",
+    duration: "2H00M",
+    description: "A Oficina de Voz e Espaço Público apresentou ferramentas simples de respiração, projeção e escuta para participantes sem formação musical obrigatória. A atividade ligou prática vocal, mediação cultural e preparação para espetáculos em espaços não convencionais.",
+    price: "",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2024-10-12T09:00:00.000Z"), time: "10H00", specificLocation: "Biblioteca Municipal Almeida Garrett", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "Era necessária experiência musical?", answer: "Não. A oficina foi desenhada para participantes curiosos, com ou sem prática vocal." }
+    ]
+  },
+  {
+    title: "Ecos do Douro",
+    imageUrl: img.stageWide,
+    locationSummary: "Cais da Ribeira",
+    quote: "O Douro encontra a ópera numa comunhão entre a paisagem e a voz humana.",
+    direction: "Marta Menezes",
+    duration: "1H20M",
+    description: "Ecos do Douro é um espetáculo imersivo que percorre as margens do rio Douro, combinando canto lírico, música instrumental e sonoridades da natureza. O público acompanha o percurso a pé entre pontos emblemáticos da Ribeira, com paragens para performances site-specific.",
+    price: "12",
+    isFeatured: true,
+    sessions: [
+      { date: new Date("2025-07-12T19:00:00.000Z"), time: "20H00", specificLocation: "Cais da Ribeira", availableTickets: 80, status: "available" },
+      { date: new Date("2025-07-13T19:00:00.000Z"), time: "20H00", specificLocation: "Cais da Ribeira", availableTickets: 80, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "O percurso é acessível?", answer: "O percurso inclui zonas planas e escadas. Recomenda-se calçado confortável." }
+    ]
+  },
+  {
+    title: "Fados sem Fronteiras",
+    imageUrl: img.stageTall,
+    locationSummary: "Teatro Nacional São João",
+    quote: "O fado cruza a ópera num diálogo entre géneros e emoções.",
+    direction: "Sofia Bernardo",
+    duration: "1H15M",
+    description: "Fados sem Fronteiras propõe um encontro inédito entre o fado e a ópera, com vozes convidadas de ambos os universos musicais. A direção musical cruza repertório tradicional português com peças de ópera clássica, revelando afinidades surpreendentes entre as duas formas de expressão.",
+    price: "15",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2025-09-05T21:00:00.000Z"), time: "21H00", specificLocation: "Teatro Nacional São João", availableTickets: 120, status: "available" }
+    ],
+    faqs: [
+      { question: "O espetáculo é recomendado para quem não conhece ópera?", answer: "Sim. A programação foi pensada para aproximar públicos de diferentes origens musicais." }
+    ]
+  },
+  {
+    title: "Noites Líricas no Bonfim",
+    imageUrl: img.solo,
+    locationSummary: "Auditório da Junta de Freguesia do Bonfim",
+    quote: "Recitais de curta duração para abrir portas a repertórios raramente escutados fora das grandes salas.",
+    direction: "Tiago Rocha",
+    duration: "1H10M",
+    description: "Noites Líricas no Bonfim apresentou um ciclo de recitais comentados com árias, canções portuguesas e encomendas breves. Cada sessão incluiu uma conversa inicial para aproximar o público das escolhas musicais e da história das obras.",
+    price: "6",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2025-05-24T20:00:00.000Z"), time: "21H00", specificLocation: "Auditório da Junta de Freguesia do Bonfim", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "O recital teve conversa introdutória?", answer: "Sim. A mediação foi integrada no início da sessão para contextualizar o repertório." }
+    ]
+  },
+  {
+    title: "Recital das Pontes",
+    imageUrl: img.stageWide,
+    locationSummary: "Museu do Carro Elétrico",
+    quote: "Um programa sobre travessias, memória industrial e ligações afetivas entre margens.",
+    direction: "Rita Almeida",
+    duration: "1H00M",
+    description: "Recital das Pontes juntou voz e piano num programa dedicado a poemas, cartas e paisagens sonoras ligadas ao rio. A apresentação decorreu em formato intimista, com lotação reduzida e forte relação entre repertório e espaço.",
+    price: "10",
+    isFeatured: false,
+    sessions: [
+      { date: new Date("2025-11-08T18:00:00.000Z"), time: "19H00", specificLocation: "Museu do Carro Elétrico", availableTickets: 0, status: "sold_out" }
+    ],
+    faqs: [
+      { question: "A lotação foi limitada?", answer: "Sim. A sessão teve lotação reduzida para preservar a proximidade acústica." }
+    ]
+  },
+  {
     title: "A Vida do Grande Camilo",
     imageUrl: img.stageWide,
     locationSummary: "Teatro Nacional São João",
@@ -136,7 +274,7 @@ const events = [
     price: "12",
     isFeatured: false,
     sessions: [
-      { date: new Date("2026-09-12T18:00:00.000Z"), time: "19H00", specificLocation: "Concha Acustica", availableTickets: 0, status: "sold_out" }
+      { date: new Date("2026-09-12T18:00:00.000Z"), time: "19H00", specificLocation: "Concha Acústica", availableTickets: 0, status: "sold_out" }
     ],
     faqs: [
       { question: "O evento realiza-se com chuva?", answer: "Em caso de mau tempo, a organização comunica alternativa ou reagendamento aos participantes." }
@@ -179,7 +317,7 @@ const events = [
   {
     title: "Carmen no Mercado",
     imageUrl: img.stageTall,
-    locationSummary: "Mercado do Bolhao",
+    locationSummary: "Mercado do Bolhão",
     quote: "Bizet ganha uma escala nova entre pregões, escadas e circulação quotidiana.",
     direction: "Miguel Gonçalves",
     duration: "1H30M",
@@ -187,10 +325,10 @@ const events = [
     price: "12",
     isFeatured: false,
     sessions: [
-      { date: new Date("2026-09-22T20:00:00.000Z"), time: "21H00", specificLocation: "Mercado do Bolhao", availableTickets: 100, status: "available" }
+      { date: new Date("2026-09-22T20:00:00.000Z"), time: "21H00", specificLocation: "Mercado do Bolhão", availableTickets: 100, status: "available" }
     ],
     faqs: [
-      { question: "Ha lugares sentados?", answer: "Existem zonas sentadas limitadas e lugares em pe para acompanhamento do percurso." }
+      { question: "Há lugares sentados?", answer: "Existem zonas sentadas limitadas e lugares em pé para acompanhamento do percurso." }
     ]
   },
   {
@@ -224,12 +362,18 @@ const archives = [
     title: "FIATO 2025",
     description: "Uma edição de consolidação, marcada por residências artísticas, mediação cultural e novas encomendas para pequenos formatos.",
     imageUrl: img.stageTall
+  },
+  {
+    year: 2024,
+    title: "FIATO 2024",
+    description: "A edição que lançou as bases para a internacionalização do festival, com parcerias além-fronteiras e uma programação diversificada.",
+    imageUrl: img.solo
   }
 ];
 
 const news = [
   {
-    title: "FIATO anuncia programa de verao no Porto",
+    title: "FIATO anuncia programa de verão no Porto",
     publishDate: new Date("2026-06-01T09:00:00.000Z"),
     imageUrl: img.stageWide,
     articleUrl: "https://www.publico.pt/",
@@ -241,13 +385,83 @@ const news = [
     imageUrl: img.solo,
     articleUrl: "https://www.rtp.pt/",
     body: "O festival aposta em formatos de proximidade, mediação e cruzamento entre repertório clássico e criação contemporânea."
+  },
+  {
+    title: "FIATO abre reservas para espetáculos de verão",
+    publishDate: new Date("2026-04-22T09:00:00.000Z"),
+    imageUrl: img.stageTall,
+    articleUrl: "https://www.timeout.pt/porto/",
+    body: "As primeiras reservas da edição de 2026 destacam projetos no Mercado do Bolhão, na Ribeira e nos Jardins do Palácio de Cristal."
+  },
+  {
+    title: "Criação contemporânea ganha palco no FIATO 2026",
+    publishDate: new Date("2026-03-18T10:30:00.000Z"),
+    imageUrl: img.stageWide,
+    articleUrl: "https://www.jpn.up.pt/",
+    body: "A programação de 2026 cruza repertório clássico, novas encomendas e formatos de curta duração pensados para espaços de proximidade."
+  },
+  {
+    title: "FIATO 2025: balanço positivo de uma edição histórica",
+    publishDate: new Date("2025-10-01T10:00:00.000Z"),
+    imageUrl: img.stageTall,
+    articleUrl: "https://www.publico.pt/",
+    body: "A edição de 2025 do FIATO superou as expectativas, com mais de 5000 espectadores e uma cobertura mediática internacional."
+  },
+  {
+    title: "Ecos do Douro: a ópera que nasceu do rio",
+    publishDate: new Date("2025-07-01T09:00:00.000Z"),
+    imageUrl: img.stageWide,
+    articleUrl: "https://www.rtp.pt/",
+    body: "O espetáculo Ecos do Douro marcou o verão do Porto ao transformar as margens do rio num palco de ópera ao ar livre."
+  },
+  {
+    title: "Residências artísticas aproximam criadores e comunidades",
+    publishDate: new Date("2025-04-12T09:30:00.000Z"),
+    imageUrl: img.solo,
+    articleUrl: "https://www.jpn.up.pt/",
+    body: "Durante a preparação da edição de 2025, artistas do FIATO desenvolveram sessões abertas com associações locais e grupos corais amadores."
+  },
+  {
+    title: "FIATO apresenta ciclo de mediação no Bonfim",
+    publishDate: new Date("2025-03-06T11:00:00.000Z"),
+    imageUrl: img.stageTall,
+    articleUrl: "https://www.timeout.pt/porto/",
+    body: "O novo ciclo combinou conversas, ensaios abertos e recitais comentados para tornar a linguagem lírica mais próxima de públicos diversos."
+  },
+  {
+    title: "FIATO 2024: o ano da internacionalização",
+    publishDate: new Date("2024-11-15T09:00:00.000Z"),
+    imageUrl: img.solo,
+    articleUrl: "https://www.publico.pt/",
+    body: "Com artistas de seis países e parcerias com festivais europeus, o FIATO 2024 afirmou o Porto como destino cultural de referência."
+  },
+  {
+    title: "Bolhão recebe primeira intervenção vocal do FIATO",
+    publishDate: new Date("2024-09-09T09:00:00.000Z"),
+    imageUrl: img.stageTall,
+    articleUrl: "https://www.rtp.pt/",
+    body: "A apresentação fundadora no Mercado do Bolhão mostrou como a ópera pode ocupar espaços quotidianos sem perder rigor musical."
+  },
+  {
+    title: "Coro comunitário estreia Cantata para a Cidade",
+    publishDate: new Date("2024-05-20T08:30:00.000Z"),
+    imageUrl: img.stageWide,
+    articleUrl: "https://www.jpn.up.pt/",
+    body: "A primeira criação participativa do FIATO reuniu moradores, estudantes e intérpretes profissionais numa apresentação pública no centro do Porto."
+  },
+  {
+    title: "FIATO lança programa piloto de oficinas vocais",
+    publishDate: new Date("2024-03-14T10:00:00.000Z"),
+    imageUrl: img.solo,
+    articleUrl: "https://www.timeout.pt/porto/",
+    body: "O programa piloto apresentou oficinas de voz, respiração e escuta para preparar a relação entre público, intérpretes e espaços urbanos."
   }
 ];
 
 const aboutPage = {
   heroDescription: "O FIATO aproxima a ópera da cidade do Porto através de experiências de escuta, criação e encontro em espaços convencionais e inesperados.",
   heroCtaLinks: [
-    { label: "Programacao", url: "agenda.html" },
+    { label: "Programação", url: "agenda.html" },
     { label: "Arquivo", url: "arquivo.html" },
     { label: "Contactos", url: "contactos.html" }
   ],
@@ -289,6 +503,8 @@ const aboutPage = {
 };
 
 await mongoose.connect(MONGODB_URI);
+
+await Event.deleteOne({ title: "Cartas de Agua e Pedra" });
 
 for (const event of events) {
   await Event.findOneAndUpdate({ title: event.title }, { $set: event }, { upsert: true, new: true, runValidators: true });
