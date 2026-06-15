@@ -2,12 +2,12 @@
    VARIABLES & BASE
    ========================================================================== */
 :root {
-    --fiato-bg: #f8fafc;
-    --fiato-dark: #0d233a;
+    --fiato-bg: #FBFBF9;
+    --fiato-dark: #1E388F;
     --fiato-coral: #f05a28;
     --fiato-card-bg: #ffffff;
-    --fiato-text-main: #1e293b;
-    --fiato-border: #e2e8f0;
+    --fiato-text-main: #1A1A18;
+    --fiato-border: #D9D9D6;
 }
 
 body {
@@ -19,7 +19,7 @@ body {
 
 /* Utilities / Cleanups para substituir estilos inline */
 .coral-text { color: var(--fiato-coral) !important; }
-.slate-text { color: #64748b !important; }
+.slate-text { color: #4A4A46 !important; }
 .border-divider { background-color: var(--fiato-border); height: 1px; }
 .w-search {
     width: 320px;
@@ -32,7 +32,7 @@ body {
 .studio-navbar {
     background-color: var(--fiato-dark);
     padding: 1.25rem 2rem;
-    box-shadow: 0 4px 20px rgba(13, 35, 58, 0.08);
+    box-shadow: 0 4px 20px color-mix(in srgb, var(--fiato-dark) 8%, transparent);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -51,8 +51,8 @@ body {
 
 .btn-logout {
     border-radius: 8px; 
-    color: #94a3b8; 
-    border-color: #334155;
+    color: #BFBFBC; 
+    border-color: #4A4A46;
 }
 
 /* ==========================================================================
@@ -63,7 +63,7 @@ body {
     padding: 0.75rem;
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.02);
-    border: 1px solid var(--var-border, #edf2f7);
+    border: 1px solid var(--var-border, #F2F2F0);
 }
 
 .modern-pills, .modern-pills ul {
@@ -80,7 +80,7 @@ body {
 .modern-pills li a {
     border: none !important;
     border-radius: 12px !important;
-    color: #64748b !important;
+    color: #4A4A46 !important;
     font-weight: 600;
     padding: 0.75rem 1.25rem;
     transition: all 0.25s ease;
@@ -92,7 +92,7 @@ body {
 }
 
 .modern-pills li:not(.is-active) a:hover {
-    background-color: #f1f5f9;
+    background-color: #F2F2F0;
     color: var(--fiato-dark) !important;
 }
 
@@ -115,12 +115,12 @@ body {
 
 .search-wrapper .input:focus {
     border-color: var(--fiato-dark);
-    box-shadow: 0 0 0 3px rgba(13, 35, 58, 0.1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fiato-dark) 10%, transparent);
 }
 
 .search-wrapper .icon {
     height: 2.75rem;
-    color: #94a3b8;
+    color: #BFBFBC;
 }
 
 /* ==========================================================================
@@ -159,7 +159,7 @@ body {
 }
 
 .table th {
-    color: #64748b;
+    color: #4A4A46;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.75rem;
@@ -176,7 +176,7 @@ body {
 }
 
 .table tr:hover td {
-    background-color: #fafbfc;
+    background-color: #FBFBF9;
 }
 
 /* ==========================================================================
@@ -204,7 +204,7 @@ body {
 }
 
 .modal-card-foot {
-    background-color: #f8fafc;
+    background-color: #FBFBF9;
     border-top: 1px solid var(--fiato-border);
     padding: 1.25rem 1.5rem;
 }
@@ -212,7 +212,7 @@ body {
 .form-label-custom {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #475569;
+    color: #4A4A46;
     margin-bottom: 0.5rem;
 }
 
@@ -223,7 +223,7 @@ body {
 
 .modal input:focus, .modal textarea:focus {
     border-color: var(--fiato-dark);
-    box-shadow: 0 0 0 3px rgba(13, 35, 58, 0.08);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--fiato-dark) 8%, transparent);
 }
 
 .contact-profile {
@@ -248,7 +248,7 @@ body {
 
 .contact-profile__email {
     margin: 0;
-    color: #475569;
+    color: #4A4A46;
     font-size: 0.98rem;
     line-height: 1.4;
     overflow-wrap: anywhere;
@@ -257,7 +257,7 @@ body {
 .contact-profile__type {
     align-self: start;
     border-radius: 8px;
-    background-color: #f1f5f9;
+    background-color: #F2F2F0;
     color: var(--fiato-dark);
     font-size: 0.85rem;
     font-weight: 700;
@@ -279,7 +279,7 @@ body {
 /* Linhas das sessões dinâmicas (limpo do JS) */
 .session-item-row {
     border: 1px solid var(--fiato-border);
-    background-color: #fafbfc;
+    background-color: #FBFBF9;
     border-radius: 12px;
     position: relative;
 }

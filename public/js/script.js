@@ -14,6 +14,203 @@ const ticketShow = document.querySelector('[data-ticket-show]');
 const ticketSession = document.querySelector('[data-ticket-session]');
 const ticketQuantity = document.querySelector('[data-ticket-quantity]');
 const ticketMessage = document.querySelector('[data-ticket-message]');
+const fallbackTeamPhoto = 'assets/estrela.svg';
+const i18nState = {
+  lang: localStorage.getItem('fiato-lang') || document.documentElement.lang || 'pt',
+  map: {
+    en: {
+      // Navbar
+      'FIATO': 'FIATO',
+      'Agenda': 'Schedule',
+      'Arquivo': 'Archive',
+      'Sobre nós': 'About us',
+      'Sobre Nós': 'About Us',
+      'Apoios': 'Partners',
+      'Contactos': 'Contacts',
+      'Página Inicial': 'Home',
+      'Bilhetes': 'Tickets',
+      // Hero
+      'Próximo Espetáculo': 'Next Show',
+      'Estreia': 'Premiere',
+      'Contagem Decrescente': 'Countdown',
+      'Dias': 'Days',
+      'Horas': 'Hours',
+      'Min': 'Min',
+      'Ver Evento': 'View Event',
+      'Ver Agenda': 'View Schedule',
+      // Events / Schedule
+      'Comprar': 'Buy',
+      'Comprar Bilhetes': 'Buy Tickets',
+      'Comprar bilhetes': 'Buy tickets',
+      'Reservar': 'Reserve',
+      'Reservar ': 'Reserve ',
+      'Reservar bilhete': 'Reserve ticket',
+      'Saber mais': 'Learn more',
+      'Esgotado': 'Sold out',
+      'Grátis': 'Free',
+      'Título': 'Title',
+      'Local': 'Venue',
+      'Data': 'Date',
+      'Ordenar por': 'Sort by',
+      // Messages / States
+      'A carregar agenda...': 'Loading schedule...',
+      'A carregar eventos...': 'Loading events...',
+      'A carregar próximos eventos...': 'Loading upcoming events...',
+      'A carregar notícias...': 'Loading news...',
+      'A carregar arquivo...': 'Loading archive...',
+      'Não existem eventos de momento.': 'There are no events at the moment.',
+      'Não existem notícias de momento.': 'There is no news at the moment.',
+      'Não foi possível carregar a agenda.': 'The schedule could not be loaded.',
+      'Não foi possível carregar os eventos.': 'The events could not be loaded.',
+      'Não foi possível carregar as notícias.': 'The news could not be loaded.',
+      // Footer
+      'Contactos / Apoios': 'Contacts / Partners',
+      'Informações': 'Info',
+      'E-mail': 'E-mail',
+      'Imprensa & Institucional': 'Press & Institutional',
+      'Festival Internacional de Artes e Ópera do Porto': 'International Arts and Opera Festival of Porto',
+      '© 2026 Todos os direitos reservados': '© 2026 All rights reserved',
+      // Language toggle
+      'Abrir menu': 'Open menu',
+      'Fechar menu': 'Close menu',
+      'Navegação principal': 'Main navigation',
+      'Idioma': 'Language',
+      // Homepage sections
+      'Agenda • FIATO': 'Schedule • FIATO',
+      'Eventos': 'Events',
+      'Imprensa • FIATO': 'Press • FIATO',
+      'Imprensa': 'Press',
+      'Na Imprensa': 'In the Press',
+      'Ver Notícias': 'View News',
+      'Instagram': 'Instagram',
+      'Apoio Institucional': 'Institutional Support',
+      'Mecenas Principal': 'Main Sponsor',
+      'Parceiros Media': 'Media Partners',
+      // Home hero
+      'A Vida do': 'The Life of',
+      'Grande Camilo': 'Great Camilo',
+      // Event page
+      '[ 01 ] A CURADORIA': '[ 01 ] THE CURATION',
+      'Direção': 'Direction',
+      'Duração': 'Duration',
+      'Bilheteira & Sessões': 'Tickets & Sessions',
+      'Garanta o seu': 'Get your',
+      'lugar': 'seat',
+      'Sobre o': 'About the',
+      'espetáculo': 'show',
+      'Agenda + Fiato': 'Schedule + Fiato',
+      'Próximos eventos': 'Upcoming events',
+      'Música Clássica': 'Classical Music',
+      'Vanguarda': 'Avant-garde',
+      'do Porto': 'of Porto',
+      'fronteiras': 'borders',
+      // About page
+      'ÓPERA': 'OPERA',
+      'à': 'in',
+      'MODA': 'STYLE',
+      'PORTO': 'PORTO',
+      'QUEBRAMOS': 'WE BREAK',
+      'FRONTEIRAS': 'BOUNDARIES',
+      'da': 'of',
+      'MÚSICA': 'MUSIC',
+      'CLÁSSICA': 'CLASSICAL',
+      'Colocámo-la': 'We put it',
+      'na': 'on the',
+      'RUA': 'STREET',
+      'Programação': 'Schedule',
+      'Consultar Arquivo': 'View Archive',
+      'A equipa por trás das cortinas': 'The team behind the curtains',
+      'democratização': 'democratization',
+      'O Fiato é para todos': 'Fiato is for everyone',
+      'Perguntas': 'Frequently',
+      'Frequentes': 'Asked Questions',
+      // Tickets page
+      'Voltar à agenda': 'Back to schedule',
+      'Reserva de bilhete': 'Ticket reservation',
+      'Garante o teu lugar.': 'Secure your spot.',
+      'o teu lugar.': 'your spot.',
+      'Resumo': 'Summary',
+      'Hora': 'Time',
+      'Preço': 'Price',
+      'Nº de bilhetes': 'Tickets',
+      'Bilhetes': 'Tickets',
+      'Total': 'Total',
+      'Nome': 'First Name',
+      'Apelido': 'Last Name',
+      'Telefone': 'Phone',
+      'Observações': 'Notes',
+      'Sessão': 'Session',
+      'Quantidade': 'Quantity',
+      'Seleciona...': 'Select...',
+      'Seleciona um espetáculo e uma sessão.': 'Select a show and a session.',
+      // Messages
+      'Preenche todos os campos obrigatórios antes de submeter.': 'Please fill in all required fields before submitting.',
+      'Preenche todos os campos obrigatórios.': 'Please fill in all required fields.',
+      'Por favor, complete a verificação de segurança.': 'Please complete the security check.',
+      'Pedido de reserva registado. A equipa FIATO entrará em contacto.': 'Reservation request registered. The FIATO team will get in touch.',
+      'Ocorreu um erro ao processar a reserva. Tenta novamente.': 'An error occurred processing the reservation. Please try again.',
+      'Ocorreu um erro ao enviar a mensagem.': 'An error occurred sending the message.',
+      'Ocorreu um erro ao enviar o pedido.': 'An error occurred sending the request.',
+      'Recebemos a tua mensagem. Vamos responder com a maior brevidade possível.': 'We received your message. We will reply as soon as possible.',
+      'Recebemos o teu pedido. Vamos analisar a candidatura e responder brevemente.': 'We received your request. We will review and reply shortly.',
+      // Contact page
+      'Fala connosco': 'Talk to us',
+      'Como me tornar membro da Fiato?': 'How do I become a Fiato member?',
+      'Portefólio ou currículo em PDF': 'Portfolio or CV in PDF',
+      'PDF até 8 MB': 'PDF up to 8 MB',
+      'Enviar': 'Send',
+      'Mensagem enviada': 'Message sent',
+      'Pedido enviado': 'Request sent',
+      'enviar email': 'send email',
+      'Estamos': 'We are',
+      'à escuta': 'listening',
+      // Apoios page
+      'Quer tornar-se parte do espetáculo?': 'Do you want to be part of the show?',
+      'Entre em palco connosco': 'Step on stage with us',
+      'Financiado por': 'Funded by',
+      'Parceria Comunicação': 'Communication Partnership',
+      'Parceria Local': 'Local Partnership',
+      'Fale Connosco': 'Talk to Us',
+      'Enviar Email': 'Send Email',
+      'Contactar': 'Contact',
+      'Localização': 'Location',
+      'Contacto': 'Contact',
+      'Horários': 'Hours',
+      'Siga-nos': 'Follow us',
+      // Archive page
+      'Eventos': 'Events',
+      'NOTÍCIAS': 'NEWS',
+      'Procurar título...': 'Search title...',
+      'Local...': 'Venue...',
+      'Data...': 'Date...',
+      'Procurar nas notícias...': 'Search news...',
+      'Limpar': 'Clear',
+      'Filtros': 'Filters',
+      'Ler notícia': 'Read news',
+      'Nenhum evento corresponde aos filtros.': 'No events match the filters.',
+      'Não existem eventos para esta edição.': 'There are no events for this edition.',
+      'Nenhuma notícia corresponde aos filtros.': 'No news match the filters.',
+      'Não existem notícias para esta edição.': 'There is no news for this edition.',
+      'Carregar mais': 'Load more',
+      'Carregar mais notícias': 'Load more news',
+      'Não existem edições no arquivo.': 'There are no editions in the archive.',
+      'Ops! Algo desafinou.': 'Oops! Something went wrong.',
+      'Não foi possível carregar o arquivo de edições. Verifica a tua ligação à internet.': 'Could not load the edition archive. Check your internet connection.',
+      'Recarregar Arquivo': 'Reload Archive',
+      // Event detail
+      'A decorrer': 'Ongoing',
+      'Hoje': 'Today',
+      '1 dia': '1 day',
+      // Instagram
+      'Visit Us': 'Visit Us',
+      'Em breve...': 'Coming soon...',
+      'Anterior': 'Previous',
+      'Próximo': 'Next',
+      // Filters
+      'Filtros da agenda': 'Schedule filters'
+    }
+  }
+};
 
 let countdownTarget = Date.now()
   + (14 * 24 * 60 * 60 * 1000)
@@ -164,7 +361,7 @@ if (menuToggle && navbar) {
   menuToggle.addEventListener('click', () => {
     const isOpen = navbar.classList.toggle('is-open');
     menuToggle.setAttribute('aria-expanded', String(isOpen));
-    menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    menuToggle.setAttribute('aria-label', isOpen ? translateText('Fechar menu') : translateText('Abrir menu'));
   });
 }
 
@@ -174,7 +371,7 @@ navbarLinks.forEach((link) => {
 
     navbar.classList.remove('is-open');
     menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Abrir menu');
+    menuToggle.setAttribute('aria-label', translateText('Abrir menu'));
   });
 });
 
@@ -294,7 +491,7 @@ if (ticketForm) {
 
     if (!isValid) {
       ticketMessage.className = 'ticket-form__message';
-      ticketMessage.textContent = 'Preenche todos os campos obrigatórios antes de submeter.';
+      ticketMessage.textContent = translateText('Preenche todos os campos obrigatórios antes de submeter.');
       return;
     }
 
@@ -303,13 +500,13 @@ if (ticketForm) {
 
     if (!eventId || !sessionId) {
       ticketMessage.className = 'ticket-form__message';
-      ticketMessage.textContent = 'Seleciona um espetáculo e uma sessão.';
+      ticketMessage.textContent = translateText('Seleciona um espetáculo e uma sessão.');
       return;
     }
 
     if (!isAltchaVerified(ticketForm)) {
       ticketMessage.className = 'ticket-form__message';
-      ticketMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      ticketMessage.textContent = translateText('Por favor, complete a verificação de segurança.');
       return;
     }
 
@@ -341,12 +538,12 @@ if (ticketForm) {
         throw new Error(result.error);
       }
         ticketMessage.className = 'ticket-form__message is-success';
-        ticketMessage.textContent = 'Pedido de reserva registado. A equipa FIATO entrará em contacto.';
+        ticketMessage.textContent = translateText('Pedido de reserva registado. A equipa FIATO entrará em contacto.');
         ticketForm.reset();
         updateTicketSummary();
     } catch (err) {
         ticketMessage.className = 'ticket-form__message';
-        ticketMessage.textContent = err.message || 'Ocorreu um erro ao processar a reserva. Tenta novamente.';
+        ticketMessage.textContent = err.message || translateText('Ocorreu um erro ao processar a reserva. Tenta novamente.');
     }
   });
 }
@@ -372,13 +569,8 @@ if (contactForm) {
 
     if (!isValid) {
       contactMessage.className = 'contactos-form__message';
-      contactMessage.textContent = 'Preenche todos os campos obrigatórios.';
-      return;
-    }
-
-    if (!isAltchaVerified(contactForm)) {
-      contactMessage.className = 'contactos-form__message';
-      contactMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      contactMessage.textContent = translateText('Preenche todos os campos obrigatórios.');
+      contactMessage.textContent = translateText('Por favor, complete a verificação de segurança.');
       return;
     }
 
@@ -407,17 +599,17 @@ if (contactForm) {
         throw new Error(result.error);
       }
         contactMessage.className = 'contactos-form__message is-success';
-        contactMessage.textContent = 'Recebemos a tua mensagem. Vamos responder com a maior brevidade possível.';
+        contactMessage.textContent = translateText('Recebemos a tua mensagem. Vamos responder com a maior brevidade possível.');
         var contactButton = contactForm.querySelector('button[type="submit"]');
         if (contactButton) {
-          contactButton.textContent = 'Mensagem enviada';
+          contactButton.textContent = translateText('Mensagem enviada');
           contactButton.disabled = true;
           contactButton.classList.add('is-complete');
         }
         contactForm.reset();
     } catch (err) {
         contactMessage.className = 'contactos-form__message';
-        contactMessage.textContent = err.message || 'Ocorreu um erro ao enviar a mensagem.';
+        contactMessage.textContent = err.message || translateText('Ocorreu um erro ao enviar a mensagem.');
     }
   });
 }
@@ -442,13 +634,8 @@ if (memberForm) {
 
     if (!isValid) {
       memberMessage.className = 'member-form__message';
-      memberMessage.textContent = 'Preenche todos os campos obrigatórios.';
-      return;
-    }
-
-    if (!isAltchaVerified(memberForm)) {
-      memberMessage.className = 'member-form__message';
-      memberMessage.textContent = 'Por favor, complete a verificação de segurança.';
+      memberMessage.textContent = translateText('Preenche todos os campos obrigatórios.');
+      memberMessage.textContent = translateText('Por favor, complete a verificação de segurança.');
       return;
     }
 
@@ -471,17 +658,17 @@ if (memberForm) {
         throw new Error(result.error);
       }
         memberMessage.className = 'member-form__message is-success';
-        memberMessage.textContent = 'Recebemos o teu pedido. Vamos analisar a candidatura e responder brevemente.';
+        memberMessage.textContent = translateText('Recebemos o teu pedido. Vamos analisar a candidatura e responder brevemente.');
         var memberButton = memberForm.querySelector('button[type="submit"]');
         if (memberButton) {
-          memberButton.textContent = 'Pedido enviado';
+          memberButton.textContent = translateText('Pedido enviado');
           memberButton.disabled = true;
           memberButton.classList.add('is-complete');
         }
         memberForm.reset();
     } catch (err) {
         memberMessage.className = 'member-form__message';
-        memberMessage.textContent = err.message || 'Ocorreu um erro ao enviar o pedido.';
+        memberMessage.textContent = err.message || translateText('Ocorreu um erro ao enviar o pedido.');
     }
   });
 }
@@ -502,6 +689,124 @@ function formatSchedulePrice(price) {
   var num = Number(price);
   if (Number.isInteger(num)) return num + '€';
   return num.toFixed(2).replace('.', ',') + '€';
+}
+
+function translateText(text) {
+  var lang = i18nState.lang === 'en' ? 'en' : 'pt';
+  if (lang === 'pt') return text;
+  return i18nState.map.en[text] || text;
+}
+
+function translateAttr(element, attr) {
+  if (!element || !element.hasAttribute(attr)) return;
+  var val = element.getAttribute(attr);
+  if (!val) return;
+  var translated = translateText(val.trim());
+  if (translated !== val.trim()) element.setAttribute(attr, val.replace(val.trim(), translated));
+}
+
+function translatePageText(lang) {
+  var wasEn = i18nState.lang === 'en';
+  i18nState.lang = lang === 'en' ? 'en' : 'pt';
+  document.documentElement.lang = i18nState.lang;
+  localStorage.setItem('fiato-lang', i18nState.lang);
+
+  document.querySelectorAll('.navbar__language-option').forEach(function (button) {
+    var isActive = button.textContent.trim().toLowerCase() === i18nState.lang;
+    button.classList.toggle('navbar__language-option--active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+
+  document.querySelectorAll('altcha-widget').forEach(function (widget) {
+    widget.setAttribute('language', i18nState.lang);
+  });
+
+  if (i18nState.lang !== 'en') {
+    if (wasEn) window.location.reload();
+    return;
+  }
+
+  // Translate text nodes
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  var textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  textNodes.forEach(function (node) {
+    var text = node.nodeValue;
+    var trimmed = text.trim();
+    if (!trimmed) return;
+    var translated = translateText(trimmed);
+    if (translated !== trimmed) node.nodeValue = text.replace(trimmed, translated);
+  });
+
+  // Translate placeholder attributes
+  document.querySelectorAll('[placeholder]').forEach(function (el) {
+    translateAttr(el, 'placeholder');
+  });
+
+  // Translate aria-label attributes
+  document.querySelectorAll('[aria-label]').forEach(function (el) {
+    translateAttr(el, 'aria-label');
+  });
+
+  // Translate title attributes
+  document.querySelectorAll('[title]').forEach(function (el) {
+    translateAttr(el, 'title');
+  });
+}
+
+function initLanguageToggle() {
+  var altchaI18nAttempts = 0;
+  var altchaI18nTimer = setInterval(function () {
+    altchaI18nAttempts += 1;
+    if (globalThis.$altcha?.i18n) {
+      var currentPt = globalThis.$altcha.i18n.get('pt') || {};
+      globalThis.$altcha.i18n.set('pt', {
+        ...currentPt,
+        label: 'Não sou um robô',
+        verified: 'Verificado',
+        verifying: 'A verificar...',
+        error: 'Falha na verificação. Tente novamente.'
+      });
+      clearInterval(altchaI18nTimer);
+    }
+    if (altchaI18nAttempts > 30) clearInterval(altchaI18nTimer);
+  }, 100);
+
+  document.querySelectorAll('.navbar__language-option').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var lang = button.textContent.trim().toLowerCase();
+      translatePageText(lang);
+      if (lang === 'pt') window.location.reload();
+    });
+  });
+
+  translatePageText(i18nState.lang);
+}
+
+function getEventAvailability(event) {
+  var sessions = event && event.sessions ? event.sessions : [];
+  var hasReservableSession = sessions.some(function (session) {
+    return session.status === 'available' && Number(session.availableTickets || 0) > 0;
+  });
+  var hasSoldOutSessions = sessions.length > 0 && sessions.every(function (session) {
+    return session.status === 'sold_out' || session.status === 'soldout' || session.status === 'esgotado' || Number(session.availableTickets || 0) === 0;
+  });
+  var rawPrice = event ? event.price : '';
+  var numericPrice = Number(rawPrice);
+  var hasPrice = rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && rawPrice !== 'Grátis' && !isNaN(numericPrice) && numericPrice > 0;
+
+  if (hasSoldOutSessions) return { label: translateText('Esgotado'), type: 'sold_out', href: '', disabled: true, hasPrice: hasPrice };
+  if (hasPrice) return { label: translateText('Comprar'), type: 'buy', href: 'bilhetes.html', disabled: false, hasPrice: true };
+  if (hasReservableSession) return { label: translateText('Reservar'), type: 'reserve', href: 'bilhetes.html', disabled: false, hasPrice: false };
+  return { label: translateText('Saber mais'), type: 'more', href: 'evento.html?id=' + (event?._id || ''), disabled: false, hasPrice: false };
+}
+
+function appendButtonArrow(element) {
+  var arrow = document.createElement('span');
+  arrow.className = 'evento-sessoes__button-arrow';
+  arrow.innerHTML = '<i class="fas fa-arrow-right" aria-hidden="true"></i>';
+  element.appendChild(arrow);
 }
 
 function createScheduleCard(event) {
@@ -581,8 +886,13 @@ function createScheduleCard(event) {
   // Tickets link
   const link = document.createElement('a');
   link.className = 'schedule__tickets';
-  link.href = 'bilhetes.html';
-  link.textContent = 'Comprar Bilhetes';
+  var action = getEventAvailability(event);
+  link.href = action.disabled ? 'evento.html?id=' + (event._id || '') : action.href;
+  link.textContent = action.type === 'more' ? translateText('Saber mais') : action.label;
+  if (action.disabled) {
+    link.classList.add('is-disabled');
+    link.setAttribute('aria-disabled', 'true');
+  }
   card.appendChild(link);
 
   return card;
@@ -594,7 +904,7 @@ function renderScheduleCards(events) {
   if (events.length === 0) {
     var msg = document.createElement('p');
     msg.className = 'schedule__loading';
-    msg.textContent = 'Não existem eventos de momento.';
+    msg.textContent = translateText('Não existem eventos de momento.');
     scheduleGrid.appendChild(msg);
     return;
   }
@@ -609,7 +919,7 @@ function renderScheduleCards(events) {
 function loadHomeEvents() {
   if (!scheduleGrid) return;
 
-  scheduleGrid.innerHTML = '<p class="schedule__loading">A carregar eventos...</p>';
+  scheduleGrid.innerHTML = '<p class="schedule__loading">' + translateText('A carregar eventos...') + '</p>';
 
   fetch('/api/events?featured=true&limit=3')
     .then(function (response) {
@@ -647,7 +957,7 @@ function loadHomeEvents() {
       scheduleGrid.innerHTML = '';
       var msg = document.createElement('p');
       msg.className = 'schedule__loading';
-      msg.textContent = 'Não foi possível carregar os eventos.';
+      msg.textContent = translateText('Não foi possível carregar os eventos.');
       scheduleGrid.appendChild(msg);
     });
 }
@@ -714,7 +1024,7 @@ function loadHomeHeroEvent() {
       }
 
       // Badge
-      if (heroBadge) heroBadge.textContent = 'Estreia';
+      if (heroBadge) heroBadge.textContent = translateText('Estreia');
 
       // Sessions
       if (event.sessions && event.sessions.length > 0) {
@@ -765,7 +1075,7 @@ function showPressFallback(container) {
   container.innerHTML = '';
   var msg = document.createElement('p');
   msg.className = 'press__loading';
-  msg.textContent = 'Não existem notícias de momento.';
+  msg.textContent = translateText('Não existem notícias de momento.');
   container.appendChild(msg);
 }
 
@@ -817,7 +1127,7 @@ function createPressRow(item) {
   var arrowLink = document.createElement('a');
   arrowLink.className = 'press__arrow-btn';
   arrowLink.href = item.articleUrl || '#';
-  arrowLink.setAttribute('aria-label', 'Ler notícia');
+  arrowLink.setAttribute('aria-label', translateText('Ler notícia'));
   arrowLink.innerHTML = '<i class="fas fa-arrow-up" aria-hidden="true"></i>';
   if (item.articleUrl) {
     arrowLink.target = '_blank';
@@ -833,7 +1143,7 @@ function loadHomePress() {
   var pressList = document.querySelector('[data-press-list]');
   if (!pressList) return;
 
-  pressList.innerHTML = '<p class="press__loading">A carregar notícias...</p>';
+  pressList.innerHTML = '<p class="press__loading">' + translateText('A carregar notícias...') + '</p>';
 
   fetch('/api/news?limit=4')
     .then(function (response) {
@@ -930,14 +1240,23 @@ function createAgendaCard(event, index) {
   var saberMais = document.createElement('a');
   saberMais.className = 'agenda-event-card__button agenda-event-card__button--outline';
   saberMais.href = 'evento.html?id=' + (event._id || '');
-  saberMais.textContent = 'Saber mais';
+  saberMais.textContent = translateText('Saber mais');
   actionsDiv.appendChild(saberMais);
 
-  var comprar = document.createElement('a');
-  comprar.className = 'agenda-event-card__button agenda-event-card__button--filled';
-  comprar.href = 'bilhetes.html';
-  comprar.textContent = 'Comprar';
-  actionsDiv.appendChild(comprar);
+  var action = getEventAvailability(event);
+  var actionButton;
+  if (action.disabled) {
+    actionButton = document.createElement('button');
+    actionButton.type = 'button';
+    actionButton.disabled = true;
+    actionButton.setAttribute('aria-disabled', 'true');
+  } else {
+    actionButton = document.createElement('a');
+    actionButton.href = action.href;
+  }
+  actionButton.className = 'agenda-event-card__button agenda-event-card__button--filled agenda-event-card__button--' + action.type;
+  actionButton.textContent = action.label;
+  actionsDiv.appendChild(actionButton);
 
   card.appendChild(actionsDiv);
 
@@ -947,7 +1266,7 @@ function createAgendaCard(event, index) {
 function loadAgendaEvents() {
   if (!agendaList) return;
 
-  agendaList.innerHTML = '<p class="agenda-list__empty">A carregar agenda...</p>';
+  agendaList.innerHTML = '<p class="agenda-list__empty">' + translateText('A carregar agenda...') + '</p>';
 
   fetch('/api/events?limit=50')
     .then(function (response) {
@@ -957,7 +1276,7 @@ function loadAgendaEvents() {
     .then(function (result) {
       var events = extractData(result);
       if (!events || events.length === 0) {
-        agendaList.innerHTML = '<p class="agenda-list__empty">Não existem eventos de momento.</p>';
+        agendaList.innerHTML = '<p class="agenda-list__empty">' + translateText('Não existem eventos de momento.') + '</p>';
         return;
       }
 
@@ -966,7 +1285,7 @@ function loadAgendaEvents() {
       });
 
       if (validEvents.length === 0) {
-        agendaList.innerHTML = '<p class="agenda-list__empty">Não existem eventos de momento.</p>';
+        agendaList.innerHTML = '<p class="agenda-list__empty">' + translateText('Não existem eventos de momento.') + '</p>';
         return;
       }
 
@@ -1063,7 +1382,7 @@ function loadAgendaEvents() {
       updateNavbarTheme();
     })
     .catch(function () {
-      agendaList.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
+      agendaList.innerHTML = '<p class="agenda-list__empty">' + translateText('Não foi possível carregar a agenda.') + '</p>';
     });
 }
 // ==========================================
@@ -1293,7 +1612,7 @@ function loadArchiveAgenda(section, year) {
     })
     .catch(function () {
       const el = container.querySelector('[data-agenda-events]');
-      if (el) el.innerHTML = '<p class="agenda-list__empty">Não foi possível carregar a agenda.</p>';
+      if (el) el.innerHTML = '<p class="agenda-list__empty">' + translateText('Não foi possível carregar a agenda.') + '</p>';
       throw new Error('Fetch failed for Archive Agenda');
     });
 }
@@ -1367,8 +1686,8 @@ function renderArchiveAgenda(section) {
   if (filteredEvents.length === 0) {
     const year = section.dataset.editionYear;
     const emptyMsg = (section._allEvents && section._allEvents.length > 0) 
-      ? "Nenhum evento corresponde aos filtros." 
-      : "Não existem eventos para esta edição.";
+      ? translateText("Nenhum evento corresponde aos filtros.") 
+      : translateText("Não existem eventos para esta edição.");
 
     eventsList.innerHTML = `
       <div style="text-align: center; padding: 100px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
@@ -1408,7 +1727,7 @@ function renderArchiveAgenda(section) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'agenda-event-card__button agenda-event-card__button--outline';
-    btn.textContent = 'Carregar mais';
+    btn.textContent = translateText('Carregar mais');
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       section._agendaVisibleCount += 4;
@@ -1445,7 +1764,7 @@ function loadArchiveNews(section, year) {
     })
     .catch(function () {
       const el = container.querySelector('.press__list');
-      if (el) el.innerHTML = '<p class="press__loading">Não foi possível carregar as notícias.</p>';
+      if (el) el.innerHTML = '<p class="press__loading">' + translateText('Não foi possível carregar as notícias.') + '</p>';
       throw new Error('Fetch failed for Archive News');
     });
 }
@@ -1487,8 +1806,8 @@ function renderArchiveNews(section) {
   if (filteredNews.length === 0) {
     const year = section.dataset.editionYear;
     const emptyMsg = (section._allNews && section._allNews.length > 0) 
-      ? "Nenhuma notícia corresponde aos filtros." 
-      : "Não existem notícias para esta edição.";
+      ? translateText("Nenhuma notícia corresponde aos filtros.") 
+      : translateText("Não existem notícias para esta edição.");
 
     list.innerHTML = `
       <div style="text-align: center; padding: 80px 20px; opacity: 0; animation: archiveFadeIn 0.5s ease-out forwards;">
@@ -1523,7 +1842,7 @@ function renderArchiveNews(section) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'agenda-event-card__button agenda-event-card__button--outline';
-    btn.textContent = 'Carregar mais notícias';
+    btn.textContent = translateText('Carregar mais notícias');
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       section._newsVisibleCount += 3;
@@ -1558,7 +1877,7 @@ function loadArquivoPage() {
   const container = document.querySelector('[data-arquivo-list]');
   if (!container) return;
 
-  container.innerHTML = '<p class="agenda-list__empty">A carregar arquivo...</p>';
+  container.innerHTML = '<p class="agenda-list__empty">' + translateText('A carregar arquivo...') + '</p>';
 
   fetch('/api/arquivos')
     .then(function (response) {
@@ -1584,7 +1903,7 @@ function loadArquivoPage() {
             opacity: 0;
             animation: sectionEntrance 0.7s cubic-bezier(0.2, 0, 0.2, 1) forwards;
             background-size: cover;
-            background-position: center;
+            background-position: top center;
           }
           @keyframes sectionEntrance {
             from { opacity: 0; transform: translateY(20px); }
@@ -1637,12 +1956,12 @@ function loadArquivoPage() {
           <div style="text-align: center; color: var(--color-off-white); padding: 40px; animation: archiveFadeIn 0.5s ease-out forwards;">
             <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
             <i class="fas fa-triangle-exclamation empty-state__icon empty-state__icon--large" aria-hidden="true"></i>
-            <h2 class="edition-section__year" style="font-size: 32px; margin-bottom: 16px;">Ops! Algo desafinou.</h2>
+            <h2 class="edition-section__year" style="font-size: 32px; margin-bottom: 16px;">${translateText('Ops! Algo desafinou.')}</h2>
             <p class="edition-section__subtitle" style="max-width: 400px; margin: 0 auto 32px; opacity: 0.8;">
-              Não foi possível carregar o arquivo de edições neste momento. Por favor, tente recarregar a página.
+              ${translateText('Não foi possível carregar o arquivo de edições. Verifica a tua ligação à internet.')}
             </p>
             <button onclick="window.location.reload()" class="agenda-event-card__button agenda-event-card__button--outline" style="color: inherit; border-color: currentColor;">
-              Recarregar Arquivo
+              ${translateText('Recarregar Arquivo')}
             </button>
           </div>
         </section>`;
@@ -1653,6 +1972,9 @@ function loadArquivoPage() {
 // Bilhetes page - dynamic loading
 function loadTicketEvents() {
   if (!ticketShow) return;
+  var params = new URLSearchParams(window.location.search);
+  var requestedEvent = params.get('event');
+  var requestedSession = params.get('session');
 
   fetch('/api/events?limit=50')
     .then(function (response) {
@@ -1676,10 +1998,17 @@ function loadTicketEvents() {
         fragment.appendChild(option);
       });
 
-      ticketShow.innerHTML = '<option value="">Seleciona...</option>';
+      ticketShow.innerHTML = '<option value="">' + translateText('Seleciona...') + '</option>';
       ticketShow.appendChild(fragment);
 
-      if (ticketShow.value) {
+      if (requestedEvent && ticketEventsMap[requestedEvent]) {
+        ticketShow.value = requestedEvent;
+        ticketShow.dispatchEvent(new Event('change'));
+        if (requestedSession && ticketSession) {
+          ticketSession.value = requestedSession;
+          ticketSession.dispatchEvent(new Event('change'));
+        }
+      } else if (ticketShow.value) {
         ticketShow.dispatchEvent(new Event('change'));
       }
 
@@ -1694,7 +2023,7 @@ ticketShow?.addEventListener('change', function () {
   var eventId = ticketShow.value;
   var event = ticketEventsMap[eventId];
 
-  ticketSession.innerHTML = '<option value="">Seleciona...</option>';
+  ticketSession.innerHTML = '<option value="">' + translateText('Seleciona...') + '</option>';
 
   if (!event || !event.sessions || event.sessions.length === 0) {
     updateTicketSummary();
@@ -1735,9 +2064,15 @@ ticketShow?.addEventListener('change', function () {
 });
 
 // Evento page - dynamic loading
-function createEventSessionEl(session) {
-  var article = document.createElement('article');
-  article.className = 'evento-sessoes__item';
+function createEventSessionEl(session, event) {
+  var isSoldOut = session.status === 'sold_out' || session.status === 'soldout' || session.status === 'esgotado' || Number(session.availableTickets || 0) === 0;
+  var tagName = isSoldOut ? 'article' : 'a';
+  var article = document.createElement(tagName);
+  article.className = 'evento-sessoes__item' + (isSoldOut ? ' is-disabled' : ' evento-sessoes__item--clickable');
+  if (!isSoldOut) {
+    article.href = 'bilhetes.html?event=' + encodeURIComponent(event?._id || '') + '&session=' + encodeURIComponent(session._id || '');
+    article.setAttribute('aria-label', translateText('Reservar') + ' ' + (event?.title || 'sessão'));
+  }
 
   var div = document.createElement('div');
 
@@ -1759,27 +2094,19 @@ function createEventSessionEl(session) {
   strong.textContent = session.time || '';
   article.appendChild(strong);
 
-  var isSoldOut = session.status === 'sold_out' || session.status === 'soldout' || session.status === 'esgotado' || session.availableTickets === 0;
-
   if (isSoldOut) {
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'is-disabled';
     btn.disabled = true;
-    btn.textContent = 'Esgotado';
+    btn.textContent = translateText('Esgotado');
     article.appendChild(btn);
   } else {
-    var a = document.createElement('a');
-    a.href = 'bilhetes.html';
-    a.className = 'evento-sessoes__button';
-    a.textContent = 'Reservar ';
-
-    var arrow = document.createElement('span');
-    arrow.className = 'evento-sessoes__button-arrow';
-    arrow.innerHTML = '<i class="fas fa-arrow-right" aria-hidden="true"></i>';
-    a.appendChild(arrow);
-
-    article.appendChild(a);
+    var cta = document.createElement('span');
+    cta.className = 'evento-sessoes__button';
+    cta.textContent = translateText('Reservar') + ' ';
+    appendButtonArrow(cta);
+    article.appendChild(cta);
   }
 
   return article;
@@ -1855,8 +2182,13 @@ function createProximoEventoCard(event) {
   article.appendChild(span);
 
   var a = document.createElement('a');
-  a.href = 'bilhetes.html';
-  a.textContent = 'Comprar bilhetes';
+  var action = getEventAvailability(event);
+  a.href = action.disabled ? 'evento.html?id=' + (event._id || '') : action.href;
+  a.textContent = action.type === 'more' ? translateText('Saber mais') : action.label;
+  if (action.disabled) {
+    a.classList.add('is-disabled');
+    a.setAttribute('aria-disabled', 'true');
+  }
   article.appendChild(a);
 
   return article;
@@ -1928,7 +2260,11 @@ function loadEventoPage() {
 
       if (event.title) {
         var parts = splitHeroTitle(event.title);
-        heroTitle.innerHTML = parts[0] + ' <span>' + parts[1] + '</span>';
+        heroTitle.innerHTML = '';
+        heroTitle.appendChild(document.createTextNode(parts[0] + ' '));
+        var titleSpan = document.createElement('span');
+        titleSpan.textContent = parts[1];
+        heroTitle.appendChild(titleSpan);
         document.title = event.title + ' | FIATO';
       }
 
@@ -1957,11 +2293,11 @@ function loadEventoPage() {
           if (diffDays > 1) {
             heroBadgeText.textContent = diffDays + ' dias';
           } else if (diffDays === 1) {
-            heroBadgeText.textContent = '1 dia';
+            heroBadgeText.textContent = translateText('1 dia');
           } else if (diffDays === 0) {
-            heroBadgeText.textContent = 'Hoje';
+            heroBadgeText.textContent = translateText('Hoje');
           } else {
-            heroBadgeText.textContent = 'A decorrer';
+            heroBadgeText.textContent = translateText('A decorrer');
           }
         }
       }
@@ -2014,7 +2350,7 @@ function loadEventoPage() {
         sessionsList.innerHTML = '';
         var sessFragment = document.createDocumentFragment();
         event.sessions.forEach(function (session) {
-          sessFragment.appendChild(createEventSessionEl(session));
+          sessFragment.appendChild(createEventSessionEl(session, event));
         });
         sessionsList.appendChild(sessFragment);
       }
@@ -2135,7 +2471,7 @@ function renderInstagram() {
   if (instagramPosts.length === 0) {
     var msg = document.createElement('p');
     msg.className = 'instagram__phone-caption';
-    msg.textContent = 'Em breve...';
+    msg.textContent = translateText('Em breve...');
     msg.style.textAlign = 'center';
     msg.style.padding = '40px';
     instagramContainer.innerHTML = '';
@@ -2183,7 +2519,7 @@ function loadInstagramPosts() {
       if (!instagramContainer) return;
       var msg = document.createElement('p');
       msg.className = 'instagram__phone-caption';
-      msg.textContent = 'Em breve...';
+      msg.textContent = translateText('Em breve...');
       msg.style.textAlign = 'center';
       msg.style.padding = '40px';
       instagramContainer.innerHTML = '';
@@ -2201,6 +2537,22 @@ function loadAboutPage() {
       if (!result.success || !result.data) return;
       var page = result.data;
       if (Object.keys(page).length === 0) return;
+
+      var heroImages = Array.prototype.slice.call(document.querySelectorAll('.editorial-hero__image'));
+      var teamPhotoUrls = (page.teamMembers || [])
+        .map(function (member) { return member.photoUrl; })
+        .filter(Boolean);
+      var editorialImages = [
+        page.editionImageUrl,
+        teamPhotoUrls[0],
+        teamPhotoUrls[1]
+      ].filter(Boolean);
+      heroImages.forEach(function (imageEl, index) {
+        var url = editorialImages[index % editorialImages.length];
+        if (!url) return;
+        imageEl.classList.remove('ph');
+        imageEl.style.backgroundImage = 'url(' + url.replace(/'/g, '%27') + ')';
+      });
 
       // Hero
       if (page.heroDescription && heroDesc) heroDesc.textContent = page.heroDescription;
@@ -2271,7 +2623,7 @@ function loadAboutPage() {
 
       // Team
       setTextContent('[data-sobre-team-eyebrow]', page.teamEyebrow);
-      setTextContent('[data-sobre-team-heading]', page.teamHeading);
+      setTeamHeading(page.teamHeading);
 
       if (page.teamMembers && page.teamMembers.length > 0) {
         var teamGrid = document.querySelector('[data-sobre-team-grid]');
@@ -2282,10 +2634,12 @@ function loadAboutPage() {
             var memberDiv = document.createElement('div');
             memberDiv.className = 'team__member';
             var photoDiv = document.createElement('div');
-            photoDiv.className = 'team__photo' + (member.photoUrl ? '' : ' ph');
-            if (member.photoUrl) photoDiv.style.backgroundImage = 'url(' + member.photoUrl + ')';
+            var photoUrl = member.photoUrl || fallbackTeamPhoto;
+            photoDiv.className = 'team__photo' + (member.photoUrl ? '' : ' team__photo--placeholder');
+            photoDiv.style.backgroundImage = 'url(' + photoUrl.replace(/'/g, '%27') + ')';
             if (member.name) photoDiv.setAttribute('aria-label', member.name);
             else photoDiv.setAttribute('aria-label', 'Membro da equipa');
+            photoDiv.setAttribute('role', 'img');
             memberDiv.appendChild(photoDiv);
             teamGrid.appendChild(memberDiv);
           });
@@ -2361,6 +2715,28 @@ function setTextContent(selector, value) {
   if (el) el.textContent = value;
 }
 
+function setTeamHeading(value) {
+  if (!value) return;
+  var el = document.querySelector('[data-sobre-team-heading]');
+  if (!el) return;
+
+  var marker = 'democratização';
+  var normalized = value.replace('democratizacao', marker);
+  var idx = normalized.toLowerCase().indexOf(marker);
+
+  el.innerHTML = '';
+  if (idx === -1) {
+    el.textContent = normalized;
+    return;
+  }
+
+  el.appendChild(document.createTextNode(normalized.slice(0, idx)));
+  var em = document.createElement('em');
+  em.textContent = normalized.slice(idx, idx + marker.length);
+  el.appendChild(em);
+  el.appendChild(document.createTextNode(normalized.slice(idx + marker.length)));
+}
+
 // ==========================================
 // LATEST ARQUIVO FEATURES (SOBRE NÓS PAGE)
 // ==========================================
@@ -2427,7 +2803,7 @@ window.addEventListener('resize', () => {
   if (window.innerWidth > 768 && navbar && menuToggle) {
     navbar.classList.remove('is-open');
     menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Abrir menu');
+    menuToggle.setAttribute('aria-label', translateText('Abrir menu'));
   }
 });
 
@@ -2441,6 +2817,8 @@ if (countdownDays && countdownHours && countdownMinutes) {
 
 // Wrap page-specific loaders in DOMContentLoaded for robust execution
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguageToggle();
+
   // Loaders for index.html
   if (document.querySelector('.home')) {
     loadHomeEvents();
@@ -2543,37 +2921,3 @@ if (instagramNext) {
   }, { threshold: 0.7 });
   footerIo.observe(footerEl);
 }());
-
-window.addEventListener('scroll', function() {
-  updateNavbarTheme();
-  updateArchiveParallax();
-});
-window.addEventListener('resize', () => {
-  updateNavbarTheme();
-  updateArchiveParallax();
-
-  if (window.innerWidth > 768 && navbar && menuToggle) {
-    navbar.classList.remove('is-open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Abrir menu');
-  }
-});
-
-updateNavbarTheme();
-
-if (countdownDays && countdownHours && countdownMinutes) {
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-
-loadHomeEvents();
-loadHomeHeroEvent();
-loadHomePress();
-loadAgendaEvents();
-loadArquivoPage();
-loadEventoPage();
-loadTicketEvents();
-loadInstagramPosts();
-loadAboutPage();
-loadLatestArquivoFeatures();

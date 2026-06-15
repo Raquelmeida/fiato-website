@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon --env-file=.env server.js",
     "start": "node server.js",
+    "seed": "node --env-file=.env scripts/seed-fiato.js",
     "lint": "eslint ."
   },
   "dependencies": {

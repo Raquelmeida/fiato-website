@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contactos | FIATO</title>
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <script async defer src="https://cdn.jsdelivr.net/npm/altcha/dist/altcha.min.js" type="module"></script>
@@ -65,7 +65,7 @@
             <textarea name="mensagem" placeholder="Mensagem" required></textarea>
 
             <!-- Self-hosted ALTCHA widget -->
-            <altcha-widget name="altcha" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+            <altcha-widget name="altcha" language="pt" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
 
             <p class="contactos-form__message" data-contact-message aria-live="polite"></p>
 
@@ -113,7 +113,7 @@
             </label>
 
             <!-- Self-hosted ALTCHA widget -->
-            <altcha-widget name="altcha" class="white-background" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+            <altcha-widget name="altcha" class="white-background" language="pt" challengeurl="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
 
             <p class="member-form__message" data-member-message aria-live="polite"></p>
             <button type="submit" class="member-form__submit">Enviar</button>
