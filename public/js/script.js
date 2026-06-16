@@ -83,6 +83,7 @@ const i18nState = {
       'Imprensa': 'Press',
       'Na Imprensa': 'In the Press',
       'Ver Notícias': 'View News',
+      'Ver post': 'View post',
       'Instagram': 'Instagram',
       'Apoio Institucional': 'Institutional Support',
       'Mecenas Principal': 'Main Sponsor',
@@ -2451,6 +2452,64 @@ var instagramContainer = document.querySelector('[data-instagram-phones]');
 var instagramPrev = document.querySelector('[data-instagram-prev]');
 var instagramNext = document.querySelector('[data-instagram-next]');
 
+function formatInstagramNewsDate(value) {
+  if (!value) return '';
+  var date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  var monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  return date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+}
+
+function newsToInstagramPost(item) {
+  var dateLabel = formatInstagramNewsDate(item.publishDate);
+  var captionParts = [item.title];
+  if (dateLabel) captionParts.push(dateLabel);
+
+  return {
+    caption: captionParts.filter(Boolean).join(' · '),
+    mediaUrl: item.imageUrl || '',
+    mediaType: 'image',
+    postUrl: item.articleUrl || '',
+    date: item.publishDate,
+    source: 'news'
+  };
+}
+
+function canLoadInstagramImage(src) {
+  return new Promise(function (resolve) {
+    if (!src) {
+      resolve(false);
+      return;
+    }
+
+    var image = new Image();
+    var finished = false;
+    var timer = setTimeout(function () {
+      if (finished) return;
+      finished = true;
+      image.onload = null;
+      image.onerror = null;
+      resolve(false);
+    }, 4000);
+
+    image.onload = function () {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      resolve(true);
+    };
+
+    image.onerror = function () {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      resolve(false);
+    };
+
+    image.src = src;
+  });
+}
+
 function createInstagramCard(post, position) {
   var card = document.createElement('article');
   card.className = 'instagram__phone';
@@ -2465,13 +2524,13 @@ function createInstagramCard(post, position) {
   header.className = 'instagram__phone-header';
 
   var handle = document.createElement('span');
-  handle.textContent = '@fiato.opera';
+  handle.textContent = post.source === 'news' ? 'Imprensa FIATO' : '@fiato.opera';
   header.appendChild(handle);
 
   var icon = document.createElement('span');
   icon.className = 'instagram__phone-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.innerHTML = '<i class="fas fa-play"></i>';
+  icon.innerHTML = '<i class="fab fa-instagram"></i>';
   header.appendChild(icon);
 
   card.appendChild(header);
@@ -2479,7 +2538,9 @@ function createInstagramCard(post, position) {
   var media = document.createElement('div');
   media.className = 'instagram__phone-media';
 
-  if (post.mediaType === 'video') {
+  if (!post.mediaUrl) {
+    media.classList.add('ph');
+  } else if (post.mediaType === 'video') {
     var video = document.createElement('video');
     video.src = post.mediaUrl;
     video.muted = true;
@@ -2516,12 +2577,12 @@ function createInstagramCard(post, position) {
     visitLink.className = 'instagram__visit';
     visitLink.target = '_blank';
     visitLink.rel = 'noopener';
-    visitLink.textContent = 'Visit Us';
+    visitLink.textContent = post.source === 'news' ? translateText('Ver post') : 'Visit Us';
     media.appendChild(visitLink);
   } else {
     var visitSpan = document.createElement('span');
     visitSpan.className = 'instagram__visit';
-    visitSpan.textContent = 'Visit Us';
+    visitSpan.textContent = post.source === 'news' ? translateText('Ver post') : 'Visit Us';
     media.appendChild(visitSpan);
   }
 
@@ -2571,18 +2632,23 @@ function renderInstagram() {
 function loadInstagramPosts() {
   if (!instagramContainer) return;
 
-  fetch('/api/instagram')
+  fetch('/api/news?limit=12')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
     })
-    .then(function (result) {
-      var posts = extractData(result);
-      if (!posts || posts.length === 0) {
+    .then(async function (result) {
+      var news = getUniquePressItems(extractData(result));
+      if (!news || news.length === 0) {
         renderInstagram();
         return;
       }
-      instagramPosts = posts;
+      var checks = await Promise.all(news.map(function (item) {
+        return canLoadInstagramImage(item.imageUrl).then(function (isValid) {
+          return isValid ? item : null;
+        });
+      }));
+      instagramPosts = checks.filter(Boolean).map(newsToInstagramPost);
       instagramIndex = 0;
       renderInstagram();
     })
