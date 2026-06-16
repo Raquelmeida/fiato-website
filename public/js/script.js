@@ -343,13 +343,14 @@ function setText(selector, text) {
 function updateTicketSummary() {
   if (!ticketShow || !ticketSession || !ticketQuantity) return;
 
+  var selectedShow = ticketShow.selectedOptions[0];
   var selectedSession = ticketSession.selectedOptions[0];
   var price = selectedSession ? Number(selectedSession.dataset.price || 0) : 0;
   var quantity = Math.min(10, Math.max(1, Number(ticketQuantity.value || 1)));
 
   ticketQuantity.value = String(quantity);
 
-  setText('[data-summary-show]', ticketShow.value || ticketShow.selectedOptions[0]?.textContent || '');
+  setText('[data-summary-show]', selectedShow?.textContent?.trim() || '');
   setText('[data-summary-date]', selectedSession?.dataset?.date || '');
   setText('[data-summary-time]', selectedSession?.dataset?.time || '');
   setText('[data-summary-place]', selectedSession?.dataset?.place || '');
@@ -571,6 +572,11 @@ if (contactForm) {
     if (!isValid) {
       contactMessage.className = 'contactos-form__message';
       contactMessage.textContent = translateText('Preenche todos os campos obrigatórios.');
+      return;
+    }
+
+    if (!isAltchaVerified(contactForm)) {
+      contactMessage.className = 'contactos-form__message';
       contactMessage.textContent = translateText('Por favor, complete a verificação de segurança.');
       return;
     }
@@ -636,6 +642,11 @@ if (memberForm) {
     if (!isValid) {
       memberMessage.className = 'member-form__message';
       memberMessage.textContent = translateText('Preenche todos os campos obrigatórios.');
+      return;
+    }
+
+    if (!isAltchaVerified(memberForm)) {
+      memberMessage.className = 'member-form__message';
       memberMessage.textContent = translateText('Por favor, complete a verificação de segurança.');
       return;
     }
@@ -1111,6 +1122,34 @@ function showPressFallback(container) {
   container.appendChild(msg);
 }
 
+function normalizePressText(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function getPressUniqueKey(item) {
+  var articleUrl = normalizePressText(item.articleUrl).replace(/\/+$/, '');
+  if (articleUrl && articleUrl !== '#') return 'url:' + articleUrl;
+
+  var title = normalizePressText(item.title);
+  var date = item.publishDate ? new Date(item.publishDate).toISOString().slice(0, 10) : '';
+  return 'fallback:' + title + '|' + date;
+}
+
+function getUniquePressItems(items) {
+  var seen = new Set();
+  return (items || []).filter(function (item) {
+    var key = getPressUniqueKey(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function createPressRow(item) {
   var li = document.createElement('li');
   li.className = 'press__row';
@@ -1177,13 +1216,13 @@ function loadHomePress() {
 
   pressList.innerHTML = '<p class="press__loading">' + translateText('A carregar notícias...') + '</p>';
 
-  fetch('/api/news?limit=4')
+  fetch('/api/news?limit=12')
     .then(function (response) {
       if (!response.ok) throw new Error('Erro na rede');
       return response.json();
     })
     .then(function (result) {
-      var news = extractData(result);
+      var news = getUniquePressItems(extractData(result));
       if (!news || news.length === 0) {
         showPressFallback(pressList);
         return;

@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="/vendor/altcha/altcha.min.js?v=main-sha"></script>
+    <script type="module" src="/vendor/altcha/i18n/pt-pt.js?v=main-sha"></script>
   </head>
   <body>
     <header class="navbar navbar--transparent">
@@ -112,6 +114,8 @@
               Observações
               <textarea name="observacoes" placeholder="Indica aqui alguma informação adicional sobre a tua reserva."></textarea>
             </label>
+
+            <altcha-widget name="altcha" language="pt-pt" challenge="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
 
             <p class="ticket-form__message" data-ticket-message aria-live="polite"></p>
 

@@ -885,7 +885,18 @@ img {
   align-items: center;
   padding: calc(var(--navbar-height) + 80px) 0 80px;
   background-image:
-    linear-gradient(var(--hero-overlay-start), var(--hero-overlay-end)),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-navy) 74%, transparent) 0%,
+      color-mix(in srgb, var(--color-navy) 68%, transparent) 42%,
+      color-mix(in srgb, var(--color-navy) 82%, transparent) 100%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-navy) 34%, transparent) 0%,
+      color-mix(in srgb, var(--color-navy) 12%, transparent) 58%,
+      color-mix(in srgb, var(--color-navy) 46%, transparent) 100%
+    ),
     url('../images/1780866735574-575808413.jpg');
   background-size: cover;
   background-position: top center;
@@ -5596,7 +5607,11 @@ altcha-widget {
 
   /* Theme Configurations */
   --altcha-bg: rgba(255, 255, 255, 0.03);       /* Translucent dark-blue field look */
-  --altcha-color: #ffffff;                      /* Crisp white text */
+  --altcha-color: var(--color-neutral-900, #1A1A18);
+  --altcha-color-base: #ffffff;
+  --altcha-color-base-content: var(--color-neutral-900, #1A1A18);
+  --altcha-color-neutral-content: var(--color-neutral-900, #1A1A18);
+  --altcha-input-color: var(--color-neutral-900, #1A1A18);
   --altcha-border-color: rgba(255, 255, 255, 0.3);/* Soft translucent border to match inputs */
   --altcha-border-radius: 14px;                 /* Pill shape matching 'Nome', 'Email', etc. */
   
@@ -5606,17 +5621,17 @@ altcha-widget {
 
 /* 2. Overrides for internal layout and padding */
 altcha-widget .altcha {
-  border: 1px solid var(--altcha-border-color) !important;
-  border-radius: var(--altcha-border-radius) !important;
-  background: var(--altcha-bg) !important;
-  padding: 14px 22px !important;                /* Generous vertical/horizontal padding */
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
   font-family: inherit;
   transition: border-color 0.2s ease;
 }
 
 /* Hover effect matching modern form fields */
 altcha-widget .altcha:hover {
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: transparent !important;
 }
 
 /* Layout alignment */
@@ -5624,13 +5639,21 @@ altcha-widget .altcha-main {
   display: flex;
   align-items: center;
   gap: 14px;                                    /* Balanced gap between checkbox and text */
+  color: var(--color-neutral-900, #1A1A18) !important;
 }
 
 /* Typography adjustment */
-altcha-widget .altcha-label {
+altcha-widget .altcha-label,
+altcha-widget [part="label"],
+altcha-widget label {
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-neutral-900, #1A1A18) !important;
+}
+
+altcha-widget .altcha-main *,
+altcha-widget::part(label) {
+  color: var(--color-neutral-900, #1A1A18) !important;
 }
 
 /* Checkbox specific styling */
@@ -5652,6 +5675,10 @@ altcha-widget.white-background {
   /* Theme Configurations for Blank Background */
   --altcha-bg: rgba(26, 26, 24, 0.02);            
   --altcha-color: var(--color-neutral-900, #1A1A18); 
+  --altcha-color-base: #ffffff;
+  --altcha-color-base-content: var(--color-neutral-900, #1A1A18);
+  --altcha-color-neutral-content: var(--color-neutral-900, #1A1A18);
+  --altcha-input-color: var(--color-neutral-900, #1A1A18);
   --altcha-border-color: rgba(26, 26, 24, 0.2);   
   --altcha-border-radius: 14px;                   
   --altcha-accent-color: var(--color-accent, #E54825); 
@@ -5659,10 +5686,10 @@ altcha-widget.white-background {
 
 /* Internal layout and padding overrides */
 altcha-widget.white-background .altcha {
-  border: 1px solid var(--altcha-border-color) !important;
-  border-radius: var(--altcha-border-radius) !important;
-  background: var(--altcha-bg) !important;
-  padding: 14px 22px !important;                  
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
   font-family: inherit;
   transition: border-color var(--transition-default, 0.25s ease), 
               background-color var(--transition-default, 0.25s ease);
@@ -5670,8 +5697,8 @@ altcha-widget.white-background .altcha {
 
 /* Hover effect */
 altcha-widget.white-background .altcha:hover {
-  border-color: rgba(26, 26, 24, 0.45) !important;
-  background: rgba(26, 26, 24, 0.04) !important;
+  border-color: transparent !important;
+  background: transparent !important;
 }
 
 /* Layout alignment */
@@ -5679,12 +5706,20 @@ altcha-widget.white-background .altcha-main {
   display: flex;
   align-items: center;
   gap: 14px;                                      
+  color: var(--color-neutral-900, #1A1A18) !important;
 }
 
 /* Typography adjustment */
-altcha-widget.white-background .altcha-label {
+altcha-widget.white-background .altcha-label,
+altcha-widget.white-background [part="label"],
+altcha-widget.white-background label {
   font-size: 16px;
   font-weight: 400;
+  color: var(--color-neutral-900, #1A1A18) !important;
+}
+
+altcha-widget.white-background .altcha-main *,
+altcha-widget.white-background::part(label) {
   color: var(--color-neutral-900, #1A1A18) !important;
 }
 
