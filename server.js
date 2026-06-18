@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import fs from "fs";
-import { createChallenge, verifySolution } from "altcha-lib/v1"; // Removed encodeChallenge import
+import { createChallenge, verifySolution } from "altcha-lib/v1"; 
 
 const app = express();
 const PORT = process.env.PORT || 3000;

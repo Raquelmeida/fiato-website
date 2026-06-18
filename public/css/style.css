@@ -40,6 +40,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Overrule the form's giant min-height specifically for the Altcha checkbox input */
+.member-form .altcha-checkbox input[type="checkbox"] {
+  min-height: 22px !important;
+  height: 22px !important;
+  width: 22px !important;
+}
+
+/* Ensure the wrapper div doesn't stretch either */
+.member-form .altcha-checkbox {
+  min-height: 22px !important;
+  height: 22px !important;
+  width: 22px !important;
+}
 
 html {
   scroll-behavior: smooth;
@@ -180,7 +193,6 @@ img {
   font-family: var(--font-display);
   font-size: 44px;
   font-weight: 700;
-  font-style: italic;
   text-decoration: none;
   letter-spacing: 0.2px;
   transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -192,10 +204,15 @@ img {
   gap: 36px;
 }
 
+a.navbar__link.logo_link {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
 .navbar__link {
   position: relative;
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 500;
   font-style: italic;
   color: var(--color-white);
@@ -270,10 +287,9 @@ img {
   color: rgba(255, 255, 255, 0.7);
   padding: 8px 14px;
   border-radius: var(--radius-pill);
-  font-family: var(--font-display);
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
-  font-style: italic;
   cursor: pointer;
   transition: 
     background var(--transition-default), 
@@ -438,35 +454,42 @@ img {
   position: absolute;
   right: var(--container-padding);
   bottom: 80px;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
-  width: max-content;
+  width: auto;
   min-width: 0;
-  padding-bottom: 8px;
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
-  background: transparent;
-  color: var(--color-white);
+  min-height: 68px;
+  padding: 8px 20px 8px 28px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-off-white);
+  color: var(--color-navy);
   font-family: var(--font-primary);
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.17em;
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  transition:
-    border-color var(--transition-default),
-    color var(--transition-default);
+  transition: transform var(--transition-default), background-color var(--transition-default);
 }
 
 .hero__button i {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
   transform: rotate(45deg);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--color-navy) 20%, transparent);
+  flex-shrink: 0;
 }
 
 .hero__button:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background-color: var(--color-white);
+  transform: translateY(-2px);
 }
 
 .editorial-hero {
@@ -606,8 +629,8 @@ img {
   align-items: center;
   padding: 12px 22px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
+  border: 1px solid var(--color-white);
+  color: var(--color-white);
   font-family: var(--font-primary);
   font-weight: 700;
   font-size: 11px;
@@ -621,6 +644,16 @@ img {
   background: var(--color-accent);
   color: var(--color-white);
 }
+/* Highly specific selector targeting the h2 inside the nested div */
+.support-contact__image > div > h2 {
+  color: var(--color-white) !important;
+}
+
+/* Also target the <span> inside the h2 just in case it's overriding separately */
+.support-contact__image > div > h2 span {
+  color: var(--color-white) !important;
+}
+
 
 .evento-hero {
   position: relative; /* Ensure proper stacking context */
@@ -2071,15 +2104,14 @@ img {
 
 .edition-section__subtitle {
   margin: 32px 0 0;
-  font-family: var(--font-primary); /* Standardized descriptive text font-family */
-  font-size: 13px; /* Standardized descriptive text font-size */
-  line-height: 1.55; /* Standardized descriptive text line-height */
-  opacity: 0.78; /* Standardized descriptive text opacity */
-  margin: 32px 0 0; /* Preserved specific margin-top */
-  /* Preserve existing font-style, font-weight, line-height if they are specific design choices */
-  font-family: var(--font-display); /* Preserve existing font-family */
-  font-style: italic; /* Preserve existing font-style */
-  font-weight: 400; /* Preserve existing font-weight */
+  font-family: var(--font-primary); 
+  font-size: 18px; 
+  line-height: 1.55;
+  opacity: 0.88; 
+  margin: 32px 0 0; 
+  font-family: var(--font-display); 
+  font-style: italic;
+  font-weight: 400; 
   transition: opacity 0.8s cubic-bezier(0.2, 0, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
   opacity: 0.5;
 }
