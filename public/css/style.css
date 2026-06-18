@@ -142,6 +142,9 @@ img {
   backdrop-filter: none;
 }
 
+.navbar--light .navbar__logo{
+  color: var(--color-navy);
+}
 .navbar--orange {
   background-color: var(--color-accent);
   background-image: none;
@@ -5685,12 +5688,19 @@ altcha-widget::part(label) {
 /* Checkbox specific styling */
 altcha-widget .altcha-checkbox input[type="checkbox"] {
   width: 22px;
-  height: 22px;
   cursor: pointer;
   accent-color: var(--altcha-accent-color);
   border-radius: 6px;
 }
 /* Modifier class for light/blank backgrounds */
+
+.altcha-checkbox::before,
+.altcha-checkbox label::before,
+.altcha-checkbox span::before {
+    height: 22px !important;
+    max-height: 22px !important;
+}
+
 altcha-widget.white-background {
   display: block;
   width: 100%;
@@ -5752,7 +5762,6 @@ altcha-widget.white-background::part(label) {
 /* Checkbox specific styling */
 altcha-widget.white-background .altcha-checkbox input[type="checkbox"] {
   width: 22px;
-  height: 22px;
   cursor: pointer;
   accent-color: var(--altcha-accent-color);
   border-radius: 6px;
