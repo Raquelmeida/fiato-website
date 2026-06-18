@@ -253,18 +253,7 @@ function debounce(func, wait) {
 }
 const mainNavbar = document.querySelector('.navbar');
 
-if (mainNavbar) {
-  const navbarObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      // Get the exact, real-time height of the navbar element
-      const actualHeight = entry.target.offsetHeight;
-      // Inject it dynamically into the document root
-      document.documentElement.style.setProperty('--navbar-height', actualHeight + 'px');
-    }
-  });
-  
-  navbarObserver.observe(mainNavbar);
-}
+
 function updateCountdown() {
   if (!countdownDays || !countdownHours || !countdownMinutes) return;
 
@@ -2024,7 +2013,7 @@ function loadArquivoPage() {
     })
     .catch(function () {
       container.innerHTML = `
-        <section class="edition-section edition-section--navy" data-navbar-theme="dark-blue" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; opacity: 1;">
+        <section class="edition-section edition-section--navy" data-navbar-theme="dark-blue" display: flex; align-items: center; justify-content: center; opacity: 1;">
           <div style="text-align: center; color: var(--color-off-white); padding: 40px; animation: archiveFadeIn 0.5s ease-out forwards;">
             <style>@keyframes archiveFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
             <i class="fas fa-triangle-exclamation empty-state__icon empty-state__icon--large" aria-hidden="true"></i>
@@ -2951,7 +2940,7 @@ window.addEventListener('resize', () => {
   updateNavbarTheme();
   updateArchiveParallax();
 
-  if (window.innerWidth > 768 && navbar && menuToggle) {
+  if (window.innerWidth > 1080 && navbar && menuToggle) {
     navbar.classList.remove('is-open');
     menuToggle.setAttribute('aria-expanded', 'false');
     menuToggle.setAttribute('aria-label', translateText('Abrir menu'));

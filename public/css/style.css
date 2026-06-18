@@ -134,6 +134,10 @@ img {
     background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+header.navbar.navbar--navy.is-open .navbar__menu a.navbar__link {
+    color: var(--color-navy) !important;
+}
+
 .navbar--transparent {
   background: transparent;
 }
@@ -192,7 +196,7 @@ img {
   display: none;
   color: var(--color-white);
   font-family: var(--font-display);
-  font-size: 44px;
+  font-size: 34px;
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 0.2px;
@@ -4876,7 +4880,7 @@ a.navbar__link.logo_link {
 
 @media (max-width: 980px) {
   :root {
-    --navbar-height: 90px;
+    --navbar-height: 70px;
   }
 }
 
@@ -5157,34 +5161,41 @@ a.navbar__link.logo_link {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   /* Navbar padding is outside the scope of hero standardization */
   /* .navbar {
     padding: 28px 24px;
   } */
+  .navbar__link,
   .navbar--navy,
   .navbar--blue,
   .navbar--light,
   .navbar--orange {
     padding: 22px 24px;
+    color: #000000 !important;
+    font-color: var(--color-accent) !important;
   }
 
   .navbar__logo {
     display: block;
   }
 
+  .navbar--dark-blue .navbar__link {
+  color: #000000 !important;
+}
+
   .navbar__menu {
     position: absolute;
-    top: 100%;
-    left: 24px;
-    right: 24px;
     display: none;
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
+    padding: 24px;
     border-radius: 8px;
     background: rgba(251, 251, 249, 0.96);
     box-shadow: 0 16px 40px rgba(26, 26, 24, 0.24);
+      top: 100%;
+      right: 24px;
+        /* Adjusted position for smaller screens */
   }
 
   .navbar.is-open .navbar__menu {
@@ -5370,10 +5381,9 @@ a.navbar__link.logo_link {
 }
 
 @media (max-width: 720px) {
-  /* Navbar height is outside the scope of hero standardization */
-  /* :root {
+  :root {
     --navbar-height: 80px;
-  } */
+  } 
   .editorial-hero {
     padding-top: calc(var(--navbar-height) + 16px);
   }
@@ -5505,11 +5515,7 @@ a.navbar__link.logo_link {
   .agenda-event-card__button {
     flex: 1 1 150px;
   }
-  /* Standardized padding is already fluid, adjust only if necessary */
-  /* .ticket-reservation {
-    padding-top: calc(var(--navbar-height) + 20px);
-    padding-bottom: 56px;
-  } */
+  
   .ticket-reservation__back {
     margin-bottom: 54px;
     font-size: 11px;
