@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contactos | FIATO</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="/vendor/altcha/altcha.min.js?v=main-sha"></script>
+    <script type="module" src="/vendor/altcha/i18n/pt-pt.js?v=main-sha"></script>
+  </head>
+  <body>
+    <header class="navbar navbar--dark-blue">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">FIATO</a>
+
+        <nav class="navbar__menu" aria-label="Navegação principal">
+          <a href="index.html" class="navbar__link logo_link">FIATO</a>
+          <a href="agenda.html" class="navbar__link">Agenda</a>
+          <a href="arquivo.html" class="navbar__link">Arquivo</a>
+          <a href="sobre-nos.html" class="navbar__link">Sobre nós</a>
+          <a href="apoios.html" class="navbar__link">Apoios</a>
+          <a href="contactos.html" class="navbar__link navbar__link--active">Contactos</a>
+        </nav>
+
+        <div class="navbar__right">
+          <div class="navbar__language" aria-label="Idioma">
+            <button type="button" class="navbar__language-option">EN</button>
+            <button type="button" class="navbar__language-option navbar__language-option--active">PT</button>
+          </div>
+
+          <button type="button" class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="contactos-page navbar_height">
+      <section class="contactos-hero" data-navbar-theme="dark-blue">
+        <div class="contactos-hero__content">
+          <div class="contactos-hero__text">
+            <h1>
+              Estamos
+              <span>à escuta</span>
+            </h1>
+
+            <p>
+              Fala connosco. Para dúvidas, sugestões, parcerias, candidaturas ou
+              questões sobre a programação, entra em contacto — respondemos com a
+              maior brevidade possível.
+            </p>
+          </div>
+
+          <form class="contactos-form" data-contact-form novalidate>
+            <div class="contactos-form__row">
+              <input type="text" name="nome" placeholder="Nome" required />
+              <input type="text" name="apelido" placeholder="Apelido" required />
+            </div>
+
+            <input type="email" name="email" placeholder="Email" required />
+
+            <textarea name="mensagem" placeholder="Mensagem" required></textarea>
+
+            <!-- Self-hosted ALTCHA widget -->
+            <altcha-widget name="altcha" language="pt-pt" challenge="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+
+            <p class="contactos-form__message" data-contact-message aria-live="polite"></p>
+
+            <button type="submit">Enviar</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="member-section" data-navbar-theme="light">
+        <div class="member-section__inner">
+          <p class="member-section__eyebrow">
+            Um encontro singular entre tradição e inovação
+          </p>
+
+          <h2>Como me tornar membro da Fiato?</h2>
+
+          <p class="member-section__description">
+            Ao longo das suas edições, o Fiato reuniu artistas nacionais e
+            internacionais em palcos icónicos do Porto, celebrando a riqueza
+            cultural da cidade e do país. Uma experiência imersiva que convida o
+            público a descobrir, sentir e partilhar a força da ópera.
+          </p>
+
+          <form class="member-form" data-member-form enctype="multipart/form-data" novalidate>
+            <div class="contactos-form__row">
+              <label>
+                <span>Nome</span>
+                <input type="text" name="nome" placeholder="Nome próprio" required />
+              </label>
+              <label>
+                <span>Apelido</span>
+                <input type="text" name="apelido" placeholder="Apelido" required />
+              </label>
+            </div>
+
+            <label>
+              <span>E-mail</span>
+                <input type="email" name="email" placeholder="email@exemplo.pt" required />
+            </label>
+
+            <label class="member-form__file">
+              <span>Portefólio ou currículo em PDF</span>
+              <input type="file" name="document" accept="application/pdf,.pdf" required />
+              <small>PDF até 8 MB</small>
+            </label>
+
+            <!-- Self-hosted ALTCHA widget -->
+            <altcha-widget name="altcha" language="pt-pt" challenge="/api/captcha-challenge" hidefooter hidelogo></altcha-widget>
+
+            <p class="member-form__message" data-member-message aria-live="polite"></p>
+            <button type="submit" class="member-form__submit">Enviar</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" data-navbar-theme="orange">
+      <div class="footer__top"></div>
+
+      <div class="footer__band-deco">
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="left"></div>
+        </div>
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="center"></div>
+        </div>
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="right"></div>
+        </div>
+      </div>
+
+      <div class="footer__band-content">
+        <div class="footer__brand">FIATO</div>
+
+        <div class="footer__links">
+          <nav aria-label="Rodapé principal">
+            <a href="index.html">Página Inicial</a>
+            <a href="agenda.html">Agenda</a>
+            <a href="bilhetes.html">Bilhetes</a>
+            <a href="sobre-nos.html">Sobre Nós</a>
+          </nav>
+          <nav aria-label="Rodapé secundário">
+            <a href="contactos.html">Contactos / Apoios</a>
+            <a href="#">Informações</a>
+            <a href="mailto:info@fiato.pt">E-mail</a>
+            <a href="#">Imprensa &amp; Institucional</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>Festival Internacional de Artes e Ópera do Porto</span>
+        <span>© 2026 Todos os direitos reservados</span>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

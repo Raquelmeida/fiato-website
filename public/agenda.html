@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda | FIATO</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="navbar navbar--dark-blue">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">FIATO</a>
+
+        <nav class="navbar__menu" aria-label="Navegação principal">
+          <a href="index.html" class="navbar__link logo_link">FIATO</a>
+          <a href="agenda.html" class="navbar__link navbar__link--active">Agenda</a>
+          <a href="arquivo.html" class="navbar__link">Arquivo</a>
+          <a href="sobre-nos.html" class="navbar__link">Sobre nós</a>
+          <a href="apoios.html" class="navbar__link">Apoios</a>
+          <a href="contactos.html" class="navbar__link">Contactos</a>
+        </nav>
+
+        <div class="navbar__right">
+          <div class="navbar__language" aria-label="Idioma">
+            <button type="button" class="navbar__language-option">EN</button>
+            <button type="button" class="navbar__language-option navbar__language-option--active">PT</button>
+          </div>
+
+          <button type="button" class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="agenda-page navbar_height">
+      <section class="hero hero--agenda" data-navbar-theme="dark-blue">
+        <div class="hero__content">
+          <h1 class="hero__title">
+            AGENDA
+            <span>2026</span>
+          </h1>
+
+          <p class="hero__description">
+            Uma experiência auditiva imersiva onde o ambiente se torna o fosso
+            da orquestra. Sem cordões de veludo. Sem tetos dourados.
+          </p>
+        </div>
+
+        <a href="#novidades" class="hero__button">
+          <span>Ver Agenda</span>
+          <i class="fas fa-arrow-up" aria-hidden="true"></i>
+        </a>
+      </section>
+
+      <section class="agenda-list" id="novidades">
+        <div data-agenda-list></div>
+      </section>
+    </main>
+
+    <footer class="footer" data-navbar-theme="orange">
+      <div class="footer__top"></div>
+
+      <div class="footer__band-deco">
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="left"></div>
+        </div>
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="center"></div>
+        </div>
+        <div class="footer__col-deco">
+          <div class="footer__bars-group" data-shape="right"></div>
+        </div>
+      </div>
+
+      <div class="footer__band-content">
+        <div class="footer__brand">FIATO</div>
+
+        <div class="footer__links">
+          <nav aria-label="Rodapé principal">
+            <a href="index.html">Página Inicial</a>
+            <a href="agenda.html">Agenda</a>
+            <a href="bilhetes.html">Bilhetes</a>
+            <a href="sobre-nos.html">Sobre Nós</a>
+          </nav>
+          <nav aria-label="Rodapé secundário">
+            <a href="contactos.html">Contactos / Apoios</a>
+            <a href="#">Informações</a>
+            <a href="mailto:info@fiato.pt">E-mail</a>
+            <a href="#">Imprensa &amp; Institucional</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>Festival Internacional de Artes e Ópera do Porto</span>
+        <span>© 2026 Todos os direitos reservados</span>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

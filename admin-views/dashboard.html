@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIATO — Industrial Content Studio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/dashboard.css">
+    
+</head>
+<body>
+
+    <header class="studio-navbar is-flex is-justify-content-between is-align-items-center">
+        <div class="is-flex is-align-items-center">
+            <i class="fas fa-cubes mr-3 fa-lg coral-text"></i>
+            <h1 class="studio-title">FIATO FESTIVAL — <span>STUDIO FACTORY</span></h1>
+        </div>
+        <a href="/backoffice/logout" class="button is-small is-dark is-outlined btn-logout">
+            <span class="icon is-small"><i class="fas fa-power-off"></i></span>
+            <span>Encerrar Sessão</span>
+        </a>
+    </header>
+
+    <main class="container py-6 px-4">
+        
+        <div class="tabs-container mb-6">
+            <div class="tabs modern-pills">
+                <ul>
+                    <li class="tab-link is-active" data-tab="events">
+                        <a><i class="fas fa-calendar-alt mr-2"></i>Eventos</a>
+                    </li>
+                    <li class="tab-link" data-tab="news">
+                        <a><i class="fas fa-newspaper mr-2"></i>Notícias</a>
+                    </li>
+                    <li class="tab-link" data-tab="arquivo">
+                        <a><i class="fas fa-box-archive mr-2"></i>Arquivo</a>
+                    </li>
+                    <li class="tab-link" data-tab="contacts">
+                        <a><i class="fas fa-envelope mr-2"></i>Mensagens</a>
+                    </li>
+                    <li class="tab-link" data-tab="tickets">
+                        <a><i class="fas fa-ticket-alt mr-2"></i>Reservas</a>
+                    </li>
+                    <li class="tab-link" data-tab="instagram">
+                        <a><i class="fas fa-camera mr-2"></i>Instagram</a>
+                    </li>
+                    <li class="tab-link" data-tab="about">
+                        <a><i class="fas fa-info-circle mr-2"></i>Sobre Nós</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <section id="events" class="tab-content is-active">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper w-search">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-events" placeholder="Pesquisar por título ou local..." oninput="filterData('events')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('events')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Criar Novo Evento</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Espetáculo</th>
+                            <th>Mapeamento / Local</th>
+                            <th>Direção</th>
+                            <th>Duração</th>
+                            <th class="has-text-centered">Banner</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-events"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="news" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper w-search">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-news" placeholder="Filtrar artigos de imprensa..." oninput="filterData('news')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('news')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Publicar Notícia</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Headline / Artigo</th>
+                            <th>Data de Lançamento</th>
+                            <th>Hiperligação de Redirecionamento</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-news"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="arquivo" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper w-search">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-arquivo" placeholder="Filtrar por ano ou descrição..." oninput="filterData('arquivo')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('arquivo')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Novo Registo de Arquivo</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>Título</th>
+                            <th>Descrição</th>
+                            <th class="has-text-centered">Capa</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-arquivo"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="contacts" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper w-search">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-contacts" placeholder="Pesquisar remetente ou e-mail..." oninput="filterData('contacts')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Remetente</th>
+                            <th>E-mail</th>
+                            <th>Tipo de Entrada</th>
+                            <th>Estado Atual</th>
+                            <th>Data de Criação</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-contacts"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tickets" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <div class="field search-wrapper w-search">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" id="search-tickets" placeholder="Procurar titular de bilhete..." oninput="filterData('tickets')">
+                            <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Titular da Reserva</th>
+                            <th>E-mail de Contacto</th>
+                            <th>Telemóvel</th>
+                            <th class="has-text-centered">Lugares</th>
+                            <th>Notas Adicionais</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-tickets"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="instagram" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left"></div>
+                <div class="level-right">
+                    <button class="button btn-factory" onclick="openCreateModal('instagram')">
+                        <span class="icon"><i class="fas fa-plus"></i></span><span>Adicionar Post</span>
+                    </button>
+                </div>
+            </div>
+            <div class="factory-card table-container">
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Pré-visualização</th>
+                            <th>Legenda</th>
+                            <th>Tipo</th>
+                            <th>Data</th>
+                            <th>Ordem</th>
+                            <th>Estado</th>
+                            <th class="has-text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-instagram"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="about" class="tab-content">
+            <div class="level control-deck">
+                <div class="level-left">
+                    <h3 class="title is-4" style="color: var(--fiato-dark);">Sobre Nós</h3>
+                </div>
+                <div class="level-right">
+                    <button class="button is-light" onclick="editAboutSection()" style="border-radius: 10px; font-weight: 600;">
+                        <span class="icon"><i class="fas fa-pen"></i></span><span>Editar página completa</span>
+                    </button>
+                </div>
+            </div>
+            <p class="mb-5" style="color: #64748b;">Gere aqui os conteúdos da página Sobre Nós por secções.</p>
+            <div class="columns is-multiline" id="about-cards-container"></div>
+        </section>
+    </main>
+
+  <div class="modal" id="modal-events">
+    <div class="modal-background" onclick="closeModal('modal-events')"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title" id="modal-events-title">Ficha do Evento</p>
+            <button class="delete" aria-label="close" onclick="closeModal('modal-events')"></button>
+        </header>
+        
+        <section class="modal-card-body">
+            <p id="event-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+            <form id="form-events">
+                <div class="field mb-4">
+                    <label class="form-label-custom">Título do Espetáculo</label>
+                    <div class="control"><input class="input" type="text" id="event-title" required></div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="form-label-custom">Direção Artística</label>
+                            <div class="control"><input class="input" type="text" id="event-direction" required></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="form-label-custom">Duração</label>
+                            <div class="control"><input class="input" type="text" id="event-duration" placeholder="Ex: 1h20 m" required></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Mapeamento Geográfico / Zona</label>
+                    <div class="control"><input class="input" type="text" id="event-locationSummary" placeholder="Ex: Teatro Rivoli / Porto" required></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Cartaz do Espetáculo (Upload)</label>
+                    <div class="control"><input class="input" type="file" id="event-imageFile" accept="image/*"></div>
+                    <div id="event-preview-wrapper" class="mt-3 is-hidden">
+                        <img id="event-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                    </div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Frase de Destaque / Citação</label>
+                    <div class="control"><input class="input" type="text" id="event-quote"></div>
+                </div>
+                <div class="field mb-4">
+                    <label class="form-label-custom">Sinopse / Descrição Narrativa</label>
+                    <div class="control"><textarea class="textarea" id="event-description" rows="3" required></textarea></div>
+                </div>
+
+                <hr style="background-color: var(--fiato-border); height: 1px; margin: 1.5rem 0;">
+                <div class="is-flex is-justify-content-between is-align-items-center mb-3">
+                    <label class="form-label-custom" style="margin-bottom: 0; font-size: 1rem; color: var(--fiato-dark);">
+                        <i class="fas fa-clock mr-2" style="color: var(--fiato-coral);"></i>Sessões e Lotação
+                    </label>
+                    <button type="button" class="button is-small is-dark" onclick="addSessionRow()" style="border-radius: 8px; font-weight: 600;">
+                        <span class="icon is-small"><i class="fas fa-plus"></i></span>
+                        <span>Adicionar Sessão</span>
+                    </button>
+                </div>
+                
+                <div id="dynamic-sessions-wrapper" class="mb-5">
+                    </div>
+
+                <div class="field">
+                    <label class="checkbox" style="font-weight: 500;">
+                        <input type="checkbox" id="event-isFeatured" class="mr-2"> Destacar como Banner Principal da Agenda
+                    </label>
+                </div>
+            </form> </section> <footer class="modal-card-foot is-justify-content-end">
+            <button class="button is-ghost" onclick="closeModal('modal-events')" style="color: #64748b;">Cancelar</button>
+            <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveEvent()">Gravar Dados</button>
+        </footer>
+    </div>
+</div>
+
+    <div class="modal" id="modal-arquivo">
+        <div class="modal-background" onclick="closeModal('modal-arquivo')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-arquivo-title">Registo de Arquivo</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-arquivo')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="arquivo-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-arquivo">
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Ano da Edição</label>
+                        <div class="control"><input class="input" type="number" id="arquivo-year" placeholder="Ex: 2024" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Título / Eyebrow</label>
+                        <div class="control"><input class="input" type="text" id="arquivo-title" placeholder="Ex: Edição Especial" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Descrição Breve / Subtítulo</label>
+                        <div class="control"><input class="input" type="text" id="arquivo-description" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Imagem de Capa (Upload)</label>
+                        <div class="control"><input class="input" type="file" id="arquivo-imageFile" accept="image/*"></div>
+                        <div id="arquivo-preview-wrapper" class="mt-3 is-hidden">
+                            <img id="arquivo-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-arquivo')" style="color: #64748b;">Cancelar</button>
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveArquivo()">Gravar Registo</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-news">
+        <div class="modal-background" onclick="closeModal('modal-news')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-news-title">Artigo de Imprensa</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-news')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="news-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-news">
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Título / Headline da Notícia</label>
+                        <div class="control"><input class="input" type="text" id="news-title" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Data de Publicação</label>
+                        <div class="control"><input class="input" type="date" id="news-publishDate" required></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Imagem de Miniatura (Upload)</label>
+                        <div class="control"><input class="input" type="file" id="news-imageFile" accept="image/*"></div>
+                        <div id="news-preview-wrapper" class="mt-3 is-hidden">
+                            <img id="news-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                        </div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">URL do Artigo Externo</label>
+                        <div class="control"><input class="input" type="url" id="news-articleUrl" placeholder="https://..." required></div>
+                    </div>
+                    <div class="field mb-4">
+  <label class="form-label-custom">Corpo da Notícia</label>
+  <div class="control">
+    <textarea id="news-body" class="textarea" placeholder="Escreve o conteúdo da notícia..." required></textarea>
+  </div>
+</div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-news')" style="color: #64748b;">Cancelar</button>
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveNews()">Publicar Artigo</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-contacts">
+        <div class="modal-background" onclick="closeModal('modal-contacts')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Ficha de Mensagem Externa</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-contacts')"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <div class="contact-profile mb-4">
+                        <div class="contact-profile__identity">
+                            <h4 class="contact-profile__name" id="view-contact-name"></h4>
+                            <p class="contact-profile__email" id="view-contact-email"></p>
+                        </div>
+                        <span class="contact-profile__type" id="view-contact-type"></span>
+                    </div>
+                    <hr style="background-color: var(--fiato-bg); height: 1px;">
+                    
+                    <div id="wrapper-view-message" class="is-hidden mb-4">
+                        <label class="form-label-custom d-block">Corpo do Contacto</label>
+                        <div class="notification" id="view-contact-message" style="background-color: #f8fafc; border-radius: 12px; border: 1px solid var(--fiato-border); color: #334155;"></div>
+                    </div>
+                    
+                    <div id="wrapper-view-document" class="is-hidden mb-4">
+                        <label class="form-label-custom d-block">Portefólio / Documentação Relacionada</label>
+                        <a id="view-contact-docUrl" class="button is-light is-fullwidth" target="_blank" style="border-radius: 10px; font-weight: 600; border: 1px dashed #cbd5e1;">
+                            <span class="icon"><i class="fas fa-file-pdf"></i></span><span id="view-contact-docLabel">Inspecionar Ficheiro Anexo</span>
+                        </a>
+                    </div>
+                    <hr style="background-color: var(--fiato-bg); height: 1px;">
+                    
+                    <div class="field">
+                        <label class="form-label-custom">Alterar Estado de Triagem Interna</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="view-contact-status">
+                                    <option value="unread">Não Lido / Pendente</option>
+                                    <option value="processed">Processado / Arquivado</option>
+                                    <option value="archived">Rejeitado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600; width: 100%;" onclick="updateContactStatus()">Sinalizar e Atualizar Registo</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-instagram">
+        <div class="modal-background" onclick="closeModal('modal-instagram')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-instagram-title">Publicação Instagram</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-instagram')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="instagram-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-instagram">
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Legenda</label>
+                        <div class="control"><textarea class="textarea" id="instagram-caption" rows="2"></textarea></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Tipo de Media</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="instagram-mediaType">
+                                            <option value="image">Imagem</option>
+                                            <option value="video">Vídeo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Ordem de Apresentação</label>
+                                <div class="control"><input class="input" type="number" id="instagram-order" value="0" min="0"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">Upload de Media (imagem ou vídeo)</label>
+                        <div class="control"><input class="input" type="file" id="instagram-mediaFile" accept="image/*,video/*"></div>
+                        <div id="instagram-preview-wrapper" class="mt-3 is-hidden">
+                            <img id="instagram-preview-img" style="max-height: 180px; border-radius: 12px; border: 2px solid var(--fiato-border); display: block;">
+                        </div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">OU URL do Media (fallback se não fizer upload)</label>
+                        <div class="control"><input class="input" type="url" id="instagram-mediaUrl" placeholder="https://..."></div>
+                    </div>
+                    <div class="field mb-4">
+                        <label class="form-label-custom">URL do Post (Instagram)</label>
+                        <div class="control"><input class="input" type="url" id="instagram-postUrl" placeholder="https://instagram.com/p/..."></div>
+                    </div>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label class="form-label-custom">Data</label>
+                                <div class="control"><input class="input" type="date" id="instagram-date"></div>
+                            </div>
+                        </div>
+                        <div class="column is-flex is-align-items-center pt-5">
+                            <label class="checkbox" style="font-weight: 500;">
+                                <input type="checkbox" id="instagram-isPublished" class="mr-2" checked> Publicado
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-instagram')" style="color: #64748b;">Cancelar</button>
+                <button class="button" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;" onclick="saveInstagram()">Gravar</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-about">
+        <div class="modal-background" onclick="closeModal('modal-about')"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title" id="modal-about-title">Editar Página "Sobre Nós"</p>
+                <button class="delete" aria-label="close" onclick="closeModal('modal-about')"></button>
+            </header>
+            <section class="modal-card-body">
+                <p id="about-error-banner" class="notification is-danger is-light py-2 px-3 is-hidden mb-4" style="font-size: 0.85rem; border-radius: 8px;"></p>
+                <form id="form-about">
+
+                    <!-- HERO -->
+                    <div class="about-section-fields" data-about-section="hero">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-star mr-2"></i>Hero / Editorial
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Descrição (hero)</label>
+                            <div class="control"><textarea class="textarea" id="about-heroDescription" rows="2"></textarea></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Links CTA do Hero</label>
+                            <div id="about-hero-ctas-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addHeroCtaRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar CTA</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MANIFESTO -->
+                    <div class="about-section-fields" data-about-section="manifesto">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-quote-right mr-2"></i>Manifesto
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-manifestoEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-manifestoTitle"></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Coluna Esquerda</label>
+                                    <div class="control"><textarea class="textarea" id="about-manifestoBodyLeft" rows="3"></textarea></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Coluna Direita</label>
+                                    <div class="control"><textarea class="textarea" id="about-manifestoBodyRight" rows="3"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MARQUEE -->
+                    <div class="about-section-fields" data-about-section="marquee">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-arrows-alt-h mr-2"></i>Marquee
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Itens do Marquee</label>
+                            <div id="about-marquee-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addMarqueeRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Item</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- EDIÇÃO 2026 -->
+                    <div class="about-section-fields" data-about-section="edition">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-calendar mr-2"></i>Bloco 2026
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-editionEyebrow"></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Ano (linha superior)</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionYearTop"></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Ano (linha inferior)</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionYearBottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Descrição</label>
+                            <div class="control"><textarea class="textarea" id="about-editionDescription" rows="2"></textarea></div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">Label do CTA</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionCtaLabel"></div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="form-label-custom">URL do CTA</label>
+                                    <div class="control"><input class="input" type="text" id="about-editionCtaUrl"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">URL da Imagem de Fundo</label>
+                            <div class="control"><input class="input" type="text" id="about-editionImageUrl"></div>
+                        </div>
+                    </div>
+
+                    <!-- EQUIPA -->
+                    <div class="about-section-fields" data-about-section="team">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-users mr-2"></i>Equipa / Bastidores
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-teamEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-teamHeading"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Membros da Equipa</label>
+                            <div id="about-team-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addTeamMemberRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Membro</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FAQ -->
+                    <div class="about-section-fields" data-about-section="faq">
+                        <h4 class="title is-5" style="color: var(--fiato-coral); border-bottom: 2px solid var(--fiato-border); padding-bottom: 8px; margin-bottom: 20px;">
+                            <i class="fas fa-question-circle mr-2"></i>FAQ
+                        </h4>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Eyebrow</label>
+                            <div class="control"><input class="input" type="text" id="about-faqEyebrow"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Título</label>
+                            <div class="control"><input class="input" type="text" id="about-faqHeading"></div>
+                        </div>
+                        <div class="field mb-4">
+                            <label class="form-label-custom">Perguntas Frequentes</label>
+                            <div id="about-faq-wrapper"></div>
+                            <button type="button" class="button is-small is-dark is-outlined mt-2" onclick="addFaqRow()" style="border-radius: 8px;">
+                                <span class="icon is-small"><i class="fas fa-plus"></i></span><span>Adicionar Pergunta</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-end">
+                <button class="button is-ghost" onclick="closeModal('modal-about')" style="color: #64748b;">Cancelar</button>
+                <button class="button" onclick="saveAboutSection()" style="background-color: var(--fiato-dark); color: white; border-radius: 10px; font-weight: 600;">Gravar</button>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/backoffice/contentManager.js"></script>
+</body>
+</html>
