@@ -123,6 +123,7 @@ img {
   width: 100%;
   position: fixed;
   top: 0;
+  min-height: var(--navbar-height);
   left: 0;
   z-index: 9999; /* CRITICAL: Garante que a navbar fica sempre por cima */
   background: transparent;
@@ -2107,7 +2108,8 @@ a.navbar__link.logo_link {
   font-family: var(--font-primary); 
   font-size: 18px; 
   line-height: 1.55;
-  opacity: 0.88; 
+  opacity: 1; 
+  font-color: var(--color-neutral-900);
   margin: 32px 0 0; 
   font-family: var(--font-display); 
   font-style: italic;

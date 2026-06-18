@@ -2676,6 +2676,26 @@ function loadAboutPage() {
       if (Object.keys(page).length === 0) return;
 
       var heroImages = Array.prototype.slice.call(document.querySelectorAll('.editorial-hero__image'));
+
+      var hardcodedImages = [
+  'images/017_w_PS73468.jpg',
+  'images/1780860602657-419560448.jpg',
+  'images/1780513909126-621278202.jpg',
+  'images/1780860602657-419560448.jpg',
+   'images/1780513909126-621278202.jpg',
+];
+// 2. Combine the edition image with your hardcoded list and filter out any empty values
+var editorialImages = [page.editionImageUrl]
+  .concat(hardcodedImages)
+  .filter(Boolean);
+
+// 3. The loop remains untouched and safely cycles through your new array
+heroImages.forEach(function (imageEl, index) {
+  var url = editorialImages[index % editorialImages.length];
+  if (!url) return;
+  imageEl.classList.remove('ph');
+  imageEl.style.backgroundImage = 'url(' + url.replace(/'/g, '%27') + ')';
+});
       var teamPhotoUrls = (page.teamMembers || [])
         .map(function (member) { return member.photoUrl; })
         .filter(Boolean);
@@ -2684,12 +2704,6 @@ function loadAboutPage() {
         teamPhotoUrls[0],
         teamPhotoUrls[1]
       ].filter(Boolean);
-      heroImages.forEach(function (imageEl, index) {
-        var url = editorialImages[index % editorialImages.length];
-        if (!url) return;
-        imageEl.classList.remove('ph');
-        imageEl.style.backgroundImage = 'url(' + url.replace(/'/g, '%27') + ')';
-      });
 
       // Hero
       if (page.heroDescription && heroDesc) heroDesc.textContent = page.heroDescription;
